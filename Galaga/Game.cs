@@ -1,14 +1,23 @@
 using DIKUArcade;
 using DIKUArcade.Timers;
+using System.IO;
+using DIKUArcade.Entities;
+using DIKUArcade.Graphics;
+using DIKUArcade.Math;
+
 namespace Galaga
 {
     public class Game {
         private Window window;
         private GameTimer gameTimer;
+        private Player player;
         
         public Game() {
             window = new Window("Galaga", 500, 500);
             gameTimer = new GameTimer(30, 30);
+            player = new Player(
+                new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
+                new Image(Path.Combine("Assets", "Images", "Player.png")));
         }
 
         public void Run() {
@@ -23,7 +32,7 @@ namespace Galaga
                 if (gameTimer.ShouldRender()) {
                     window.Clear();
 
-                    // render game entities here...
+                    player.Render();
 
                     window.SwapBuffers();
                 }
