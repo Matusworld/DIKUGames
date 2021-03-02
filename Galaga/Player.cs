@@ -19,7 +19,7 @@ namespace Galaga {
         public void UpdateDirection(){
             shape.Direction.X = moveLeft + moveRight;
         }
-        public void move(){
+        public void Move(){
             if (shape.Position.X+shape.Direction.X < 0.0f){
                 shape.Position.X = 0.01f;
             }
