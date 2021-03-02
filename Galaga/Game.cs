@@ -16,17 +16,17 @@ namespace Galaga
         private GameEventBus<object> eventBus;
         
         public Game() {
-            eventBus = new GameEventBus<object>();
-            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent });
-
-            window.RegisterEventBus(eventBus);
-            eventBus.Subscribe(GameEventType.InputEvent, this);
-
             window = new Window("Galaga", 500, 500);
             gameTimer = new GameTimer(30, 30);
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
                 new Image(Path.Combine("Assets", "Images", "Player.png")));
+
+            eventBus = new GameEventBus<object>();
+            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent });
+
+            window.RegisterEventBus(eventBus);
+            eventBus.Subscribe(GameEventType.InputEvent, this);
         }
 
         public void KeyPress(string key) {
