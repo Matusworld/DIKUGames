@@ -26,7 +26,7 @@ namespace Galaga
 
                 while (gameTimer.ShouldUpdate()) {
                     window.PollEvents();
-
+                    player.move();
                     // update game logic here...
                 }
                 if (gameTimer.ShouldRender()) {
