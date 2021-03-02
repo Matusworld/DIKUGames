@@ -28,9 +28,8 @@ namespace Galaga
             window.RegisterEventBus(eventBus);
             eventBus.Subscribe(GameEventType.InputEvent, this);
         }
-
+        //call SetMoves with true if appropriate keys have been pressed
         public void KeyPress(string key) {
-            // TODO: switch on key string and set the player's move direction
             switch (key) {
                 case "KEY_LEFT":
                     player.SetMoveLeft(true);
@@ -43,9 +42,8 @@ namespace Galaga
             }
         }
 
+        //call SetMoves with "false" if appropriate keys have been released
         public void KeyRelease(string key) {
-            // TODO: switch on key string and disable the player's move direction
-            // TODO: Close window if escape is pressed
             switch (key) {
                 case "KEY_LEFT":
                     player.SetMoveLeft(false);
@@ -79,11 +77,10 @@ namespace Galaga
                 gameTimer.MeasureTime();
 
 
-
                 while (gameTimer.ShouldUpdate()) {
                     window.PollEvents();
 
-                    //ProcessEvent(GameEventType.InputEvent, eventBus);
+                    //Handle input events
                     eventBus.ProcessEvents();
 
                     player.Move();
