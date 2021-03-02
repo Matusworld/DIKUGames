@@ -44,7 +44,7 @@ namespace Galaga {
                 UpdateDirection();
             } /*else {
                 moveRight = moveRight;
-            }*/
+            } */
             
             }
         }
