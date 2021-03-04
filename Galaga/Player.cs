@@ -1,5 +1,6 @@
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
+using DIKUArcade.Math;
 using System;
 namespace Galaga {
     public class Player {
@@ -11,6 +12,10 @@ namespace Galaga {
         public Player(DynamicShape shape, IBaseImage image) {
             entity = new Entity(shape, image);
             this.shape = shape;
+        }
+
+        public Vec2F GetPosition() {
+            return shape.Position; 
         }
 
         public void Render() {
