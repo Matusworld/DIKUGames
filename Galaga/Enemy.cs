@@ -1,8 +1,9 @@
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
+using DIKUArcade.EventBus;
 
 namespace Galaga {
-    public class Enemy : Entity {
+    public class Enemy : Entity, IGameEventProcessor<object> {
         private int hitpoints = 50;
         private int HPThreshhold = 15;
         private IBaseImage redImage;
@@ -43,5 +44,28 @@ namespace Galaga {
                 this.Image = redImage;
             }
         }
+
+        public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
+            if (type == GameEventType.EnemyEvent) {
+                switch (gameEvent.Parameter1) {
+                    case "Damage": 
+                        Damage();
+                        if (isDead()) {
+                            DeleteEntity();
+                            Game.eventBus.RegisterEvent(
+                                GameEventFactory<object>.CreateGameEventForAllProcessors(
+                                    GameEventType.GraphicsEvent, this, "", "Explosions", ""));
+                            // Explosions
+                        }
+
+                        if (EnrageCheck()) {
+                            Enrage();
+                        }
+                        break;
+                }
+            }
+
+        }
+
     }
 }
