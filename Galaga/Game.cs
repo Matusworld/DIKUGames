@@ -21,6 +21,7 @@ namespace Galaga
         private AnimationContainer enemyExplosions;
         private List<Image> explosionStrides;
         private const int EXPLOSION_LENGTH_MS = 500;
+        private List<Image> enemyStridesRed;
 
 
         public Game() {
@@ -40,13 +41,16 @@ namespace Galaga
             
             var images = ImageStride.CreateStrides(4, Path.Combine("Assets", 
                 "Images", "BlueMonster.png"));
+            enemyStridesRed = ImageStride.CreateStrides(2,
+                Path.Combine("Assets", "Images", "RedMonster.png"));
             const int numEnemies = 8;
             enemies = new EntityContainer<Enemy>(numEnemies);
             for (int i = 0; i < numEnemies; i++) {
                 enemies.AddEntity(new Enemy(
                     new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f), 
                         new Vec2F(0.1f, 0.1f)),
-                    new ImageStride(80, images)));
+                    new ImageStride(80, images),
+                    new ImageStride (80, enemyStridesRed)));
             }
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
@@ -129,9 +133,15 @@ namespace Galaga
                         CollisionData check = CollisionDetection.Aabb(shot.Shape.AsDynamicShape(),
                             enemy.Shape);
                         if (check.Collision) {
+                            enemy.Damage();
                             shot.DeleteEntity();
-                            enemy.DeleteEntity();
-                            AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
+                            if (enemy.isDead()) {
+                                enemy.DeleteEntity();
+                                AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
+                            }
+                            if (enemy.EnrageCheck()){
+                                enemy.Enrage();
+                            }
                         }
                     });
                 }
