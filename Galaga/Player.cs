@@ -27,7 +27,7 @@ namespace Galaga {
         }
 
         //Move if position after move will not be out of bounds
-        public void Move(){
+        private void Move(){
             if (shape.Position.X+shape.Direction.X < 0.0f) {
                 shape.Position.X = 0.01f;
             }
@@ -79,6 +79,9 @@ namespace Galaga {
                                 SetMoveRight(false);
                                 break;
                         }
+                        break;
+                    case "Move":
+                        Move();
                         break;
                 }
             }

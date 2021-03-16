@@ -156,7 +156,10 @@ namespace Galaga
                     //Handle input events
                     eventBus.ProcessEvents();
 
-                    player.Move();
+                    //player.Move();
+                    eventBus.RegisterEvent(
+                        GameEventFactory<object>.CreateGameEventForAllProcessors(
+                            GameEventType.PlayerEvent, this, "", "Move", ""));
 
                     IterateShots();
 
