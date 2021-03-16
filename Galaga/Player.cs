@@ -1,9 +1,10 @@
 using DIKUArcade.Entities;
+using DIKUArcade.EventBus;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using System;
 namespace Galaga {
-    public class Player {
+    public class Player : IGameEventProcessor<object> {
         private Entity entity;
         private DynamicShape shape;
         private float moveLeft = 0.0f;
@@ -27,17 +28,17 @@ namespace Galaga {
 
         //Move if position after move will not be out of bounds
         public void Move(){
-            if (shape.Position.X+shape.Direction.X < 0.0f){
+            if (shape.Position.X+shape.Direction.X < 0.0f) {
                 shape.Position.X = 0.01f;
             }
-            if (shape.Position.X+shape.Direction.X > 0.9f){ //pos is from bottom left corner 
+            if (shape.Position.X+shape.Direction.X > 0.9f) { //pos is from bottom left corner 
                 shape.Position.X = 0.9f;
             } else {
                 shape.Move();
             }
         }
         
-        public void SetMoveLeft(bool val){
+        private void SetMoveLeft(bool val){
             if (val){
                 moveLeft = -MOVEMENT_SPEED;
             }
@@ -46,7 +47,7 @@ namespace Galaga {
             }
             UpdateDirection();
         }
-        public void SetMoveRight(bool val){
+        private void SetMoveRight(bool val){
             if (val){
                 moveRight = MOVEMENT_SPEED;
             } 
@@ -54,6 +55,33 @@ namespace Galaga {
                 moveRight = 0.0f;
             }
             UpdateDirection();
+        }
+
+        public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
+            if (type == GameEventType.PlayerEvent) {
+                switch (gameEvent.Parameter1) {
+                    case "SetMoveLeft":
+                        switch (gameEvent.Message) {
+                            case "true":
+                                SetMoveLeft(true);
+                                break;
+                            case "false":
+                                SetMoveLeft(false);
+                                break;
+                        }
+                        break;
+                    case "SetMoveRight":
+                        switch (gameEvent.Message) {
+                            case "true":
+                                SetMoveRight(true);
+                                break;
+                            case "false":
+                                SetMoveRight(false);
+                                break;
+                        }
+                        break;
+                }
+            }
         }
     }
 }

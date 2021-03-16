@@ -31,10 +31,12 @@ namespace Galaga
                 new Image(Path.Combine("Assets", "Images", "Player.png")));
 
             eventBus = new GameEventBus<object>();
-            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent });
+            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent,
+                GameEventType.PlayerEvent });
 
             window.RegisterEventBus(eventBus);
             eventBus.Subscribe(GameEventType.InputEvent, this);
+            eventBus.Subscribe(GameEventType.PlayerEvent, this.player);
             
             var images = ImageStride.CreateStrides(4, Path.Combine("Assets", 
                 "Images", "BlueMonster.png"));
@@ -56,10 +58,16 @@ namespace Galaga
         public void KeyPress(string key) {
             switch (key) {
                 case "KEY_LEFT":
-                    player.SetMoveLeft(true);
+                    //player.SetMoveLeft(true);
+                    eventBus.RegisterEvent(
+                        GameEventFactory<object>.CreateGameEventForAllProcessors(
+                            GameEventType.PlayerEvent, this, "true", "SetMoveLeft", ""));
                     break;
                 case "KEY_RIGHT":
-                    player.SetMoveRight(true);
+                    //player.SetMoveRight(true);
+                    eventBus.RegisterEvent(
+                        GameEventFactory<object>.CreateGameEventForAllProcessors(
+                            GameEventType.PlayerEvent, this, "true", "SetMoveRight", ""));
                     break;
                 default:
                     break;
@@ -70,10 +78,16 @@ namespace Galaga
         public void KeyRelease(string key) {
             switch (key) {
                 case "KEY_LEFT":
-                    player.SetMoveLeft(false);
+                    //player.SetMoveLeft(false);
+                    eventBus.RegisterEvent(
+                        GameEventFactory<object>.CreateGameEventForAllProcessors(
+                            GameEventType.PlayerEvent, this, "false", "SetMoveLeft", ""));
                     break;
                 case "KEY_RIGHT":
-                    player.SetMoveRight(false);
+                    //player.SetMoveRight(false);
+                    eventBus.RegisterEvent(
+                        GameEventFactory<object>.CreateGameEventForAllProcessors(
+                            GameEventType.PlayerEvent, this, "false", "SetMoveRight", ""));
                     break;
                 case "KEY_ESCAPE":
                     window.CloseWindow();
@@ -88,15 +102,17 @@ namespace Galaga
         }
 
         public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
-            switch (gameEvent.Parameter1) {
-                case "KEY_PRESS":
-                    KeyPress(gameEvent.Message);
-                    break;
-                case "KEY_RELEASE":
-                    KeyRelease(gameEvent.Message);
-                    break;
-                default:
-                    break;
+            if (type == GameEventType.InputEvent) {
+                switch (gameEvent.Parameter1) {
+                    case "KEY_PRESS":
+                        KeyPress(gameEvent.Message);
+                        break;
+                    case "KEY_RELEASE":
+                        KeyRelease(gameEvent.Message);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
