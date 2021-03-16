@@ -49,23 +49,21 @@ namespace Galaga {
             if (type == GameEventType.EnemyEvent) {
                 switch (gameEvent.Parameter1) {
                     case "Damage": 
-                        Damage();
-                        if (isDead()) {
-                            DeleteEntity();
+                        ((Enemy)gameEvent.To).Damage();
+                        if (((Enemy)gameEvent.To).isDead()) {
                             Game.eventBus.RegisterEvent(
                                 GameEventFactory<object>.CreateGameEventForAllProcessors(
                                     GameEventType.GraphicsEvent, this, "", "Explosions", ""));
+                            ((Enemy)gameEvent.To).DeleteEntity();
                             // Explosions
                         }
 
-                        if (EnrageCheck()) {
-                            Enrage();
+                        if (((Enemy)gameEvent.To).EnrageCheck()) {
+                            ((Enemy)gameEvent.To).Enrage();
                         }
                         break;
                 }
             }
-
         }
-
     }
 }

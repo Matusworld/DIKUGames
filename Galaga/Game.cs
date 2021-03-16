@@ -125,7 +125,8 @@ namespace Galaga
             if (type == GameEventType.GraphicsEvent) {
                 switch (gameEvent.Parameter1) {
                     case "Explosions":
-                        AddExplosion(((GameEvent) gameEvent).From.Shape.Position, enemy.Shape.Extent);
+                        Enemy test = (Enemy)gameEvent.From;
+                        AddExplosion(((Enemy) gameEvent.From).Shape.Position, ((Enemy) gameEvent.From).Shape.Extent);
                         break;
                 }
             }
