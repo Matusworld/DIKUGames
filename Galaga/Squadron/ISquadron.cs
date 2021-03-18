@@ -9,6 +9,7 @@ namespace Galaga.Squadron {
 
         int MaxEnemies { get; }
 
-        void CreateEnemies(List<Image> enemyStrides, List<Image> alternativeEnemystrideStrides);
+        void CreateEnemies(List<Image> enemyStrides, List<Image> alternativeEnemystrideStrides,
+            float speed);
     }
 }

@@ -11,7 +11,7 @@ namespace Galaga.Squadron {
         public int MaxEnemies { get; } = 8;
 
         public void CreateEnemies(List<Image> enemyStrides, 
-            List<Image> alternativeEnemystrideStrides) {
+            List<Image> alternativeEnemystrideStrides, float speed) {
                 Enemies = new EntityContainer<Enemy>(MaxEnemies);
             
             for (int i = 0; i < MaxEnemies; i++) {
@@ -19,7 +19,7 @@ namespace Galaga.Squadron {
                     new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f), 
                         new Vec2F(0.1f, 0.1f)),
                     new ImageStride(80, enemyStrides),
-                    new ImageStride (80, alternativeEnemystrideStrides));
+                    new ImageStride (80, alternativeEnemystrideStrides), speed);
                 Enemies.AddEntity(enemy);
                 Game.eventBus.Subscribe(GameEventType.EnemyEvent, enemy);
             }

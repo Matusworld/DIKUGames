@@ -7,14 +7,18 @@ namespace Galaga {
         private int hitpoints = 50;
         private int HPThreshhold = 15;
         private IBaseImage redImage;
-        public float MOVEMENT_SPEED { get; private set; } = 0.0003f;
+        public float MOVEMENT_SPEED { get; private set; }
         private bool enraged = false;
         private bool dead = false;
+        private float enragedMovementspeed; 
+
+        private float enrangedMultiplier = 10f;
 
         public readonly Vec2F startPos;
 
-        public Enemy(DynamicShape shape, IBaseImage image, IBaseImage redImage)
-            : base(shape, image) {this.redImage = redImage; this.startPos = shape.Position;}
+        public Enemy(DynamicShape shape, IBaseImage image, IBaseImage redImage, float speed)
+            : base(shape, image) {this.redImage = redImage; this.startPos = shape.Position;
+                this.MOVEMENT_SPEED = speed; enragedMovementspeed = speed * enrangedMultiplier;}
 
         private void Damage() {
             hitpoints -= 10;
@@ -42,7 +46,7 @@ namespace Galaga {
         
         private void Enrage() {
             if (enraged) {
-                MOVEMENT_SPEED = 0.003f;
+                MOVEMENT_SPEED = enragedMovementspeed;
                 this.Image = redImage;
             }
         }
