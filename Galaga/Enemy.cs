@@ -14,11 +14,11 @@ namespace Galaga {
         public Enemy(DynamicShape shape, IBaseImage image, IBaseImage redImage)
             : base(shape, image) {this.redImage = redImage;}
 
-        public void Damage() {
+        private void Damage() {
             hitpoints -= 10;
         }
 
-        public bool isDead(){
+        private bool isDead(){
             if (hitpoints <= 0) {
                 dead = true;
                 return dead;
@@ -28,7 +28,7 @@ namespace Galaga {
             }
         }
 
-        public bool EnrageCheck() {
+        private bool EnrageCheck() {
             if (hitpoints < HPThreshhold) { 
                 enraged = true; 
                 return enraged;
@@ -38,7 +38,7 @@ namespace Galaga {
             }
         }
         
-        public void Enrage() {
+        private void Enrage() {
             if (enraged) {
                 MOVEMENT_SPEED = 0.02f;
                 this.Image = redImage;
@@ -47,7 +47,7 @@ namespace Galaga {
 
         public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
             if (type == GameEventType.EnemyEvent) {
-                //check if this is the hit enemy
+                 //check if this is the hit enemy
                 if ((Enemy)gameEvent.To == this) {
                     switch (gameEvent.Parameter1) {
                         case "Damage": 

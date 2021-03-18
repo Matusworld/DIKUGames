@@ -7,6 +7,7 @@ using DIKUArcade.Math;
 using System.Collections.Generic;
 using DIKUArcade.EventBus;
 using DIKUArcade.Physics;
+using Galaga.Squadron;
 
 namespace Galaga
 {
@@ -15,7 +16,8 @@ namespace Galaga
         private GameTimer gameTimer;
         private Player player;
         public static GameEventBus<object> eventBus {get; private set;}
-        private EntityContainer<Enemy> enemies;
+        //private EntityContainer<Enemy> enemies;
+        private ISquadron squadron;
         private EntityContainer<PlayerShot> playerShots;
         private IBaseImage playerShotImage;
         private AnimationContainer enemyExplosions;
@@ -26,7 +28,7 @@ namespace Galaga
 
         public Game() {
             window = new Window("Galaga", 500, 500);
-            gameTimer = new GameTimer(30, 30);
+            gameTimer = new GameTimer(60, 60);
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
                 new Image(Path.Combine("Assets", "Images", "Player.png")));
@@ -44,21 +46,13 @@ namespace Galaga
                 "Images", "BlueMonster.png"));
             enemyStridesRed = ImageStride.CreateStrides(2,
                 Path.Combine("Assets", "Images", "RedMonster.png"));
-            const int numEnemies = 8;
-            enemies = new EntityContainer<Enemy>(numEnemies);
-            for (int i = 0; i < numEnemies; i++) {
-                Enemy enemy = new Enemy(
-                    new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f), 
-                        new Vec2F(0.1f, 0.1f)),
-                    new ImageStride(80, images),
-                    new ImageStride (80, enemyStridesRed));
-                enemies.AddEntity(enemy);
-                eventBus.Subscribe(GameEventType.EnemyEvent, enemy);
+            
+            squadron = new SquadronCross();
+            squadron.CreateEnemies(images, enemyStridesRed);
 
-            }
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
-            enemyExplosions = new AnimationContainer(numEnemies);
+            enemyExplosions = new AnimationContainer(squadron.MaxEnemies);
             explosionStrides = ImageStride.CreateStrides(8,
                 Path.Combine("Assets", "Images", "Explosion.png"));
         }
@@ -141,7 +135,7 @@ namespace Galaga
                     shot.DeleteEntity();
                 //check if enemies are hit
                 } else {
-                    enemies.Iterate(enemy => {
+                    squadron.Enemies.Iterate(enemy => {
                         CollisionData check = CollisionDetection.Aabb(shot.Shape.AsDynamicShape(),
                             enemy.Shape);
                         if (check.Collision) {
@@ -195,7 +189,7 @@ namespace Galaga
 
                     player.Render();
 
-                    enemies.RenderEntities();
+                    squadron.Enemies.RenderEntities();
 
                     playerShots.RenderEntities();
 
