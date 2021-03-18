@@ -11,8 +11,7 @@ namespace Galaga.MovementStrategy {
             float xi = enemy.startPos.X + a * 
                 ((float) Math.Sin((2 * ((float) Math.PI) * (enemy.startPos.Y - yi)) / p));
             
-            enemy.Shape.AsDynamicShape().ChangeDirection(new Vec2F(0f,yi));
-            enemy.Shape.AsDynamicShape().Move();
+            enemy.Shape.SetPosition(new Vec2F(xi, yi));
         }
         public static void MoveEnemies(EntityContainer<Enemy> enemies) {
             enemies.Iterate( enemy => {

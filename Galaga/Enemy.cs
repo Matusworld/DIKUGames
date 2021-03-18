@@ -7,7 +7,7 @@ namespace Galaga {
         private int hitpoints = 50;
         private int HPThreshhold = 15;
         private IBaseImage redImage;
-        public float MOVEMENT_SPEED { get; private set; } = 0.000003f;
+        public float MOVEMENT_SPEED { get; private set; } = 0.0003f;
         private bool enraged = false;
         private bool dead = false;
 
@@ -42,7 +42,7 @@ namespace Galaga {
         
         private void Enrage() {
             if (enraged) {
-                MOVEMENT_SPEED = 0.02f;
+                MOVEMENT_SPEED = 0.003f;
                 this.Image = redImage;
             }
         }

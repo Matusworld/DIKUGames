@@ -48,7 +48,7 @@ namespace Galaga
             enemyStridesRed = ImageStride.CreateStrides(2,
                 Path.Combine("Assets", "Images", "RedMonster.png"));
             
-            squadron = new SquadronCross();
+            squadron = new SquadronVertiLines();
             squadron.CreateEnemies(images, enemyStridesRed);
 
             playerShots = new EntityContainer<PlayerShot>();

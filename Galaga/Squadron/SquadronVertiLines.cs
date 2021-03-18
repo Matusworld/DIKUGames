@@ -19,7 +19,7 @@ namespace Galaga.Squadron {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     Enemy enemy = new Enemy(
-                    new DynamicShape(new Vec2F(0.0f + (float)i * 0.45f, 0.9f - (float)j * 0.1f), 
+                    new DynamicShape(new Vec2F(0.1f + (float)i * 0.35f, 0.9f - (float)j * 0.1f), 
                        new Vec2F(0.1f, 0.1f)),
                     new ImageStride(80, enemyStrides),
                     new ImageStride (80, alternativeEnemystrideStrides));
