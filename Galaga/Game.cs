@@ -25,6 +25,7 @@ namespace Galaga
         private List<Image> explosionStrides;
         private const int EXPLOSION_LENGTH_MS = 500;
         private List<Image> enemyStridesRed;
+        private Score score = new Score(new Vec2F (0.5f, 0.05f), new Vec2F (0.5f, 0.5f));
 
 
         public Game() {
@@ -195,6 +196,8 @@ namespace Galaga
                     playerShots.RenderEntities();
 
                     enemyExplosions.RenderAnimations();
+
+                    //score.RenderScore();
 
                     window.SwapBuffers();
                 }
