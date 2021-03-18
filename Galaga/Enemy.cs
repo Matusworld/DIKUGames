@@ -1,18 +1,20 @@
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.EventBus;
-
+using DIKUArcade.Math;
 namespace Galaga {
     public class Enemy : Entity, IGameEventProcessor<object> {
         private int hitpoints = 50;
         private int HPThreshhold = 15;
         private IBaseImage redImage;
-        private float MOVEMENT_SPEED = 0.01f;
+        public float MOVEMENT_SPEED { get; private set; } = 0.000003f;
         private bool enraged = false;
         private bool dead = false;
 
+        public readonly Vec2F startPos;
+
         public Enemy(DynamicShape shape, IBaseImage image, IBaseImage redImage)
-            : base(shape, image) {this.redImage = redImage;}
+            : base(shape, image) {this.redImage = redImage; this.startPos = shape.Position;}
 
         private void Damage() {
             hitpoints -= 10;

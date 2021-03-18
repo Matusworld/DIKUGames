@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using DIKUArcade.EventBus;
 using DIKUArcade.Physics;
 using Galaga.Squadron;
+using Galaga.MovementStrategy;
 
 namespace Galaga
 {
@@ -182,7 +183,7 @@ namespace Galaga
                             GameEventType.PlayerEvent, this, "", "Move", ""));
 
                     IterateShots();
-
+                    ZigZagDown.MoveEnemies(squadron.Enemies);
                 }
                 if (gameTimer.ShouldRender()) {
                     window.Clear();
@@ -205,5 +206,6 @@ namespace Galaga
                 }
             }
         }
+
     }
 }
