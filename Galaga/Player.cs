@@ -2,7 +2,6 @@ using DIKUArcade.Entities;
 using DIKUArcade.EventBus;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
-using System;
 namespace Galaga {
     public class Player : IGameEventProcessor<object> {
         private Entity entity;
@@ -22,12 +21,13 @@ namespace Galaga {
         public void Render() {
             entity.RenderEntity();
         }
-        public void UpdateDirection(){
+
+        public void UpdateDirection() {
             shape.Direction.X = moveLeft + moveRight;
         }
 
         //Move if position after move will not be out of bounds
-        private void Move(){
+        private void Move() {
             if (shape.Position.X+shape.Direction.X < 0.0f) {
                 shape.Position.X = 0.01f;
             }
@@ -38,8 +38,8 @@ namespace Galaga {
             }
         }
         
-        private void SetMoveLeft(bool val){
-            if (val){
+        private void SetMoveLeft(bool val) {
+            if (val) {
                 moveLeft = -MOVEMENT_SPEED;
             }
             else {
@@ -47,7 +47,7 @@ namespace Galaga {
             }
             UpdateDirection();
         }
-        private void SetMoveRight(bool val){
+        private void SetMoveRight(bool val) {
             if (val){
                 moveRight = MOVEMENT_SPEED;
             } 

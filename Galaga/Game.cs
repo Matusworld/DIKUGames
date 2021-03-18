@@ -18,7 +18,6 @@ namespace Galaga
         private GameTimer gameTimer;
         private Player player;
         public static GameEventBus<object> eventBus {get; private set;}
-        //private EntityContainer<Enemy> enemies;
         private ISquadron squadron;
         private EntityContainer<PlayerShot> playerShots;
         private IBaseImage playerShotImage;
@@ -65,17 +64,16 @@ namespace Galaga
             explosionStrides = ImageStride.CreateStrides(8,
                 Path.Combine("Assets", "Images", "Explosion.png"));
         }
+        
         //call SetMoves with true if appropriate keys have been pressed
         public void KeyPress(string key) {
             switch (key) {
                 case "KEY_LEFT":
-                    //player.SetMoveLeft(true);
                     eventBus.RegisterEvent(
                         GameEventFactory<object>.CreateGameEventForAllProcessors(
                             GameEventType.PlayerEvent, this, "true", "SetMoveLeft", ""));
                     break;
                 case "KEY_RIGHT":
-                    //player.SetMoveRight(true);
                     eventBus.RegisterEvent(
                         GameEventFactory<object>.CreateGameEventForAllProcessors(
                             GameEventType.PlayerEvent, this, "true", "SetMoveRight", ""));
@@ -89,13 +87,11 @@ namespace Galaga
         public void KeyRelease(string key) {
             switch (key) {
                 case "KEY_LEFT":
-                    //player.SetMoveLeft(false);
                     eventBus.RegisterEvent(
                         GameEventFactory<object>.CreateGameEventForAllProcessors(
                             GameEventType.PlayerEvent, this, "false", "SetMoveLeft", ""));
                     break;
                 case "KEY_RIGHT":
-                    //player.SetMoveRight(false);
                     eventBus.RegisterEvent(
                         GameEventFactory<object>.CreateGameEventForAllProcessors(
                             GameEventType.PlayerEvent, this, "false", "SetMoveRight", ""));
@@ -104,7 +100,8 @@ namespace Galaga
                     window.CloseWindow();
                     break;
                 case "KEY_SPACE":
-                    PlayerShot shot = new PlayerShot(player.GetPosition()+ new Vec2F(0.047f,0.065f), playerShotImage);
+                    PlayerShot shot = new PlayerShot(player.GetPosition()+ new Vec2F(0.047f,0.065f),
+                        playerShotImage);
                     playerShots.AddEntity(shot);
                     break;
                 default:
@@ -150,26 +147,17 @@ namespace Galaga
                         CollisionData check = CollisionDetection.Aabb(shot.Shape.AsDynamicShape(),
                             enemy.Shape);
                         if (check.Collision) {
-                            //enemy.Damage();
                             eventBus.RegisterEvent(
                                 GameEventFactory<object>.CreateGameEventForSpecificProcessor(
                                     GameEventType.EnemyEvent, this, enemy, "", "Damage", ""));
                             shot.DeleteEntity();
-
-//                            if (enemy.isDead()) {
-//                                enemy.DeleteEntity();
-//                                AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
-//                            }
-//                            if (enemy.EnrageCheck()){
-//                                enemy.Enrage();
-//                            }
                         }
                     });
                 }
             });
         }
 
-        //Add explosion animation at given position to animation container
+        // Add explosion animation at given position to animation container
         public void AddExplosion(Vec2F position, Vec2F extent) {
             StationaryShape explosion = new StationaryShape(position, extent);
             ImageStride explosionStride = new ImageStride(EXPLOSION_LENGTH_MS/8, explosionStrides);
@@ -177,7 +165,7 @@ namespace Galaga
         }
 
         // True enemies is in the container
-        // false there is no enemies left in the container
+        // False there is no enemies left in the container
         private bool CheckEnemies(EntityContainer<Enemy> enemies) {
             if (enemies.CountEntities() <= 0) {
                 return false;
@@ -234,7 +222,6 @@ namespace Galaga
                         //Handle input events
                         eventBus.ProcessEvents();
 
-                        //player.Move();
                         eventBus.RegisterEvent(
                             GameEventFactory<object>.CreateGameEventForAllProcessors(
                                 GameEventType.PlayerEvent, this, "", "Move", ""));
@@ -246,6 +233,7 @@ namespace Galaga
                         IncreaseDifficulty();
                     } else {
                         window.PollEvents();
+                        
                         //Handle input events
                         eventBus.ProcessEvents();
                     }

@@ -14,8 +14,8 @@ namespace Galaga.Squadron {
             List<Image> alternativeEnemystrideStrides, float speed) {
                 Enemies = new EntityContainer<Enemy>(MaxEnemies);
             
-            // i are columns: 0.0, 0.45, 0.9
-            // j are rows: 0.9, 0.8, 0.7
+            // i are columns
+            // j are rows
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     Enemy enemy = new Enemy(

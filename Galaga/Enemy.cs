@@ -24,7 +24,7 @@ namespace Galaga {
             hitpoints -= 10;
         }
 
-        private bool isDead(){
+        private bool isDead() {
             if (hitpoints <= 0) {
                 dead = true;
                 return dead;
@@ -63,9 +63,7 @@ namespace Galaga {
                                     GameEventFactory<object>.CreateGameEventForAllProcessors(
                                         GameEventType.GraphicsEvent, this, "", "Explosions", ""));
                                 DeleteEntity();
-                                // Explosions
                             }
-
                             if (EnrageCheck()) {
                                 Enrage();
                             }

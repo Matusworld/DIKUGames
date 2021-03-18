@@ -2,7 +2,7 @@ using  DIKUArcade.Entities;
 using DIKUArcade.Math;
 using System;
 namespace Galaga.MovementStrategy {
-    public static class ZigZagDown{
+    public static class ZigZagDown {
         public static void MoveEnemy(Enemy enemy) {
             float s = -enemy.MOVEMENT_SPEED;
             float p = 0.045f;
@@ -16,7 +16,7 @@ namespace Galaga.MovementStrategy {
         public static void MoveEnemies(EntityContainer<Enemy> enemies) {
             enemies.Iterate( enemy => {
                 MoveEnemy(enemy);
-            });     
+            });
         }
     }
 }
