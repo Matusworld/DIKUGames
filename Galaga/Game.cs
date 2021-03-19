@@ -43,7 +43,7 @@ namespace Galaga
 
             eventBus = new GameEventBus<object>();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent,
-                GameEventType.PlayerEvent, GameEventType.EnemyEvent, GameEventType.GraphicsEvent});
+                GameEventType.PlayerEvent, GameEventType.ControlEvent, GameEventType.GraphicsEvent});
 
             window.RegisterEventBus(eventBus);
             eventBus.Subscribe(GameEventType.InputEvent, this);
@@ -149,7 +149,7 @@ namespace Galaga
                         if (check.Collision) {
                             eventBus.RegisterEvent(
                                 GameEventFactory<object>.CreateGameEventForSpecificProcessor(
-                                    GameEventType.EnemyEvent, this, enemy, "", "Damage", ""));
+                                    GameEventType.ControlEvent, this, enemy, "", "Damage", ""));
                             shot.DeleteEntity();
                         }
                     });

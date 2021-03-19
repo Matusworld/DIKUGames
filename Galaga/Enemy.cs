@@ -52,7 +52,7 @@ namespace Galaga {
         }
 
         public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
-            if (type == GameEventType.EnemyEvent) {
+            if (type == GameEventType.ControlEvent) {
                  //check if this is the hit enemy
                 if ((Enemy)gameEvent.To == this) {
                     switch (gameEvent.Parameter1) {
