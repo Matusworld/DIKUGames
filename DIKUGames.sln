@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIKUArcade", "DIKUArcade\DI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Galaga", "Galaga\Galaga.csproj", "{C1DBF51E-DFED-4D53-951F-BEFC8074C36E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalagaTests", "GalagaTests\GalagaTests.csproj", "{3EE32954-706A-4663-8AF8-4B79873E4267}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,18 @@ Global
 		{C1DBF51E-DFED-4D53-951F-BEFC8074C36E}.Release|x64.Build.0 = Release|Any CPU
 		{C1DBF51E-DFED-4D53-951F-BEFC8074C36E}.Release|x86.ActiveCfg = Release|Any CPU
 		{C1DBF51E-DFED-4D53-951F-BEFC8074C36E}.Release|x86.Build.0 = Release|Any CPU
+		{3EE32954-706A-4663-8AF8-4B79873E4267}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EE32954-706A-4663-8AF8-4B79873E4267}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EE32954-706A-4663-8AF8-4B79873E4267}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3EE32954-706A-4663-8AF8-4B79873E4267}.Debug|x64.Build.0 = Debug|Any CPU
+		{3EE32954-706A-4663-8AF8-4B79873E4267}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3EE32954-706A-4663-8AF8-4B79873E4267}.Debug|x86.Build.0 = Debug|Any CPU
+		{3EE32954-706A-4663-8AF8-4B79873E4267}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EE32954-706A-4663-8AF8-4B79873E4267}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EE32954-706A-4663-8AF8-4B79873E4267}.Release|x64.ActiveCfg = Release|Any CPU
+		{3EE32954-706A-4663-8AF8-4B79873E4267}.Release|x64.Build.0 = Release|Any CPU
+		{3EE32954-706A-4663-8AF8-4B79873E4267}.Release|x86.ActiveCfg = Release|Any CPU
+		{3EE32954-706A-4663-8AF8-4B79873E4267}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9621BA15-C587-4867-ACB8-50B81D405AC4} = {488FE1FA-B506-406A-B731-05565D1D13A2}

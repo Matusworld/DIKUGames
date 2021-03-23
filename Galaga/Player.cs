@@ -9,13 +9,21 @@ namespace Galaga {
         private float moveLeft = 0.0f;
         private float moveRight = 0.0f;
         private const float MOVEMENT_SPEED = 0.01f;
+        public float LeftBound { get; private set; }
+        public float RightBound { get; private set; }
         public Player(DynamicShape shape, IBaseImage image) {
             entity = new Entity(shape, image);
             this.shape = shape;
+            LeftBound = 0f;
+            RightBound = 1.0f - shape.Extent.X;
         }
 
         public Vec2F GetPosition() {
             return shape.Position; 
+        }
+
+        public float GetMoveSpeed() {
+            return MOVEMENT_SPEED;
         }
 
         public void Render() {
@@ -28,11 +36,11 @@ namespace Galaga {
 
         //Move if position after move will not be out of bounds
         private void Move() {
-            if (shape.Position.X+shape.Direction.X < 0.0f) {
-                shape.Position.X = 0.01f;
+            if (shape.Position.X+shape.Direction.X < LeftBound) {
+                shape.Position.X = LeftBound;
             }
-            if (shape.Position.X+shape.Direction.X > 0.9f) { //pos is from bottom left corner 
-                shape.Position.X = 0.9f;
+            else if (shape.Position.X+shape.Direction.X > RightBound) { //pos is from bottom left corner 
+                shape.Position.X = RightBound;
             } else {
                 shape.Move();
             }
