@@ -24,7 +24,7 @@ namespace Galaga.Squadron {
                             new ImageStride(80, enemyStrides),
                             new ImageStride (80, alternativeEnemystrideStrides), speed);
                         Enemies.AddEntity(enemy);
-                        Game.eventBus.Subscribe(GameEventType.ControlEvent, enemy);
+                        GalagaBus.GetBus().Subscribe(GameEventType.ControlEvent, enemy);
                     }
                 }
             }

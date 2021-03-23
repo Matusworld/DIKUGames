@@ -4,48 +4,48 @@ using DIKUArcade.EventBus;
 using DIKUArcade.Math;
 namespace Galaga {
     public class Enemy : Entity, IGameEventProcessor<object> {
-        private int hitpoints = 50;
+        public int Hitpoints { get; private set; } = 50;
         private int HPThreshhold = 15;
         private IBaseImage redImage;
         public float MOVEMENT_SPEED { get; private set; }
-        private bool enraged = false;
-        private bool dead = false;
+        public bool Enraged { get; private set; } = false;
+        public bool Dead { get; private set; } = false;
         private float enragedMovementspeed; 
 
-        private float enrangedMultiplier = 10f;
+        public float EnrangedMultiplier { get; private set; } = 10f;
 
         public readonly Vec2F startPos;
 
         public Enemy(DynamicShape shape, IBaseImage image, IBaseImage redImage, float speed)
             : base(shape, image) {this.redImage = redImage; this.startPos = shape.Position;
-                this.MOVEMENT_SPEED = speed; enragedMovementspeed = speed * enrangedMultiplier;}
+                this.MOVEMENT_SPEED = speed; enragedMovementspeed = speed * EnrangedMultiplier;}
 
         private void Damage() {
-            hitpoints -= 10;
+            Hitpoints -= 10;
         }
 
         private bool isDead() {
-            if (hitpoints <= 0) {
-                dead = true;
-                return dead;
+            if (Hitpoints <= 0) {
+                Dead = true;
+                return Dead;
             } else {
-                dead = false;
-                return dead;
+                Dead = false;
+                return Dead;
             }
         }
 
         private bool EnrageCheck() {
-            if (hitpoints < HPThreshhold) { 
-                enraged = true; 
-                return enraged;
+            if (Hitpoints < HPThreshhold) { 
+                Enraged = true; 
+                return Enraged;
             } else {
-                enraged = false;
-                return enraged;
+                Enraged = false;
+                return Enraged;
             }
         }
         
         private void Enrage() {
-            if (enraged) {
+            if (Enraged) {
                 MOVEMENT_SPEED = enragedMovementspeed;
                 this.Image = redImage;
             }
@@ -59,7 +59,7 @@ namespace Galaga {
                         case "Damage": 
                             Damage();
                             if (isDead()) {
-                                Game.eventBus.RegisterEvent(
+                                GalagaBus.GetBus().RegisterEvent(
                                     GameEventFactory<object>.CreateGameEventForAllProcessors(
                                         GameEventType.GraphicsEvent, this, "", "Explosions", ""));
                                 DeleteEntity();

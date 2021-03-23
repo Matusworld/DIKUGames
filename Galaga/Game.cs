@@ -17,7 +17,7 @@ namespace Galaga
         private Window window;
         private GameTimer gameTimer;
         private Player player;
-        public static GameEventBus<object> eventBus {get; private set;}
+//        public static GameEventBus<object> eventBus {get; private set;}
         private ISquadron squadron;
         private EntityContainer<PlayerShot> playerShots;
         private IBaseImage playerShotImage;
@@ -41,14 +41,14 @@ namespace Galaga
 
             score = new Score(new Vec2F (0.485f, -0.2f), new Vec2F (0.3f, 0.3f));
 
-            eventBus = new GameEventBus<object>();
-            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent,
+//            eventBus = new GameEventBus<object>();
+            GalagaBus.GetBus().InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent,
                 GameEventType.PlayerEvent, GameEventType.ControlEvent, GameEventType.GraphicsEvent});
 
-            window.RegisterEventBus(eventBus);
-            eventBus.Subscribe(GameEventType.InputEvent, this);
-            eventBus.Subscribe(GameEventType.PlayerEvent, this.player);
-            eventBus.Subscribe(GameEventType.GraphicsEvent, this);
+            window.RegisterEventBus(GalagaBus.GetBus());
+            GalagaBus.GetBus().Subscribe(GameEventType.InputEvent, this);
+            GalagaBus.GetBus().Subscribe(GameEventType.PlayerEvent, this.player);
+            GalagaBus.GetBus().Subscribe(GameEventType.GraphicsEvent, this);
             
             images = ImageStride.CreateStrides(4, Path.Combine("Assets", 
                 "Images", "BlueMonster.png"));
@@ -69,12 +69,12 @@ namespace Galaga
         public void KeyPress(string key) {
             switch (key) {
                 case "KEY_LEFT":
-                    eventBus.RegisterEvent(
+                    GalagaBus.GetBus().RegisterEvent(
                         GameEventFactory<object>.CreateGameEventForAllProcessors(
                             GameEventType.PlayerEvent, this, "true", "SetMoveLeft", ""));
                     break;
                 case "KEY_RIGHT":
-                    eventBus.RegisterEvent(
+                    GalagaBus.GetBus().RegisterEvent(
                         GameEventFactory<object>.CreateGameEventForAllProcessors(
                             GameEventType.PlayerEvent, this, "true", "SetMoveRight", ""));
                     break;
@@ -87,12 +87,12 @@ namespace Galaga
         public void KeyRelease(string key) {
             switch (key) {
                 case "KEY_LEFT":
-                    eventBus.RegisterEvent(
+                    GalagaBus.GetBus().RegisterEvent(
                         GameEventFactory<object>.CreateGameEventForAllProcessors(
                             GameEventType.PlayerEvent, this, "false", "SetMoveLeft", ""));
                     break;
                 case "KEY_RIGHT":
-                    eventBus.RegisterEvent(
+                    GalagaBus.GetBus().RegisterEvent(
                         GameEventFactory<object>.CreateGameEventForAllProcessors(
                             GameEventType.PlayerEvent, this, "false", "SetMoveRight", ""));
                     break;
@@ -147,7 +147,7 @@ namespace Galaga
                         CollisionData check = CollisionDetection.Aabb(shot.Shape.AsDynamicShape(),
                             enemy.Shape);
                         if (check.Collision) {
-                            eventBus.RegisterEvent(
+                            GalagaBus.GetBus().RegisterEvent(
                                 GameEventFactory<object>.CreateGameEventForSpecificProcessor(
                                     GameEventType.ControlEvent, this, enemy, "", "Damage", ""));
                             shot.DeleteEntity();
@@ -220,9 +220,9 @@ namespace Galaga
                         window.PollEvents();
 
                         //Handle input events
-                        eventBus.ProcessEvents();
+                        GalagaBus.GetBus().ProcessEvents();
 
-                        eventBus.RegisterEvent(
+                        GalagaBus.GetBus().RegisterEvent(
                             GameEventFactory<object>.CreateGameEventForAllProcessors(
                                 GameEventType.PlayerEvent, this, "", "Move", ""));
 
@@ -235,7 +235,7 @@ namespace Galaga
                         window.PollEvents();
                         
                         //Handle input events
-                        eventBus.ProcessEvents();
+                        GalagaBus.GetBus().ProcessEvents();
                     }
                 }
                 if (gameTimer.ShouldRender()) {

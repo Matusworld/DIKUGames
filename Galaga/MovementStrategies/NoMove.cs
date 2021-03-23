@@ -9,7 +9,7 @@ namespace Galaga.MovementStrategy {
         public static void MoveEnemies(EntityContainer<Enemy> enemies) {
             enemies.Iterate( enemy => {
                 MoveEnemy(enemy);
-            });     
+            });
         }
     }
 }

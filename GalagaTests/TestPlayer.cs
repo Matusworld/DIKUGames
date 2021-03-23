@@ -32,7 +32,7 @@ namespace GalagaTests {
 
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
-                new Image(Path.Combine("Galaga", "Assets", "Images", "Player.png")));
+                new Image(Path.Combine("Assets", "Images", "Player.png")));
 
             beforeX = player.GetPosition().X;
             beforeY = player.GetPosition().Y;
@@ -66,6 +66,8 @@ namespace GalagaTests {
                 GameEventFactory<object>.CreateGameEventForAllProcessors(
                     GameEventType.PlayerEvent, this, "", "Move", ""));
 
+            eventBus.ProcessEvents();
+
             Assert.AreEqual(player.GetPosition().X, beforeX + player.GetMoveSpeed());
             Assert.AreEqual(player.GetPosition().Y, beforeY);
         }
@@ -80,6 +82,8 @@ namespace GalagaTests {
             eventBus.RegisterEvent(
                 GameEventFactory<object>.CreateGameEventForAllProcessors(
                     GameEventType.PlayerEvent, this, "", "Move", ""));
+
+            eventBus.ProcessEvents();
 
             Assert.AreEqual(player.GetPosition().X, beforeX - player.GetMoveSpeed());
             Assert.AreEqual(player.GetPosition().Y, beforeY);
@@ -98,8 +102,10 @@ namespace GalagaTests {
                 eventBus.RegisterEvent(
                     GameEventFactory<object>.CreateGameEventForAllProcessors(
                         GameEventType.PlayerEvent, this, "", "Move", ""));
+
+                eventBus.ProcessEvents();
             }
-            
+
             Assert.AreEqual(player.GetPosition().X, player.RightBound);
             Assert.AreEqual(player.GetPosition().Y, beforeY);
         }
@@ -117,6 +123,8 @@ namespace GalagaTests {
                 eventBus.RegisterEvent(
                     GameEventFactory<object>.CreateGameEventForAllProcessors(
                         GameEventType.PlayerEvent, this, "", "Move", ""));
+                
+                eventBus.ProcessEvents();
             }
             
             Assert.AreEqual(player.GetPosition().X, player.LeftBound);
@@ -157,6 +165,8 @@ namespace GalagaTests {
                 GameEventFactory<object>.CreateGameEventForAllProcessors(
                     GameEventType.PlayerEvent, this, "", "Move", ""));
 
+            eventBus.ProcessEvents();
+
             Assert.AreEqual(player.GetPosition().X, beforeX + player.GetMoveSpeed());
             Assert.AreEqual(player.GetPosition().Y, beforeY);
 
@@ -168,6 +178,8 @@ namespace GalagaTests {
             eventBus.RegisterEvent(
                 GameEventFactory<object>.CreateGameEventForAllProcessors(
                     GameEventType.PlayerEvent, this, "", "Move", ""));
+
+            eventBus.ProcessEvents();
 
             Assert.AreEqual(player.GetPosition().X, beforeX + player.GetMoveSpeed());
             Assert.AreEqual(player.GetPosition().Y, beforeY);
