@@ -17,5 +17,7 @@ namespace Galaga.GameStates {
                 
             }
         }
+
+        //Process Event method
     }
 } 
