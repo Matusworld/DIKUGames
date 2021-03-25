@@ -20,11 +20,11 @@ namespace GalagaTests {
         public void Setup() {
 
 
-            enemyStrides = ImageStride.CreateStrides(4, Path.Combine("Assets", 
+            enemyStrides = ImageStride.CreateStrides(4, Path.Combine(@"..\", "Galaga", "Assets", 
                 "Images", "BlueMonster.png"));
 
             alternativeEnemystrideStrides = ImageStride.CreateStrides(2,
-                Path.Combine("Assets", "Images", "RedMonster.png"));
+                Path.Combine(@"..\", "Galaga", "Assets", "Images", "RedMonster.png"));
         }
 
         [Test]

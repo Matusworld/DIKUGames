@@ -32,7 +32,7 @@ namespace GalagaTests {
 
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
-                new Image(Path.Combine("Assets", "Images", "Player.png")));
+                new Image(Path.Combine(@"..\", "Galaga", "Assets", "Images", "Player.png")));
 
             beforeX = player.GetPosition().X;
             beforeY = player.GetPosition().Y;

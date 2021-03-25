@@ -24,11 +24,11 @@ namespace GalagaTests {
 
             DIKUArcade.Window.CreateOpenGLContext();
 
-            enemyStrides = ImageStride.CreateStrides(4, Path.Combine("Assets", 
+            enemyStrides = ImageStride.CreateStrides(4, Path.Combine(@"..\", "Galaga", "Assets", 
                 "Images", "BlueMonster.png"));
 
             alternativeEnemystrideStrides = ImageStride.CreateStrides(2,
-                Path.Combine("Assets", "Images", "RedMonster.png"));
+                Path.Combine(@"..\", "Galaga", "Assets", "Images", "RedMonster.png"));
 
             enemy = new Enemy (new DynamicShape(
                                 new Vec2F(0.5f, 0.5f), 
