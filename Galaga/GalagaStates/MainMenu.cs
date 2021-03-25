@@ -6,7 +6,7 @@ using DIKUArcade.Math;
 using System.IO;
 
 namespace Galaga.GalagaStates {
-    public class MainMenu : IGameState {
+    public class MainMenu : IGameState, IGameEventProcessor<object> {
         private static MainMenu instance = null;
 
         private Entity backGroundImage;
@@ -38,7 +38,7 @@ namespace Galaga.GalagaStates {
             Vec2F imageExtent = new Vec2F(1f, 1f);
             StationaryShape shape = new StationaryShape(imagePos, imageExtent);
             IBaseImage image = new Image(Path.Combine(
-                @"..\", "Assets", "Images", "TitleImage.png"));
+                "Assets", "Images", "TitleImage.png"));
             backGroundImage = new Entity(shape, image);
 
             //Initialize Buttons
@@ -49,6 +49,7 @@ namespace Galaga.GalagaStates {
 
 
             menuButtons = new Text[maxMenuButtons] { newGameButton, quitGameButton };
+            GalagaBus.GetBus().Subscribe(GameEventType.InputEvent, this);
         }
 
         public void UpdateGameLogic() {
@@ -100,5 +101,24 @@ namespace Galaga.GalagaStates {
             }
         }
 
+        public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
+            if (type == GameEventType.InputEvent) {
+                switch (gameEvent.Parameter1) {
+                    case "KEY_RELEASE":
+                        switch (gameEvent.Message) {
+                            case "KEY_UP":
+                                HandleKeyEvent("KEY_UP", "KEY_RELEASE");
+                                break;
+                            case "KEY_DOWN":
+                                HandleKeyEvent("KEY_DOWN", "KEY_RELEASE");
+                                break;
+                            case "KEY_ENTER":
+                                HandleKeyEvent("KEY_ENTER", "KEY_RELEASE");
+                                break;
+                        }
+                        break;
+                }
+            }
+        }
     }
 }

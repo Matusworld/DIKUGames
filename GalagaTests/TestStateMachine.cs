@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Galaga;
-using Galaga.GameStates;
+using Galaga.GalagaStates;
 using DIKUArcade.EventBus;
 
 namespace GalagaTests {
