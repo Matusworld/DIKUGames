@@ -4,14 +4,15 @@ using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using System.IO;
+using System;
 
 namespace Galaga.GalagaStates {
-    public class MainMenu : IGameState, IGameEventProcessor<object> {
+    public class MainMenu : IGameState {
         private static MainMenu instance = null;
 
         private Entity backGroundImage;
         private Text[] menuButtons;
-        private int activeMenuButton;
+        private int activeMenuButton = 0;
         private const int maxMenuButtons = 2;
 
         public MainMenu() { InitializeGameState(); }
@@ -42,14 +43,13 @@ namespace Galaga.GalagaStates {
             backGroundImage = new Entity(shape, image);
 
             //Initialize Buttons
-            Text newGameButton = new Text("New Game", new Vec2F(0.3f, 0.5f),
-                new Vec2F(0.2f, 0.1f));
-            Text quitGameButton = new Text("Quit", new Vec2F(0.1f, 0.5f),
-                new Vec2F(0.2f, 0.1f));
+            Text newGameButton = new Text("New Game", new Vec2F(0.2f, 0.5f),
+                new Vec2F(0.3f, 0.3f));
+            Text quitGameButton = new Text("Quit", new Vec2F(0.2f, 0.3f),
+                new Vec2F(0.3f, 0.3f));
 
 
             menuButtons = new Text[maxMenuButtons] { newGameButton, quitGameButton };
-            GalagaBus.GetBus().Subscribe(GameEventType.InputEvent, this);
         }
 
         public void UpdateGameLogic() {
@@ -78,19 +78,22 @@ namespace Galaga.GalagaStates {
                                 activeMenuButton++;
                             } break;
                         case "KEY_ENTER":
+                            System.Console.WriteLine("HELLO");
                             if (activeMenuButton == 0) { //newGame
-                                GameEventFactory<object>.CreateGameEventForAllProcessors(
-                                    GameEventType.GameStateEvent,
-                                    this,
-                                    "CHANGE_STATE",
-                                    "GAME_RUNNING", "");
+                                GalagaBus.GetBus().RegisterEvent(
+                                    GameEventFactory<object>.CreateGameEventForAllProcessors(
+                                        GameEventType.GameStateEvent,
+                                        this,
+                                        "CHANGE_STATE",
+                                        "GAME_RUNNING", ""));
                             }
                             else if (activeMenuButton == 1) { //quit
-                                GameEventFactory<object>.CreateGameEventForAllProcessors(
-                                    GameEventType.GameStateEvent,
-                                    this,
-                                    "CHANGE_STATE",
-                                    "GAME_QUIT", "");
+                                GalagaBus.GetBus().RegisterEvent(
+                                    GameEventFactory<object>.CreateGameEventForAllProcessors(
+                                        GameEventType.GameStateEvent,
+                                        this,
+                                        "CHANGE_STATE",
+                                        "GAME_QUIT", ""));
                             }
                             break;
                         default:
@@ -100,11 +103,22 @@ namespace Galaga.GalagaStates {
                     break;
             }
         }
-
+        /*
         public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
             if (type == GameEventType.InputEvent) {
                 switch (gameEvent.Parameter1) {
                     case "KEY_RELEASE":
+
+                        if (gameEvent.Message == "KEY_UP") {
+                            HandleKeyEvent("KEY_UP", "KEY_RELEASE");
+                        }
+                        if (gameEvent.Message == "KEY_DOWN") {
+                            HandleKeyEvent("KEY_DOWN", "KEY_RELEASE");
+                        }
+                        if (gameEvent.Message == "KEY_ENTER") {
+                            HandleKeyEvent("KEY_ENTER", "KEY_RELEASE");
+                        }
+                        
                         switch (gameEvent.Message) {
                             case "KEY_UP":
                                 HandleKeyEvent("KEY_UP", "KEY_RELEASE");
@@ -119,6 +133,6 @@ namespace Galaga.GalagaStates {
                         break;
                 }
             }
-        }
+        }*/
     }
 }

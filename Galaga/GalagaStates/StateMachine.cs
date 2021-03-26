@@ -5,8 +5,8 @@ namespace Galaga.GalagaStates {
         public IGameState ActiveState { get; private set; }
 
         public StateMachine() {
-            GalagaBus.GetBus().Subscribe(GameEventType.GameStateEvent, this);
             GalagaBus.GetBus().Subscribe(GameEventType.InputEvent, this);
+            GalagaBus.GetBus().Subscribe(GameEventType.GameStateEvent, this);
 
             ActiveState = MainMenu.GetInstance();
         }
@@ -14,7 +14,7 @@ namespace Galaga.GalagaStates {
         public void SwitchState(GameStateType stateType) {
             switch(stateType) {
                 case GameStateType.GameRunning:
-                    ActiveState = new GameRunning();
+                    ActiveState = GameRunning.GetInstance();
                     break;
                 default:
                     break;
@@ -22,7 +22,10 @@ namespace Galaga.GalagaStates {
         }
 
         public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
+            
             if (type == GameEventType.GameStateEvent) {
+                System.Console.WriteLine(gameEvent.Message);
+                System.Console.WriteLine(gameEvent.Parameter1);
                 switch (gameEvent.Message) {
                     case "CHANGE_STATE":
                         switch (gameEvent.Parameter1) {
@@ -30,18 +33,27 @@ namespace Galaga.GalagaStates {
                                 SwitchState(GameStateType.GameRunning);
                                 break;
                             case "GAME_QUIT":
-                                GameEventFactory<object>.CreateGameEventForAllProcessors(
-                                    GameEventType.InputEvent,
-                                    this,
-                                    "KEY_ESCAPE",
-                                    "KEY_RELEASE", ""
-                                );
+                                GalagaBus.GetBus().RegisterEvent(
+                                    GameEventFactory<object>.CreateGameEventForAllProcessors(
+                                        GameEventType.InputEvent,
+                                        this,
+                                        "KEY_ESCAPE",
+                                        "KEY_RELEASE", ""));
                                 break;
                         }
                         break;
                 }
-            } else if (type == GameEventType.InputEvent) {
+            } 
+            if (type == GameEventType.InputEvent) {
+                switch (gameEvent.Parameter1) {
+                    case "KEY_PRESS":
+                        ActiveState.HandleKeyEvent(gameEvent.Message, gameEvent.Parameter1);
+                        break;
 
+                    case "KEY_RELEASE":
+                        ActiveState.HandleKeyEvent(gameEvent.Message, gameEvent.Parameter1);
+                        break;
+                }
             }
         }
     }

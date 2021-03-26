@@ -37,7 +37,7 @@ namespace Galaga
             
             window = new Window("Galaga", 500, 500);
             gameTimer = new GameTimer(60, 60);
-            stateMachine = new StateMachine();
+
             /*
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
@@ -46,12 +46,15 @@ namespace Galaga
             score = new Score(new Vec2F (0.485f, -0.2f), new Vec2F (0.3f, 0.3f));
 */
             GalagaBus.GetBus().InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent,
-                GameEventType.PlayerEvent, GameEventType.ControlEvent, GameEventType.GraphicsEvent});
+                GameEventType.PlayerEvent, GameEventType.ControlEvent, GameEventType.GraphicsEvent, 
+                GameEventType.GameStateEvent});
 
             window.RegisterEventBus(GalagaBus.GetBus());
             GalagaBus.GetBus().Subscribe(GameEventType.InputEvent, this);
             //GalagaBus.GetBus().Subscribe(GameEventType.PlayerEvent, this.player);
             GalagaBus.GetBus().Subscribe(GameEventType.GraphicsEvent, this);
+
+            stateMachine = new StateMachine();
             /*
             images = ImageStride.CreateStrides(4, Path.Combine("Assets", 
                 "Images", "BlueMonster.png"));
@@ -108,10 +111,6 @@ namespace Galaga
         public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
             if (type == GameEventType.InputEvent) {
                 switch (gameEvent.Parameter1) {
-                    /*
-                    case "KEY_PRESS":
-                        KeyPress(gameEvent.Message);
-                        break;*/
                     case "KEY_RELEASE":
                         if (gameEvent.Message == "KEY_ESCAPE") {
                             window.CloseWindow();
