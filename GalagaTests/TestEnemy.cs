@@ -2,7 +2,6 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
 using Galaga;
-using DIKUArcade;
 using DIKUArcade.EventBus;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
@@ -26,11 +25,11 @@ namespace GalagaTests {
         public void Setup() {
             DIKUArcade.Window.CreateOpenGLContext();
 
-            enemyStrides = ImageStride.CreateStrides(4, Path.Combine(@"..\", "Galaga", "Assets", 
+            enemyStrides = ImageStride.CreateStrides(4, Path.Combine("Assets", 
                 "Images", "BlueMonster.png"));
 
             alternativeEnemystrideStrides = ImageStride.CreateStrides(2,
-                Path.Combine(@"..\", "Galaga", "Assets", "Images", "RedMonster.png"));
+                Path.Combine("Assets", "Images", "RedMonster.png"));
 
             enemy = new Enemy (new DynamicShape(
                                 new Vec2F(0.5f, 0.5f), 

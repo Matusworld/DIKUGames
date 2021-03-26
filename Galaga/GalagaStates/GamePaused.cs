@@ -1,35 +1,25 @@
 using DIKUArcade.State;
 using DIKUArcade.EventBus;
-using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
-using System.IO;
-using Galaga.Squadron;
-using Galaga.MovementStrategy;
-using System.Collections.Generic;
-using DIKUArcade.Physics;
-using System;
 
 namespace Galaga.GalagaStates {
-    public class Gamepaused : IGameState {
-
-        
+    public class GamePaused : IGameState {
         private Text[] menuButtons;
         private int activeMenuButton;
         private const int maxMenuButtons = 2;
-        public Gamepaused() {
+        public GamePaused() {
             InitializeGameState();
         }
 
         public void GameLoop() {}
 
         public void InitializeGameState() {
-            // Initiali<e Buttons
+            // Initialie Buttons
             Text ContinueButton = new Text("Continue", new Vec2F(0.3f, 0.5f),
                 new Vec2F(0.3f, 0.2f));
             Text quitGameButton = new Text("Main Menu", new Vec2F(0.3f, 0.45f),
                 new Vec2F(0.3f, 0.2f));
-
 
             menuButtons = new Text[maxMenuButtons] { ContinueButton, quitGameButton };
         }
@@ -38,6 +28,7 @@ namespace Galaga.GalagaStates {
             for ( int i = 0; i < 2; i++ ) {
                 menuButtons[i].SetColor(new Vec3I(255,0,0));
             }
+            
             menuButtons[activeMenuButton].SetColor(new Vec3I(0,255,0));
         }
 

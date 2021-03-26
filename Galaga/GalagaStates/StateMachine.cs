@@ -4,6 +4,7 @@ using DIKUArcade.State;
 namespace Galaga.GalagaStates {
     public class StateMachine : IGameEventProcessor<object> {
         public IGameState ActiveState { get; private set; }
+        private IGameState tempState;
 
         public StateMachine() {
             GalagaBus.GetBus().Subscribe(GameEventType.InputEvent, this);
@@ -18,10 +19,10 @@ namespace Galaga.GalagaStates {
                     ActiveState = new GameRunning();
                     break;
                 case GameStateType.GamePause:
-                    ActiveState = new Gamepaused();
+                    ActiveState = new GamePaused();
                     break;
                 case GameStateType.MainMenu:
-                    ActiveState = new MainMenu();
+                    ActiveState = MainMenu.GetInstance();
                     break;
                 default:
                     break;
@@ -60,11 +61,11 @@ namespace Galaga.GalagaStates {
                                 );
                                 break;
                             case "GAME_PAUSED":
+                                tempState = ActiveState;
                                 SwitchState(GameStateType.GamePause);
-                                // Save the current gamerunnning state into a temp Mabye.
                                 break;
                             case "GAME_CONTINUE":
-                                // DO SOMETHING!
+                                ActiveState = tempState;
                                 break;
                             case "GAME_MAINMENU":
                                 SwitchState(GameStateType.MainMenu);

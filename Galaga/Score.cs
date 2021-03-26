@@ -15,7 +15,7 @@ namespace Galaga {
             ScoreCount++;
             display.SetText(ScoreCount.ToString());
         }
-
+        
         public void RenderScore() {
             display.RenderText();
         }

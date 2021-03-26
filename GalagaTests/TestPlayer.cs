@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using Galaga;
-using DIKUArcade;
 using DIKUArcade.EventBus;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
@@ -11,7 +10,7 @@ using DIKUArcade.Graphics;
 
 //Blackbox test - specification-based
 
-//  Player Movement Specifications: 
+// Player Movement Specifications: 
 //Horizontal movement only: Left and right key moves player (changes position state) 
 //Move in direction of key pressed with constant movement speed until key is released
 //If both keys are pressed: no movement 
@@ -32,7 +31,7 @@ namespace GalagaTests {
 
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
-                new Image(Path.Combine(@"..\", "Galaga", "Assets", "Images", "Player.png")));
+                new Image(Path.Combine("Assets", "Images", "Player.png")));
 
             beforeX = player.GetPosition().X;
             beforeY = player.GetPosition().Y;

@@ -97,8 +97,7 @@ namespace Galaga.GalagaStates {
                     break;
             }
         }
-
-        //new game øverst, index 0
+        
         public void HandleKeyEvent(string keyValue, string keyAction) {
             switch (keyAction) {
                 case "KEY_RELEASE":

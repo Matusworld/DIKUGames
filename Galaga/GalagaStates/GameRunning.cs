@@ -12,6 +12,7 @@ using System;
 
 namespace Galaga.GalagaStates {
     public class GameRunning : IGameState, IGameEventProcessor<object> {
+        private static GameRunning instance = null;
         private Player player;
         private ISquadron squadron;
         private EntityContainer<PlayerShot> playerShots;
@@ -24,10 +25,18 @@ namespace Galaga.GalagaStates {
         public Score score { get; private set; }
         private float currentMovementSpeed = 0.0003f;
         private float enemySpeedMultiplier = 1.2f;
+
         public GameRunning() {
             InitializeGameState();
         }
 
+        public static GameRunning GetInstance() {
+            return GameRunning.instance ?? (GameRunning.instance = new GameRunning());
+        }
+
+        public static void GameReset() {
+            GameRunning.instance = new GameRunning();
+        }
         public void GameLoop() {}
 
         public void InitializeGameState() {
@@ -79,10 +88,6 @@ namespace Galaga.GalagaStates {
                                 GameEventFactory<object>.CreateGameEventForSpecificProcessor(
                                     GameEventType.ControlEvent, this, enemy, "", "Damage", ""));
                             shot.DeleteEntity();
-                            if (enemy.Dead) {
-                                AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
-                                score.AddPoint();
-                            } // does not work!
                         }
                     });
                 }
@@ -196,9 +201,6 @@ namespace Galaga.GalagaStates {
                         GameEventFactory<object>.CreateGameEventForAllProcessors(
                             GameEventType.PlayerEvent, this, "false", "SetMoveRight", ""));
                     break;
-/*                case "KEY_ESCAPE":
-                    window.CloseWindow();
-                    break; Window is not in this class */
                 case "KEY_SPACE":
                     PlayerShot shot = new PlayerShot(player.GetPosition()+ new Vec2F(0.047f,0.065f),
                         playerShotImage);

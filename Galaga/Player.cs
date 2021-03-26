@@ -38,8 +38,8 @@ namespace Galaga {
         private void Move() {
             if (shape.Position.X+shape.Direction.X < LeftBound) {
                 shape.Position.X = LeftBound;
-            }
-            else if (shape.Position.X+shape.Direction.X > RightBound) { //pos is from bottom left corner 
+            } //pos is from bottom left corner
+            else if (shape.Position.X+shape.Direction.X > RightBound) { 
                 shape.Position.X = RightBound;
             } else {
                 shape.Move();

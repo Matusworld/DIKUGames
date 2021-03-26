@@ -1,4 +1,4 @@
-using  DIKUArcade.Entities;
+using DIKUArcade.Entities;
 using DIKUArcade.Math;
 namespace Galaga.MovementStrategy {
     public static class Down {

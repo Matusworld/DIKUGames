@@ -2,10 +2,6 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
 using Galaga;
-using DIKUArcade;
-using DIKUArcade.EventBus;
-using DIKUArcade.Entities;
-using DIKUArcade.Math;
 using DIKUArcade.Graphics;
 using Galaga.Squadron;
 
@@ -20,11 +16,11 @@ namespace GalagaTests {
         public void Setup() {
 
 
-            enemyStrides = ImageStride.CreateStrides(4, Path.Combine(@"..\", "Galaga", "Assets", 
+            enemyStrides = ImageStride.CreateStrides(4, Path.Combine("Assets", 
                 "Images", "BlueMonster.png"));
 
             alternativeEnemystrideStrides = ImageStride.CreateStrides(2,
-                Path.Combine(@"..\", "Galaga", "Assets", "Images", "RedMonster.png"));
+                Path.Combine("Assets", "Images", "RedMonster.png"));
         }
 
         [Test]

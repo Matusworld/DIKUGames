@@ -7,7 +7,6 @@ using DIKUArcade.EventBus;
 namespace Galaga.Squadron {
     public class SquadronHoriLine : ISquadron {
         public EntityContainer<Enemy> Enemies { get; private set; }
-
         public int MaxEnemies { get; } = 8;
 
         public void CreateEnemies(List<Image> enemyStrides, 
