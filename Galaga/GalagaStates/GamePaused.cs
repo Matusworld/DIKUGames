@@ -4,21 +4,36 @@ using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using System.IO;
+using Galaga.Squadron;
+using Galaga.MovementStrategy;
+using System.Collections.Generic;
+using DIKUArcade.Physics;
+using System;
 
 namespace Galaga.GalagaStates {
-    public class MainMenu : IGameState {
-        private static MainMenu instance = null;
+    public class Gamepaused : IGameState {
 
-        private Entity backGroundImage;
+        
         private Text[] menuButtons;
         private int activeMenuButton;
         private const int maxMenuButtons = 2;
+        public Gamepaused() {
+            InitializeGameState();
+        }
 
-        public MainMenu() { InitializeGameState(); }
+        public void GameLoop() {}
 
-        /// <summary>
-        /// Colors all non-active buttons red while active button is green
-        /// </summary>
+        public void InitializeGameState() {
+            // Initiali<e Buttons
+            Text ContinueButton = new Text("Continue", new Vec2F(0.3f, 0.5f),
+                new Vec2F(0.3f, 0.2f));
+            Text quitGameButton = new Text("Main Menu", new Vec2F(0.3f, 0.45f),
+                new Vec2F(0.3f, 0.2f));
+
+
+            menuButtons = new Text[maxMenuButtons] { ContinueButton, quitGameButton };
+        }
+
         private void colorButtons() {
             for ( int i = 0; i < 2; i++ ) {
                 menuButtons[i].SetColor(new Vec3I(255,0,0));
@@ -26,38 +41,12 @@ namespace Galaga.GalagaStates {
             menuButtons[activeMenuButton].SetColor(new Vec3I(0,255,0));
         }
 
-        public static MainMenu GetInstance() {
-            return MainMenu.instance ?? (MainMenu.instance = new MainMenu());
-        }
-
-        public void GameLoop() {}
-
-        public void InitializeGameState() {
-            //Initialize backGroundImage
-            Vec2F imagePos = new Vec2F(0f,0f);
-            Vec2F imageExtent = new Vec2F(1f, 1f);
-            StationaryShape shape = new StationaryShape(imagePos, imageExtent);
-            IBaseImage image = new Image(Path.Combine(
-                "Assets", "Images", "TitleImage.png"));
-            backGroundImage = new Entity(shape, image);
-
-            //Initialize Buttons
-            Text newGameButton = new Text("New Game", new Vec2F(0.3f, 0.5f),
-                new Vec2F(0.3f, 0.2f));
-            Text quitGameButton = new Text("Quit", new Vec2F(0.3f, 0.45f),
-                new Vec2F(0.3f, 0.2f));
-
-
-            menuButtons = new Text[maxMenuButtons] { newGameButton, quitGameButton };
-        }
 
         public void UpdateGameLogic() {
             colorButtons();
         }
 
         public void RenderState() {
-            backGroundImage.RenderEntity();
-
             foreach (Text button in menuButtons) {
                 button.RenderText();
             }
@@ -76,20 +65,20 @@ namespace Galaga.GalagaStates {
                     }
                     break;
                 case "KEY_ENTER": {
-                    if (activeMenuButton == 0) { // New Game pressed
+                    if (activeMenuButton == 0) { // Continue pressed
                         GalagaBus.GetBus().RegisterEvent(
                             GameEventFactory<object>.CreateGameEventForAllProcessors(
                                 GameEventType.GameStateEvent,
                                 this,
                                 "CHANGE_STATE",
-                                "GAME_RUNNING", ""));
-                    } else if (activeMenuButton == 1) { // Quit pressed
+                                "GAME_CONTINUE", ""));
+                    } else if (activeMenuButton == 1) { // Main Menu pressed
                         GalagaBus.GetBus().RegisterEvent(
                             GameEventFactory<object>.CreateGameEventForAllProcessors(
                                 GameEventType.GameStateEvent,
                                 this,
                                 "CHANGE_STATE",
-                                "GAME_QUIT", ""));
+                                "GAME_MAINMENU", ""));
                     }
                     break;
                 }
@@ -98,7 +87,6 @@ namespace Galaga.GalagaStates {
             }
         }
 
-        //new game øverst, index 0
         public void HandleKeyEvent(string keyValue, string keyAction) {
             switch (keyAction) {
                 case "KEY_RELEASE":
@@ -108,6 +96,5 @@ namespace Galaga.GalagaStates {
                     break;
             }
         }
-
     }
 }

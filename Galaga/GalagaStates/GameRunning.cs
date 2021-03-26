@@ -11,29 +11,21 @@ using DIKUArcade.Physics;
 using System;
 
 namespace Galaga.GalagaStates {
-    public class GameRunning : IGameState {
-        private static GameRunning instance = null;
-
+    public class GameRunning : IGameState, IGameEventProcessor<object> {
         private Player player;
         private ISquadron squadron;
         private EntityContainer<PlayerShot> playerShots;
         private IBaseImage playerShotImage;
         private AnimationContainer enemyExplosions;
         private List<Image> explosionStrides;
-        private List<Image> images;
-        private List<Image> enemyStridesRed;
-        private Score score;
         private const int EXPLOSION_LENGTH_MS = 500;
+        private List<Image> enemyImages;
+        private List<Image> enemyStridesRed;
+        public Score score { get; private set; }
         private float currentMovementSpeed = 0.0003f;
         private float enemySpeedMultiplier = 1.2f;
-
         public GameRunning() {
-
             InitializeGameState();
-        }
-
-        public static GameRunning GetInstance() {
-            return GameRunning.instance ?? (GameRunning.instance = new GameRunning());
         }
 
         public void GameLoop() {}
@@ -42,18 +34,19 @@ namespace Galaga.GalagaStates {
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
                 new Image(Path.Combine("Assets", "Images", "Player.png")));
-            GalagaBus.GetBus().Subscribe(GameEventType.PlayerEvent, this.player);
-
+            
             score = new Score(new Vec2F (0.485f, -0.2f), new Vec2F (0.3f, 0.3f));
 
-            images = ImageStride.CreateStrides(4, Path.Combine("Assets", 
-                "Images", "BlueMonster.png"));
+            GalagaBus.GetBus().Subscribe(GameEventType.PlayerEvent, this.player);
+            GalagaBus.GetBus().Subscribe(GameEventType.GraphicsEvent, this);
 
+            enemyImages = ImageStride.CreateStrides(4, Path.Combine("Assets", 
+                "Images", "BlueMonster.png"));
             enemyStridesRed = ImageStride.CreateStrides(2,
                 Path.Combine("Assets", "Images", "RedMonster.png"));
 
             squadron = new SquadronVertiLines();
-            squadron.CreateEnemies(images, enemyStridesRed, currentMovementSpeed);
+            squadron.CreateEnemies(enemyImages, enemyStridesRed, currentMovementSpeed);
 
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
@@ -62,145 +55,12 @@ namespace Galaga.GalagaStates {
             explosionStrides = ImageStride.CreateStrides(8,
                 Path.Combine("Assets", "Images", "Explosion.png"));
         }
-        /*
-        public void KeyPress(string key) {
-            switch (key) {
-                case "KEY_LEFT":
-                    GalagaBus.GetBus().RegisterEvent(
-                        GameEventFactory<object>.CreateGameEventForAllProcessors(
-                            GameEventType.PlayerEvent, this, "true", "SetMoveLeft", ""));
-                    break;
-                case "KEY_RIGHT":
-                    GalagaBus.GetBus().RegisterEvent(
-                        GameEventFactory<object>.CreateGameEventForAllProcessors(
-                            GameEventType.PlayerEvent, this, "true", "SetMoveRight", ""));
-                    break;
-                default:
-                    break;
-            }
-        } */
 
-        public void HandleKeyEvent(string keyValue, string keyAction) {
-            switch (keyAction) {
-
-                case "KEY_PRESS":
-                    switch (keyValue) {
-                        case "KEY_LEFT":
-                            GalagaBus.GetBus().RegisterEvent(
-                                GameEventFactory<object>.CreateGameEventForAllProcessors(
-                                    GameEventType.PlayerEvent, this, "true", "SetMoveLeft", ""));
-                            break;
-                        case "KEY_RIGHT":
-                            GalagaBus.GetBus().RegisterEvent(
-                                GameEventFactory<object>.CreateGameEventForAllProcessors(
-                                    GameEventType.PlayerEvent, this, "true", "SetMoveRight", ""));
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-
-                case "KEY_RELEASE":
-                    switch (keyValue) {
-                        case "KEY_LEFT":
-                            GalagaBus.GetBus().RegisterEvent(
-                                GameEventFactory<object>.CreateGameEventForAllProcessors(
-                                    GameEventType.PlayerEvent, this, "false", "SetMoveLeft", ""));
-                            break;
-                        case "KEY_RIGHT":
-                            GalagaBus.GetBus().RegisterEvent(
-                                GameEventFactory<object>.CreateGameEventForAllProcessors(
-                                    GameEventType.PlayerEvent, this, "false", "SetMoveRight", ""));
-                            break;
-                        case "KEY_SPACE":
-                            PlayerShot shot = new PlayerShot(player.GetPosition()+ new Vec2F(0.047f,0.065f),
-                                playerShotImage);
-                            playerShots.AddEntity(shot);
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        /*
-        public void KeyRelease(string key) {
-            switch (key) {
-                case "KEY_LEFT":
-                    GalagaBus.GetBus().RegisterEvent(
-                        GameEventFactory<object>.CreateGameEventForAllProcessors(
-                            GameEventType.PlayerEvent, this, "false", "SetMoveLeft", ""));
-                    break;
-                case "KEY_RIGHT":
-                    GalagaBus.GetBus().RegisterEvent(
-                        GameEventFactory<object>.CreateGameEventForAllProcessors(
-                            GameEventType.PlayerEvent, this, "false", "SetMoveRight", ""));
-                    break;
-                case "KEY_SPACE":
-                    PlayerShot shot = new PlayerShot(player.GetPosition()+ new Vec2F(0.047f,0.065f),
-                        playerShotImage);
-                    playerShots.AddEntity(shot);
-                    break;
-                default:
-                    break;
-            }
-        }*/
-
-        public void UpdateGameLogic() {
-            if (!CheckGameEnded()) {
-            
-                GalagaBus.GetBus().RegisterEvent(
-                    GameEventFactory<object>.CreateGameEventForAllProcessors(
-                        GameEventType.PlayerEvent, this, "", "Move", ""));
-
-                IterateShots();
-
-                ZigZagDown.MoveEnemies(squadron.Enemies);
-
-                IncreaseDifficulty();
-            }
-
-        }
-
-        public void RenderState() {
-            if (!CheckGameEnded()) {
-
-                player.Render();
-
-                squadron.Enemies.RenderEntities();
-
-                playerShots.RenderEntities();
-
-                enemyExplosions.RenderAnimations();
-
-                score.RenderScore();
-
-            } else {
-
-                score.RenderScore();
-
-            }
-        }
-
+        // Add explosion animation at given position to animation container
         public void AddExplosion(Vec2F position, Vec2F extent) {
             StationaryShape explosion = new StationaryShape(position, extent);
             ImageStride explosionStride = new ImageStride(EXPLOSION_LENGTH_MS/8, explosionStrides);
             enemyExplosions.AddAnimation(explosion, EXPLOSION_LENGTH_MS, explosionStride);
-        }
-        public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
-            if (type == GameEventType.GraphicsEvent) {
-                switch (gameEvent.Parameter1) {
-                    case "Explosions":
-                        Enemy test = (Enemy)gameEvent.From;
-                        AddExplosion(((Enemy) gameEvent.From).Shape.Position, 
-                            ((Enemy) gameEvent.From).Shape.Extent);
-                        score.AddPoint();
-                        break;
-                }
-            }
         }
         private void IterateShots() {
             playerShots.Iterate(shot => {
@@ -219,11 +79,17 @@ namespace Galaga.GalagaStates {
                                 GameEventFactory<object>.CreateGameEventForSpecificProcessor(
                                     GameEventType.ControlEvent, this, enemy, "", "Damage", ""));
                             shot.DeleteEntity();
+                            if (enemy.Dead) {
+                                AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
+                                score.AddPoint();
+                            } // does not work!
                         }
                     });
                 }
             });
         }
+
+ 
         // True enemies is in the container
         // False there is no enemies left in the container
         private bool CheckEnemies(EntityContainer<Enemy> enemies) {
@@ -233,12 +99,14 @@ namespace Galaga.GalagaStates {
                 return true;
             }
         }
+
         // Creates new Squadron with multiplied speed
         private void CreateNewSquadron(ISquadron squadron) {
             this.squadron = squadron;
-            squadron.CreateEnemies(images, enemyStridesRed, currentMovementSpeed*enemySpeedMultiplier);
+            squadron.CreateEnemies(enemyImages, enemyStridesRed, currentMovementSpeed*enemySpeedMultiplier);
             currentMovementSpeed = currentMovementSpeed*enemySpeedMultiplier;
         }
+
         // Increases difficulty and randomly spawns new squadrons when all enemies are dead.
         private void IncreaseDifficulty() {
             if (!CheckEnemies(squadron.Enemies)) {
@@ -257,6 +125,7 @@ namespace Galaga.GalagaStates {
                 }
             }
         }
+
         private bool CheckGameEnded() {
             bool ret = false;
             squadron.Enemies.Iterate (enemy => {
@@ -265,6 +134,113 @@ namespace Galaga.GalagaStates {
                 }
             });
             return ret;
+        }    
+
+        public void UpdateGameLogic() {
+            if (!CheckGameEnded()) {
+                GalagaBus.GetBus().RegisterEvent(
+                            GameEventFactory<object>.CreateGameEventForAllProcessors(
+                                GameEventType.PlayerEvent, this, "", "Move", ""));
+
+                IterateShots();
+
+                ZigZagDown.MoveEnemies(squadron.Enemies);
+
+                IncreaseDifficulty();
+            }
+
+        }
+
+        public void RenderState() {
+            if (!CheckGameEnded()) {
+                player.Render();
+
+                squadron.Enemies.RenderEntities();
+
+                playerShots.RenderEntities();
+
+                enemyExplosions.RenderAnimations();
+
+                score.RenderScore();
+            } else {
+                score.RenderScore();
+            }
+        }
+
+        private void KeyPress(string key) {
+            switch (key) {
+                case "KEY_LEFT":
+                    GalagaBus.GetBus().RegisterEvent(
+                        GameEventFactory<object>.CreateGameEventForAllProcessors(
+                            GameEventType.PlayerEvent, this, "true", "SetMoveLeft", ""));
+                    break;
+                case "KEY_RIGHT":
+                    GalagaBus.GetBus().RegisterEvent(
+                        GameEventFactory<object>.CreateGameEventForAllProcessors(
+                            GameEventType.PlayerEvent, this, "true", "SetMoveRight", ""));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void KeyRelease(string key) {
+            switch (key) {
+                case "KEY_LEFT":
+                    GalagaBus.GetBus().RegisterEvent(
+                        GameEventFactory<object>.CreateGameEventForAllProcessors(
+                            GameEventType.PlayerEvent, this, "false", "SetMoveLeft", ""));
+                    break;
+                case "KEY_RIGHT":
+                    GalagaBus.GetBus().RegisterEvent(
+                        GameEventFactory<object>.CreateGameEventForAllProcessors(
+                            GameEventType.PlayerEvent, this, "false", "SetMoveRight", ""));
+                    break;
+/*                case "KEY_ESCAPE":
+                    window.CloseWindow();
+                    break; Window is not in this class */
+                case "KEY_SPACE":
+                    PlayerShot shot = new PlayerShot(player.GetPosition()+ new Vec2F(0.047f,0.065f),
+                        playerShotImage);
+                    playerShots.AddEntity(shot);
+                    break;
+                case "KEY_P":
+                    // Send event to change state to game paused.
+                    GalagaBus.GetBus().RegisterEvent(
+                            GameEventFactory<object>.CreateGameEventForAllProcessors(
+                                GameEventType.GameStateEvent,
+                                this,
+                                "CHANGE_STATE",
+                                "GAME_PAUSED", ""));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void HandleKeyEvent(string keyValue, string keyAction) {
+            switch (keyAction) {
+                case "KEY_PRESS":
+                    KeyPress(keyValue);
+                    break;
+                case "KEY_RELEASE":
+                    KeyRelease(keyValue);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
+            if (type == GameEventType.GraphicsEvent) { 
+                switch (gameEvent.Parameter1) {
+                    case "Explosions":
+                        AddExplosion(((Enemy) gameEvent.From).Shape.Position, 
+                            ((Enemy) gameEvent.From).Shape.Extent);
+                        score.AddPoint();
+                        break;
+                }
+            }
         }
     }
 }
