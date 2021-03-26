@@ -66,7 +66,7 @@ namespace Galaga.GalagaStates {
         }
 
         // Add explosion animation at given position to animation container
-        public void AddExplosion(Vec2F position, Vec2F extent) {
+        private void AddExplosion(Vec2F position, Vec2F extent) {
             StationaryShape explosion = new StationaryShape(position, extent);
             ImageStride explosionStride = new ImageStride(EXPLOSION_LENGTH_MS/8, explosionStrides);
             enemyExplosions.AddAnimation(explosion, EXPLOSION_LENGTH_MS, explosionStride);
