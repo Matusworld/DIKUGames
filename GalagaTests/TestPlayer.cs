@@ -6,6 +6,7 @@ using DIKUArcade.EventBus;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
+using System;
 
 
 //Blackbox test - specification-based
@@ -24,6 +25,8 @@ namespace GalagaTests {
         float beforeX;
         float beforeY;
 
+        float tolerance;
+
 
         [SetUp]
         public void Setup() {
@@ -40,6 +43,8 @@ namespace GalagaTests {
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.PlayerEvent});
 
             eventBus.Subscribe(GameEventType.PlayerEvent, player);
+
+            tolerance = 0.0001f;
         }
 
         //Assert that player does not initially move
@@ -50,8 +55,11 @@ namespace GalagaTests {
                 GameEventFactory<object>.CreateGameEventForAllProcessors(
                     GameEventType.PlayerEvent, this, "", "Move", ""));
 
-            Assert.AreEqual(player.GetPosition().X, beforeX);
-            Assert.AreEqual(player.GetPosition().Y, beforeY);
+            float diffX = Math.Abs(player.GetPosition().X - beforeX);
+            float diffY = Math.Abs(player.GetPosition().Y - beforeY);
+
+            Assert.LessOrEqual(diffX, tolerance);
+            Assert.LessOrEqual(diffY, tolerance);
         }        
 
         [Test]
@@ -67,8 +75,11 @@ namespace GalagaTests {
 
             eventBus.ProcessEvents();
 
-            Assert.AreEqual(player.GetPosition().X, beforeX + player.GetMoveSpeed());
-            Assert.AreEqual(player.GetPosition().Y, beforeY);
+            float diffX = Math.Abs(player.GetPosition().X - (beforeX + player.GetMoveSpeed()));
+            float diffY = Math.Abs(player.GetPosition().Y - beforeY);
+
+            Assert.LessOrEqual(diffX, tolerance);
+            Assert.LessOrEqual(diffY, tolerance);
         }
 
         [Test]
@@ -84,8 +95,11 @@ namespace GalagaTests {
 
             eventBus.ProcessEvents();
 
-            Assert.AreEqual(player.GetPosition().X, beforeX - player.GetMoveSpeed());
-            Assert.AreEqual(player.GetPosition().Y, beforeY);
+            float diffX = Math.Abs(player.GetPosition().X - (beforeX - player.GetMoveSpeed()));
+            float diffY = Math.Abs(player.GetPosition().Y - beforeY);
+
+            Assert.LessOrEqual(diffX, tolerance);
+            Assert.LessOrEqual(diffY, tolerance);
         }
 
         //Assert that the right position bound is respected
@@ -105,8 +119,11 @@ namespace GalagaTests {
                 eventBus.ProcessEvents();
             }
 
-            Assert.AreEqual(player.GetPosition().X, player.RightBound);
-            Assert.AreEqual(player.GetPosition().Y, beforeY);
+            float diffX = Math.Abs(player.GetPosition().X - player.RightBound);
+            float diffY = Math.Abs(player.GetPosition().Y - beforeY);
+
+            Assert.LessOrEqual(diffX, tolerance);
+            Assert.LessOrEqual(diffY, tolerance);
         }
 
         //Assert that the left position bound is respected
@@ -126,8 +143,11 @@ namespace GalagaTests {
                 eventBus.ProcessEvents();
             }
             
-            Assert.AreEqual(player.GetPosition().X, player.LeftBound);
-            Assert.AreEqual(player.GetPosition().Y, beforeY);
+            float diffX = Math.Abs(player.GetPosition().X - player.LeftBound);
+            float diffY = Math.Abs(player.GetPosition().Y - beforeY);
+
+            Assert.LessOrEqual(diffX, tolerance);
+            Assert.LessOrEqual(diffY, tolerance);
         }
 
         //Assert simultaneous movement will cancel out 
@@ -146,9 +166,11 @@ namespace GalagaTests {
                 GameEventFactory<object>.CreateGameEventForAllProcessors(
                     GameEventType.PlayerEvent, this, "", "Move", ""));
 
-            
-            Assert.AreEqual(player.GetPosition().X, beforeX);
-            Assert.AreEqual(player.GetPosition().Y, beforeY);
+            float diffX = Math.Abs(player.GetPosition().X - beforeX);
+            float diffY = Math.Abs(player.GetPosition().Y - beforeY);
+
+            Assert.LessOrEqual(diffX, tolerance);
+            Assert.LessOrEqual(diffY, tolerance);
         }
 
         //Assert that position will not be changed by updates after movement has stopped.
@@ -166,8 +188,11 @@ namespace GalagaTests {
 
             eventBus.ProcessEvents();
 
-            Assert.AreEqual(player.GetPosition().X, beforeX + player.GetMoveSpeed());
-            Assert.AreEqual(player.GetPosition().Y, beforeY);
+            float diffX = Math.Abs(player.GetPosition().X - (beforeX + player.GetMoveSpeed()));
+            float diffY = Math.Abs(player.GetPosition().Y - beforeY);
+
+            Assert.LessOrEqual(diffX, tolerance);
+            Assert.LessOrEqual(diffY, tolerance);
 
             //then stop right direction
             eventBus.RegisterEvent(
@@ -180,9 +205,11 @@ namespace GalagaTests {
 
             eventBus.ProcessEvents();
 
-            Assert.AreEqual(player.GetPosition().X, beforeX + player.GetMoveSpeed());
-            Assert.AreEqual(player.GetPosition().Y, beforeY);
+            float newdiffX = Math.Abs(player.GetPosition().X - (beforeX + player.GetMoveSpeed()));
+            float newdiffY = Math.Abs(player.GetPosition().Y - beforeY);
 
+            Assert.LessOrEqual(newdiffX, tolerance);
+            Assert.LessOrEqual(newdiffY, tolerance);
         }
     }
 }

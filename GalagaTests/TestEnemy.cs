@@ -6,6 +6,7 @@ using DIKUArcade.EventBus;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
+using System;
 
 namespace GalagaTests {
     public class TestEnemy {
@@ -20,6 +21,8 @@ namespace GalagaTests {
         float BeforeMovementspeed;
 
         int BeforeHitpoints;
+
+        float tolerance;
 
         [SetUp]
         public void Setup() {
@@ -44,6 +47,8 @@ namespace GalagaTests {
             eventBus = new GameEventBus<object>();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.ControlEvent});
             eventBus.Subscribe(GameEventType.ControlEvent, enemy);
+
+            tolerance = 0.0001f;
 
         }
 
@@ -122,7 +127,10 @@ namespace GalagaTests {
 
             Assert.IsTrue(enemy.Enraged);
 
-            Assert.AreEqual(enemy.MOVEMENT_SPEED, BeforeMovementspeed * enemy.EnrangedMultiplier);
+            float diff = Math.Abs(enemy.MOVEMENT_SPEED
+                - (BeforeMovementspeed * enemy.EnrangedMultiplier));
+
+            Assert.LessOrEqual(diff, tolerance);
         }
 
     }

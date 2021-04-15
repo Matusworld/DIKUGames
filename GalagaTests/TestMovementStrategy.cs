@@ -15,6 +15,8 @@ namespace GalagaTests {
         List<Image> enemyStrides;
 
         List<Image> alternativeEnemystrideStrides;
+
+        float tolerance;
         
 
         [SetUp]
@@ -33,21 +35,29 @@ namespace GalagaTests {
                                 new Vec2F(0.1f, 0.1f)),
                             new ImageStride(80, enemyStrides),
                             new ImageStride (80, alternativeEnemystrideStrides), 0.003f);
+
+            tolerance = 0.0001f;
         }
 
         [Test]
         public void TestNoMove() {
             NoMove.MoveEnemy(enemy);
 
-            Assert.AreEqual(enemy.Shape.Position, enemy.startPos);
+            float diffX = Math.Abs(enemy.Shape.Position.X - enemy.startPos.X);
+            float diffY = Math.Abs(enemy.Shape.Position.Y - enemy.startPos.Y);
+
+            Assert.LessOrEqual(diffX, tolerance);
+            Assert.LessOrEqual(diffY, tolerance);
         }
 
         [Test]
         public void TestDown() {
             Down.MoveEnemy(enemy);
 
-            Assert.AreEqual(enemy.Shape.Position.Y, 
-                enemy.startPos.Y - enemy.MOVEMENT_SPEED);
+            float diff = Math.Abs(enemy.Shape.Position.Y
+                - (enemy.startPos.Y - enemy.MOVEMENT_SPEED));
+
+            Assert.LessOrEqual(diff, tolerance);
         }
 
         [Test]
@@ -65,7 +75,9 @@ namespace GalagaTests {
             float xi = enemy.startPos.X + a * 
                 ((float) Math.Sin((2 * ((float) Math.PI) * (enemy.startPos.Y - yi)) / p));
 
-            Assert.AreEqual(enemy.Shape.Position.X, xi);
+            float diff = Math.Abs(enemy.Shape.Position.X - xi);
+
+            Assert.LessOrEqual(diff, tolerance);
         }
     }
 }
