@@ -1,4 +1,5 @@
 ﻿using System;
+using DIKUArcade.GUI;
 
 namespace Breakout
 {
@@ -6,7 +7,9 @@ namespace Breakout
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var winArgs = new WindowArgs();
+            var game = new Game(winArgs);
+            game.Run();
         }
     }
 }
