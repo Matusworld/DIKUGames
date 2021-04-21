@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Galaga", "Galaga\Galaga.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalagaTests", "GalagaTests\GalagaTests.csproj", "{3EE32954-706A-4663-8AF8-4B79873E4267}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Breakout", "Breakout\Breakout.csproj", "{2CD4E15E-0E23-48D4-9041-9676C2202B8C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,18 @@ Global
 		{3EE32954-706A-4663-8AF8-4B79873E4267}.Release|x64.Build.0 = Release|Any CPU
 		{3EE32954-706A-4663-8AF8-4B79873E4267}.Release|x86.ActiveCfg = Release|Any CPU
 		{3EE32954-706A-4663-8AF8-4B79873E4267}.Release|x86.Build.0 = Release|Any CPU
+		{2CD4E15E-0E23-48D4-9041-9676C2202B8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CD4E15E-0E23-48D4-9041-9676C2202B8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CD4E15E-0E23-48D4-9041-9676C2202B8C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2CD4E15E-0E23-48D4-9041-9676C2202B8C}.Debug|x64.Build.0 = Debug|Any CPU
+		{2CD4E15E-0E23-48D4-9041-9676C2202B8C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2CD4E15E-0E23-48D4-9041-9676C2202B8C}.Debug|x86.Build.0 = Debug|Any CPU
+		{2CD4E15E-0E23-48D4-9041-9676C2202B8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CD4E15E-0E23-48D4-9041-9676C2202B8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CD4E15E-0E23-48D4-9041-9676C2202B8C}.Release|x64.ActiveCfg = Release|Any CPU
+		{2CD4E15E-0E23-48D4-9041-9676C2202B8C}.Release|x64.Build.0 = Release|Any CPU
+		{2CD4E15E-0E23-48D4-9041-9676C2202B8C}.Release|x86.ActiveCfg = Release|Any CPU
+		{2CD4E15E-0E23-48D4-9041-9676C2202B8C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9621BA15-C587-4867-ACB8-50B81D405AC4} = {488FE1FA-B506-406A-B731-05565D1D13A2}
