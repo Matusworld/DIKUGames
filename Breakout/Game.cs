@@ -12,6 +12,7 @@ namespace Breakout {
     public class Game : DIKUGame, IGameEventProcessor {
         
         private Player player;
+        private Block block1;
 
         public Game(WindowArgs winArgs) : base(winArgs) {
             window.SetKeyEventHandler(KeyHandler);
@@ -21,10 +22,15 @@ namespace Breakout {
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.02f)),
                 new Image(Path.Combine("Assets", "Images", "player.png")));
 
+            block1 = new Block(
+                new DynamicShape(new Vec2F (0.8f, 0.5f), new Vec2F(0.1f, 0.05f)),
+                new Image(Path.Combine("Assets","Images", "blue-block.png")), 5);
+
             BreakoutBus.GetBus().InitializeEventBus(new List<GameEventType> {
                 GameEventType.WindowEvent, GameEventType.PlayerEvent } );
             BreakoutBus.GetBus().Subscribe(GameEventType.WindowEvent, this);
             BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player);
+            
         }
 
         private void KeyHandler(KeyboardAction action, KeyboardKey key) {
@@ -69,6 +75,7 @@ namespace Breakout {
 
         public override void Render() {
             player.Render();
+            block1.Render();
         }
 
         public override void Update() {
