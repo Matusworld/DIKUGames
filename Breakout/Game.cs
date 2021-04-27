@@ -14,6 +14,10 @@ namespace Breakout {
         private Player player;
         private Block block1;
 
+        private LevelLoader levelloader;
+
+        private EntityContainer<Block> blocks;
+
         public Game(WindowArgs winArgs) : base(winArgs) {
             window.SetKeyEventHandler(KeyHandler);
             window.SetClearColor(System.Drawing.Color.DarkGray);
@@ -22,9 +26,13 @@ namespace Breakout {
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.02f)),
                 new Image(Path.Combine("Assets", "Images", "player.png")));
 
-            block1 = new Block(
+/*            block1 = new Block(
                 new DynamicShape(new Vec2F (0.8f, 0.5f), new Vec2F(0.1f, 0.05f)),
-                new Image(Path.Combine("Assets","Images", "blue-block.png")), 5);
+                new Image(Path.Combine("Assets","Images", "blue-block.png")), 5); */
+
+            levelloader = new LevelLoader(Path.Combine("Assets", "Levels", "level3.txt"));
+
+            blocks = levelloader.ReadFile();
 
             BreakoutBus.GetBus().InitializeEventBus(new List<GameEventType> {
                 GameEventType.WindowEvent, GameEventType.PlayerEvent } );
@@ -37,11 +45,13 @@ namespace Breakout {
             if (action == KeyboardAction.KeyPress) {
                 switch (key) {
                     case KeyboardKey.A:
+                    case KeyboardKey.Left:
                         BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                             EventType = GameEventType.PlayerEvent, Message = "true",
                             StringArg1 = "SetMoveLeft" });
                         break;
                     case KeyboardKey.D:
+                    case KeyboardKey.Right:
                         BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                             EventType = GameEventType.PlayerEvent, Message = "true",
                             StringArg1 = "SetMoveRight" });
@@ -58,11 +68,13 @@ namespace Breakout {
                         } );
                         break;
                     case KeyboardKey.A:
+                    case KeyboardKey.Left:
                         BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                             EventType = GameEventType.PlayerEvent, Message = "false",
                             StringArg1 = "SetMoveLeft" });
                         break;
                     case KeyboardKey.D:
+                    case KeyboardKey.Right:
                         BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                             EventType = GameEventType.PlayerEvent, Message = "false",
                             StringArg1 = "SetMoveRight" });
@@ -75,7 +87,7 @@ namespace Breakout {
 
         public override void Render() {
             player.Render();
-            block1.Render();
+            blocks.RenderEntities();
         }
 
         public override void Update() {
