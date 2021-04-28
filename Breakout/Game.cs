@@ -26,9 +26,6 @@ namespace Breakout {
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.02f)),
                 new Image(Path.Combine("Assets", "Images", "player.png")));
 
-/*            block1 = new Block(
-                new DynamicShape(new Vec2F (0.8f, 0.5f), new Vec2F(0.1f, 0.05f)),
-                new Image(Path.Combine("Assets","Images", "blue-block.png")), 5); */
 
             levelloader = new LevelLoader(Path.Combine("Assets", "Levels", "level3.txt"));
 
