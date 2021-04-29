@@ -3,27 +3,27 @@ using DIKUArcade.Events;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 namespace Breakout {
-    public class Player : IGameEventProcessor {
-        private Entity entity;
-        private DynamicShape shape;
+    public class Player : Entity, IGameEventProcessor {
+        //private Entity entity;
+        //private DynamicShape shape;
         private float moveLeft = 0.0f;
         private float moveRight = 0.0f;
         private const float MOVEMENT_SPEED = 0.02f;
         public float LeftBound { get; private set; }
         public float RightBound { get; private set; }
-        public Player(DynamicShape shape, IBaseImage image) {
-            entity = new Entity(shape, image);
-            this.shape = shape;
+        public Player(DynamicShape shape, IBaseImage image) : base(shape, image) {
+            //entity = new Entity(shape, image);
+            //this.shape = shape;
             LeftBound = 0f;
             RightBound = 1.0f - shape.Extent.X;
         }
 
         public Vec2F GetPosition() {
-            return shape.Position; 
+            return Shape.Position; 
         }
 
         public Vec2F GetExtent() {
-            return shape.Extent;
+            return Shape.Extent;
         }
 
         public float GetMoveSpeed() {
@@ -31,22 +31,22 @@ namespace Breakout {
         }
 
         public void Render() {
-            entity.RenderEntity();
+            this.RenderEntity();
         }
 
         public void UpdateDirection() {
-            shape.Direction.X = moveLeft + moveRight;
+            Shape.AsDynamicShape().Direction.X = moveLeft + moveRight;
         }
 
         //Move if position after move will not be out of bounds
         private void Move() {
-            if (shape.Position.X+shape.Direction.X < LeftBound) {
-                shape.Position.X = LeftBound;
+            if (Shape.Position.X + Shape.AsDynamicShape().Direction.X < LeftBound) {
+                Shape.Position.X = LeftBound;
             } //pos is from bottom left corner
-            else if (shape.Position.X+shape.Direction.X > RightBound) { 
-                shape.Position.X = RightBound;
+            else if (Shape.Position.X + Shape.AsDynamicShape().Direction.X > RightBound) { 
+                Shape.Position.X = RightBound;
             } else {
-                shape.Move();
+                Shape.Move();
             }
         }
         

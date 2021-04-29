@@ -8,13 +8,15 @@ using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 
-namespace Breakout {
+namespace Breakout.Blocks {
     public class Block : Entity, IGameEventProcessor {
         //private Entity entity;
         //private DynamicShape shape;
-        private bool Alive;
+        public bool Alive { get; private set; }
 
-        private int HP;
+        public int HP { get; private set; }
+        public string Value { get; private set; } 
+
         public Block(DynamicShape shape, IBaseImage image, int HP): base(shape, image) {
             this.HP = HP;
         }
@@ -22,16 +24,12 @@ namespace Breakout {
             return this.Shape.Position; 
         }
 
-        public void Damage() {
+        private void Damage() {
             HP--;
         }
 
-        public int GetHP() {
-            return HP;
-        }
-
-        public bool IsAlive() {
-            if (HP <= 0) {
+        private bool IsAlive() {
+            if(HP <= 0) {
                 Alive = false; 
                 return Alive;
             } else {
@@ -40,17 +38,18 @@ namespace Breakout {
             }
         }
 
-        public void Render() {
-            this.RenderEntity();
-        }
-
         public void ProcessEvent(GameEvent gameEvent) {
-            //Kig lige på den her igen når man skal implementere kollision
-            /*if (gameEvent.EventType == GameEventType.ControlEvent) {
-                switch (gameEvent.StringArg1) {
+            if(gameEvent.EventType == GameEventType.ControlEvent ) {
+                if((Block) gameEvent.To == this) {
+                    if(gameEvent.StringArg1 == "Damage") {
+                        Damage();
 
+                        if (!IsAlive()) {
+                            DeleteEntity();
+                        }
+                    }
                 }
-            }*/
+            }
         }
     }
 }

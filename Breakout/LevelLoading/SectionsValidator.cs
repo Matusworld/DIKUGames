@@ -39,9 +39,11 @@ namespace Breakout.LevelLoading {
                     sectionState++;
                 }
                 if (line == "Legend/" && sectionState == 5) {
+                    file.Close();
                     return true; 
                 }
             }
+            file.Close();
             return false;
         }
 

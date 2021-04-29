@@ -1,20 +1,24 @@
 using System.IO;
 
 namespace Breakout.LevelLoading {
+    /// <summary>
+    /// Given path and specified section
+    /// Responsibility of closing Stream passes to user
+    /// </summary>
     class SectionStreamReader {
-        private StreamReader file;
+        public StreamReader File { get; private set; }
         private string section;
         private string line;
         private int state = 0;
 
 
         public SectionStreamReader(string filepath, string section) {
-            file = new StreamReader(filepath);
+            File = new StreamReader(filepath);
             this.section = section; 
         }
 
         public string ReadSectionLine(){
-            while ((line = file.ReadLine()) != null) {
+            while ((line = File.ReadLine()) != null) {
                 //skip if section is not reached
                 if (state != 0 || (state == 0 && line == section + ":")) {
                     //increase state if section start is reached

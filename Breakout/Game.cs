@@ -7,12 +7,13 @@ using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
+using Breakout.LevelLoading;
+using Breakout.Blocks;
 
 namespace Breakout {
     public class Game : DIKUGame, IGameEventProcessor {
         
         private Player player;
-        private Block block1;
 
         private LevelLoader levelloader;
 
@@ -28,8 +29,8 @@ namespace Breakout {
 
 
             levelloader = new LevelLoader(Path.Combine("Assets", "Levels", "level3.txt"));
-
-            blocks = levelloader.ReadFile();
+            levelloader.LoadLevel();
+            blocks = levelloader.Blocks;
 
             BreakoutBus.GetBus().InitializeEventBus(new List<GameEventType> {
                 GameEventType.WindowEvent, GameEventType.PlayerEvent } );
