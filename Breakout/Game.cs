@@ -17,7 +17,6 @@ namespace Breakout {
 
         private LevelLoader levelloader;
 
-        private EntityContainer<Block> blocks;
 
         public Game(WindowArgs winArgs) : base(winArgs) {
             window.SetKeyEventHandler(KeyHandler);
@@ -30,7 +29,6 @@ namespace Breakout {
 
             levelloader = new LevelLoader(Path.Combine("Assets", "Levels", "level3.txt"));
             levelloader.LoadLevel();
-            blocks = levelloader.Blocks;
 
             BreakoutBus.GetBus().InitializeEventBus(new List<GameEventType> {
                 GameEventType.WindowEvent, GameEventType.PlayerEvent } );
@@ -85,7 +83,7 @@ namespace Breakout {
 
         public override void Render() {
             player.Render();
-            blocks.RenderEntities();
+            levelloader.Blocks.RenderEntities();
         }
 
         public override void Update() {
