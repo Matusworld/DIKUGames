@@ -1,8 +1,9 @@
 namespace Breakout.LevelLoading.SectionLoading {
     public abstract class SectionLoader {
         /// <summary>
-        /// How to process each line
+        /// Processing of a line
         /// </summary>
+        /// <param name="line"> the line coming from section of ASCII file</param>
         protected abstract void ProcessSectionLine(string line);
 
 
