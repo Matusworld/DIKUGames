@@ -5,7 +5,7 @@ namespace Breakout.LevelLoading {
     /// Given path and specified section
     /// Responsibility of closing Stream passes to user
     /// </summary>
-    class SectionStreamReader {
+    public class SectionStreamReader {
         public StreamReader File { get; private set; }
         private string section;
         private string line;

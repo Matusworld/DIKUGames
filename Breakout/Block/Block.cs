@@ -10,8 +10,6 @@ using DIKUArcade.Math;
 
 namespace Breakout.Blocks {
     public class Block : Entity, IGameEventProcessor {
-        //private Entity entity;
-        //private DynamicShape shape;
         public bool Alive { get; private set; }
 
         public int HP { get; private set; }
@@ -43,8 +41,9 @@ namespace Breakout.Blocks {
                 if((Block) gameEvent.To == this) {
                     if(gameEvent.StringArg1 == "Damage") {
                         Damage();
-
+                        System.Console.WriteLine(HP);
                         if (!IsAlive()) {
+                            System.Console.WriteLine(Alive);
                             DeleteEntity();
                         }
                     }

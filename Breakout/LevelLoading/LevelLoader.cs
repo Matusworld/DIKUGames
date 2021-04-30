@@ -1,5 +1,5 @@
-
 using System.IO;
+using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
@@ -17,11 +17,8 @@ namespace Breakout.LevelLoading {
 
         public LevelLoader(string filepath) {
             map = new MapLoader(filepath);
-            map.LoadSection();
             Meta = new MetaLoader(filepath);
-            Meta.LoadSection();
             Legend = new LegendLoader(filepath);
-            Legend.LoadSection();
             Validator = new SectionsValidator(filepath);
         }
 
@@ -31,6 +28,10 @@ namespace Breakout.LevelLoading {
             Vec2F blockExtent = new Vec2F(blockExtentX, blockExtentY);
 
             if (Validator.ValidateSections()) {
+                // Only load if sections are validated
+                map.LoadSection();
+                Meta.LoadSection();
+                Legend.LoadSection();
                 for (int j = 0; j < map.Height; j++) {    
                     for (int i = 0; i < map.Width; i++) {
                         if (map.RowList[j][i] != '-') {
@@ -42,8 +43,10 @@ namespace Breakout.LevelLoading {
                                     Block block = new Block(new DynamicShape(position, blockExtent), 
                                         new Image(Path.Combine(
                                             "Assets","Images", Legend.LegendList[l].Item2)), 
-                                        15);
+                                        1);
                                     Blocks.AddEntity(block);
+                                    // Subscribe every block 
+                                    BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, block);
                                 }
                             }
                         }

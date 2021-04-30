@@ -33,10 +33,10 @@ namespace Breakout {
             blocks = levelloader.Blocks;
 
             BreakoutBus.GetBus().InitializeEventBus(new List<GameEventType> {
-                GameEventType.WindowEvent, GameEventType.PlayerEvent } );
+                GameEventType.WindowEvent, GameEventType.PlayerEvent, GameEventType.ControlEvent } );
             BreakoutBus.GetBus().Subscribe(GameEventType.WindowEvent, this);
-            BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player);
-            
+            BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player);   
+         
         }
 
         private void KeyHandler(KeyboardAction action, KeyboardKey key) {
@@ -77,15 +77,34 @@ namespace Breakout {
                             EventType = GameEventType.PlayerEvent, Message = "false",
                             StringArg1 = "SetMoveRight" });
                         break;
+                    // To visually test that blocks get deleted when they are 'hit'
+                    case KeyboardKey.Space:
+                        blocks.Iterate(block => {
+                            BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                                EventType = GameEventType.ControlEvent, StringArg1 = "Damage",
+                                To = block});
+                        });
+                        break;
                     default:
                         break;
                 }
             }
         }
 
+        /// <summary>
+        /// Render blocks from a EntityContainer with blocks, to fix problem of blocks still being
+        /// render even though they are deleted.
+        /// </summary>
+        /// <param name="blocks"></param>
+        private void renderBlocks(EntityContainer<Block> blocks) {
+            blocks.Iterate(block => {
+                block.RenderEntity();
+            });
+        }
+
         public override void Render() {
             player.Render();
-            blocks.RenderEntities();
+            renderBlocks(blocks);
         }
 
         public override void Update() {
