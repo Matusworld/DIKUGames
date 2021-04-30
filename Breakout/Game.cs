@@ -17,7 +17,6 @@ namespace Breakout {
 
         private LevelLoader levelloader;
 
-        private EntityContainer<Block> blocks;
 
         public Game(WindowArgs winArgs) : base(winArgs) {
             window.SetKeyEventHandler(KeyHandler);
@@ -30,7 +29,6 @@ namespace Breakout {
 
             levelloader = new LevelLoader(Path.Combine("Assets", "Levels", "level3.txt"));
             levelloader.LoadLevel();
-            blocks = levelloader.Blocks;
 
             BreakoutBus.GetBus().InitializeEventBus(new List<GameEventType> {
                 GameEventType.WindowEvent, GameEventType.PlayerEvent, GameEventType.ControlEvent } );
@@ -79,7 +77,7 @@ namespace Breakout {
                         break;
                     // To visually test that blocks get deleted when they are 'hit'
                     case KeyboardKey.Space:
-                        blocks.Iterate(block => {
+                        levelloader.Blocks.Iterate(block => {
                             BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                                 EventType = GameEventType.ControlEvent, StringArg1 = "Damage",
                                 To = block});
@@ -104,7 +102,7 @@ namespace Breakout {
 
         public override void Render() {
             player.Render();
-            renderBlocks(blocks);
+            renderBlocks(levelloader.Blocks);
         }
 
         public override void Update() {

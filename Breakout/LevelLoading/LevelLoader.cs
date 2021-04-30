@@ -22,6 +22,9 @@ namespace Breakout.LevelLoading {
             Validator = new SectionsValidator(filepath);
         }
 
+        /// <summary>
+        /// Perform the loading of all data
+        /// </summary>
         public void LoadLevel() {
             float blockExtentX = 1.0f / map.Width;
             float blockExtentY = 0.5f / map.Height;

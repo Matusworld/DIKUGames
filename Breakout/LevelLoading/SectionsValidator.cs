@@ -18,7 +18,7 @@ namespace Breakout.LevelLoading {
         /// Validates that the sections of the given ASCII map are Map, Meta, and Legends in that order
         /// also checks that these sections are correctly ended
         /// </summary>
-        /// <returns>boolean</returns>
+        /// <returns>True if valid</returns>
         public bool ValidateSections() {
             int sectionState = 0;
 
