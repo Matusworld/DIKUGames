@@ -47,7 +47,7 @@ namespace BreakoutTest {
             // DIKUGames\BreakoutTest
             dir = dir.Parent; 
 
-            path = dir + @"\Assets\Levels\level1.txt";
+            path = Path.Combine(dir.ToString(), "Assets", "Levels", "level1.txt");
 
             mapReader = new SectionStreamReader(path, "Map");
 

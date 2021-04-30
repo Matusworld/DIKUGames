@@ -38,9 +38,10 @@ namespace BreakoutTest {
             // DIKUGames\BreakoutTest
             dir = dir.Parent;
 
-            validFile = dir + @"\Assets\Levels\level1.txt";
+            validFile = Path.Combine(dir.ToString(), "Assets", "Levels", "level1.txt");
 
-            invalidFile = dir + @"\Assets\Levels\wrongsectioncontent.txt";
+            invalidFile = Path.Combine(dir.ToString(), "Assets", "Levels", 
+                "wrongsectioncontent.txt");
         }
 
         [Test]
