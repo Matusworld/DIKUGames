@@ -11,6 +11,8 @@ using DIKUArcade.Graphics;
 
 namespace BreakoutTest
 {
+    //Move() must have 100% statement coverage
+    //Unit tests that cover a statement of Move is marked with: *Move statement covered*
     public class PlayerTest {
         Player player;
         GameEventBus eventBus;
@@ -57,6 +59,7 @@ namespace BreakoutTest
         }
 
         //Assert that player does not initially move
+        //*Move statement covered*
         [Test]
         public void TestInitMove() {
             
@@ -70,6 +73,7 @@ namespace BreakoutTest
             Assert.LessOrEqual(diffY, tolerance);
         }        
         
+        //*Move statement covered*
         [Test]
         public void TestMoveRight() {
 
@@ -89,6 +93,7 @@ namespace BreakoutTest
             Assert.LessOrEqual(diffY, tolerance);
         }
         
+        //*Move statement covered*
         [Test]
         public void TestMoveLeft() {
 
@@ -109,6 +114,7 @@ namespace BreakoutTest
         }
         
         //Assert that the right position bound is respected
+        //*Move statement covered*
         [Test]
         public void TestMoveRightOutOfBounds() {
             eventBus.RegisterEvent( new GameEvent {
@@ -131,6 +137,7 @@ namespace BreakoutTest
         }
 
         //Assert that the left position bound is respected
+        //*Move statement covered*
         [Test]
         public void TestMoveLeftOutOfBounds() {
 
