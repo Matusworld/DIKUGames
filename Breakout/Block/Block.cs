@@ -41,9 +41,7 @@ namespace Breakout.Blocks {
                 if((Block) gameEvent.To == this) {
                     if(gameEvent.StringArg1 == "Damage") {
                         Damage();
-                        System.Console.WriteLine(HP);
                         if (!IsAlive()) {
-                            System.Console.WriteLine(Alive);
                             DeleteEntity();
                         }
                     }

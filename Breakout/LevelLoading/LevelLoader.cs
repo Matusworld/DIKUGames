@@ -26,15 +26,14 @@ namespace Breakout.LevelLoading {
         /// Perform the loading of all data
         /// </summary>
         public void LoadLevel() {
-            float blockExtentX = 1.0f / map.Width;
-            float blockExtentY = 0.5f / map.Height;
-            Vec2F blockExtent = new Vec2F(blockExtentX, blockExtentY);
-
             if (Validator.ValidateSections()) {
                 // Only load if sections are validated
                 map.LoadSection();
                 Meta.LoadSection();
                 Legend.LoadSection();
+                float blockExtentX = 1.0f / map.Width;
+                float blockExtentY = 0.5f / map.Height;
+                Vec2F blockExtent = new Vec2F(blockExtentX, blockExtentY);
                 for (int j = 0; j < map.Height; j++) {    
                     for (int i = 0; i < map.Width; i++) {
                         if (map.RowList[j][i] != '-') {
