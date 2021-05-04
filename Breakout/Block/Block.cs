@@ -42,6 +42,8 @@ namespace Breakout.Blocks {
                     if(gameEvent.StringArg1 == "Damage") {
                         Damage();
                         if (!IsAlive()) {
+                            // Unsubscribe deleted blocks
+                            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, this);
                             DeleteEntity();
                         }
                     }
