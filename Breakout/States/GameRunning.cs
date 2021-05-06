@@ -69,8 +69,6 @@ namespace Breakout.States {
         public void UpdateState() {
             BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                 EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
-                
-            System.Console.WriteLine(player.GetPosition().X);
         }
 
         public void RenderState() {
