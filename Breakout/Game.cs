@@ -9,34 +9,48 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using Breakout.LevelLoading;
 using Breakout.Blocks;
+using Breakout.States;
 
 namespace Breakout {
     public class Game : DIKUGame, IGameEventProcessor {
         
-        private Player player;
+        //private Player player;
 
-        private LevelLoader levelloader;
+        //private LevelLoader levelloader;
 
+        private StateMachine stateMachine;
 
         public Game(WindowArgs winArgs) : base(winArgs) {
             window.SetKeyEventHandler(KeyHandler);
             window.SetClearColor(System.Drawing.Color.DarkGray);
 
-            player = new Player(
-                new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.02f)),
-                new Image(Path.Combine("Assets", "Images", "player.png")));
+            //player = new Player(
+            //    new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.02f)),
+            //    new Image(Path.Combine("Assets", "Images", "player.png")));
 
 
-            levelloader = new LevelLoader(Path.Combine("Assets", "Levels", "level3.txt"));
-            levelloader.LoadLevel();
+            //levelloader = new LevelLoader(Path.Combine("Assets", "Levels", "level3.txt"));
+            //levelloader.LoadLevel();
+
+            stateMachine = new StateMachine();
 
             BreakoutBus.GetBus().InitializeEventBus(new List<GameEventType> {
-                GameEventType.WindowEvent, GameEventType.PlayerEvent, GameEventType.ControlEvent } );
-            BreakoutBus.GetBus().Subscribe(GameEventType.WindowEvent, this);
-            BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player);   
-         
+                GameEventType.WindowEvent, GameEventType.PlayerEvent, GameEventType.ControlEvent,
+                GameEventType.GameStateEvent } );
+            BreakoutBus.GetBus().Subscribe(GameEventType.WindowEvent, this);  
         }
 
+        //KeyHandler sends singal on to ActiveState of StateMachine
+        private void KeyHandler(KeyboardAction action, KeyboardKey key) { 
+            if (action == KeyboardAction.KeyRelease && key == KeyboardKey.Escape) {
+                BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                    EventType = GameEventType.WindowEvent, Message = "CLOSE_WINDOW" });
+            }
+            else {
+                stateMachine.ActiveState.HandleKeyEvent(action, key);
+            }
+        }
+        /*
         private void KeyHandler(KeyboardAction action, KeyboardKey key) {
             if (action == KeyboardAction.KeyPress) {
                 switch (key) {
@@ -88,7 +102,9 @@ namespace Breakout {
                 }
             }
         }
+        */
 
+        /*
         /// <summary>
         /// Render blocks from a EntityContainer with blocks, to fix problem of blocks still being
         /// render even though they are deleted.
@@ -99,17 +115,25 @@ namespace Breakout {
                 block.RenderEntity();
             });
         }
+        */
 
         public override void Render() {
+            stateMachine.ActiveState.RenderState();
+            /*
             player.Render();
             renderBlocks(levelloader.Blocks);
+            */
         }
 
         public override void Update() {
-            BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
+            stateMachine.ActiveState.UpdateState();
 
             BreakoutBus.GetBus().ProcessEvents();
+
+            /*
+            BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
+            */
         }
 
         public void ProcessEvent(GameEvent gameEvent) {
