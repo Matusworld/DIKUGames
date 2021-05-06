@@ -8,29 +8,13 @@ using System.IO;
 
 namespace Breakout.States {
     public class MainMenu : IGameState {
-        private static MainMenu instance; // = null
+        private static MainMenu instance;
         private Entity backGroundImage;
         private Text[] menuButtons;
         private int activeMenuButton;
         private const int maxMenuButtons = 2;
 
-        public MainMenu() { InitializeGameState(); }
-
-        /// <summary>
-        /// Colors all non-active buttons red while active button is green
-        /// </summary>
-        private void colorButtons() {
-            for ( int i = 0; i < 2; i++ ) {
-                menuButtons[i].SetColor(new Vec3I(255,0,0));
-            }
-            menuButtons[activeMenuButton].SetColor(new Vec3I(0,255,0));
-        }
-
-        public static MainMenu GetInstance() {
-            return MainMenu.instance ?? (MainMenu.instance = new MainMenu());
-        }
-
-        public void InitializeGameState() {
+        public MainMenu() { 
             //Initialize backGroundImage
             Vec2F imagePos = new Vec2F(0f,0f);
             Vec2F imageExtent = new Vec2F(1f, 1f);
@@ -47,6 +31,20 @@ namespace Breakout.States {
 
 
             menuButtons = new Text[maxMenuButtons] { newGameButton, quitGameButton };
+         }
+
+        public static MainMenu GetInstance() {
+            return MainMenu.instance ?? (MainMenu.instance = new MainMenu());
+        }
+
+        /// <summary>
+        /// Colors all non-active buttons red while active button is green
+        /// </summary>
+        private void colorButtons() {
+            for ( int i = 0; i < 2; i++ ) {
+                menuButtons[i].SetColor(new Vec3I(255,0,0));
+            }
+            menuButtons[activeMenuButton].SetColor(new Vec3I(0,255,0));
         }
 
         public void ResetState() { 
@@ -64,36 +62,6 @@ namespace Breakout.States {
                 button.RenderText();
             }
         }
-        /*
-        private void KeyRelease(KeyboardKey key) {
-            switch (key) {
-                case KeyboardKey.Up:
-                    if (!(activeMenuButton == 0)) {
-                        activeMenuButton--;
-                    }
-                    break;
-                case KeyboardKey.Down:
-                    if (activeMenuButton < maxMenuButtons-1) {
-                        activeMenuButton++;
-                    }
-                    break;
-                case KeyboardKey.Enter: {
-                    if (activeMenuButton == 0) { // New Game pressed
-                        BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                            EventType = GameEventType.GameStateEvent, Message = "CHANGE_STATE",
-                            StringArg1 = "GAME_RUNNING" });
-
-                    } else if (activeMenuButton == 1) { // Quit pressed
-                        BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                            EventType = GameEventType.GameStateEvent, Message = "CHANGE_STATE",
-                            StringArg1 = "GAME_QUIT" });
-                    }
-                    break;
-                }
-                default:
-                    break;
-            }
-        } */
         
         public void HandleKeyEvent(KeyboardAction action, KeyboardKey key) {
             switch (action) {
@@ -115,14 +83,12 @@ namespace Breakout.States {
                                     EventType = GameEventType.GameStateEvent, 
                                     Message = "CHANGE_STATE",
                                     StringArg1 = "GAME_RUNNING" });
-                                    System.Console.WriteLine("Pressed enter on new game");
 
                             } else if (activeMenuButton == 1) { // Quit pressed
                                 BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                                     EventType = GameEventType.GameStateEvent, 
                                     Message = "CHANGE_STATE",
                                     StringArg1 = "GAME_QUIT" });
-                                    System.Console.WriteLine("Pressed enter on quit");
                             }
                             break;
                         }

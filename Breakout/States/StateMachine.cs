@@ -15,10 +15,10 @@ namespace Breakout.States {
         private void SwitchState(GameStateType stateType) {
             switch(stateType) {
                 case GameStateType.GameRunning:
-                    ActiveState = new GameRunning();
+                    ActiveState = GameRunning.GetInstance();
                     break;
                 case GameStateType.GamePause:
-                    ActiveState = new GamePaused();
+                    ActiveState = GamePaused.GetInstance();
                     break;
                 case GameStateType.MainMenu:
                     ActiveState = MainMenu.GetInstance();
@@ -30,7 +30,6 @@ namespace Breakout.States {
 
         //Process Event method
         public void ProcessEvent(GameEvent gameEvent) {
-            System.Console.WriteLine("Gotten event");
             if (gameEvent.EventType == GameEventType.GameStateEvent) {
                 switch (gameEvent.Message) {
                     case "CHANGE_STATE":
