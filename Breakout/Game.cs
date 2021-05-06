@@ -17,7 +17,7 @@ namespace Breakout {
 
         public Game(WindowArgs winArgs) : base(winArgs) {
             window.SetKeyEventHandler(KeyHandler);
-            window.SetClearColor(System.Drawing.Color.DarkGray);
+            //window.SetClearColor(System.Drawing.Color.DarkGray);
 
             BreakoutBus.GetBus().InitializeEventBus(new List<GameEventType> {
                 GameEventType.WindowEvent, GameEventType.PlayerEvent, GameEventType.ControlEvent,

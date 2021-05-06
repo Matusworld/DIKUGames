@@ -4,7 +4,6 @@ using DIKUArcade.State;
 namespace Breakout.States {
     public class StateMachine : IGameEventProcessor {
         public IGameState ActiveState { get; private set; }
-        private IGameState tempState;
 
         public StateMachine() {
             BreakoutBus.GetBus().Subscribe(GameEventType.GameStateEvent, this);
@@ -34,8 +33,10 @@ namespace Breakout.States {
                 switch (gameEvent.Message) {
                     case "CHANGE_STATE":
                         switch (gameEvent.StringArg1) {
-                            case "GAME_RUNNING":
+                            case "GAME_NEWGAME":
                                 SwitchState(GameStateType.GameRunning);
+                                ActiveState.ResetState();
+                                ActiveState.RenderState();
                                 break;
                             case "GAME_QUIT":
                                 BreakoutBus.GetBus().RegisterEvent(new GameEvent {
@@ -43,14 +44,15 @@ namespace Breakout.States {
                                     Message = "CLOSE_WINDOW" });
                                 break;
                             case "GAME_PAUSED":
-                                tempState = ActiveState;
                                 SwitchState(GameStateType.GamePause);
+                                ActiveState.ResetState();
                                 break;
                             case "GAME_CONTINUE":
-                                ActiveState = tempState;
+                                SwitchState(GameStateType.GameRunning);
                                 break;
                             case "GAME_MAINMENU":
                                 SwitchState(GameStateType.MainMenu);
+                                ActiveState.ResetState();
                                 break;
                             default:
                                 break;

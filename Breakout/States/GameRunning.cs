@@ -19,6 +19,10 @@ namespace Breakout.States {
         private int levelIndex;
         
         public GameRunning() {
+            Init();
+        }
+
+        private void Init() {
             //Initialize backGroundImage
             Vec2F imagePos = new Vec2F(0f,0f);
             Vec2F imageExtent = new Vec2F(1f, 1f);
@@ -31,12 +35,14 @@ namespace Breakout.States {
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.02f)),
                 new Image(Path.Combine("Assets", "Images", "player.png")));
 
-            levelloader = new LevelLoader(Path.Combine("Assets", "Levels", "level1.txt"));
-            levelloader.LoadLevel();
-
+            
             levelSequence = new List<string> { "level1.txt", "level2.txt", "level3.txt",
                 "central-mass.txt", "columns.txt", "wall.txt" };
             levelIndex = 0;
+
+            levelloader = new LevelLoader(Path.Combine("Assets", "Levels", 
+                levelSequence[levelIndex]));
+            levelloader.LoadLevel();
 
             BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player); 
         }
@@ -57,12 +63,14 @@ namespace Breakout.States {
         }
 
         public void ResetState() {
-            GameRunning.instance = new GameRunning();
+            Init();
         }
 
         public void UpdateState() {
             BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                 EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
+                
+            System.Console.WriteLine(player.GetPosition().X);
         }
 
         public void RenderState() {

@@ -15,6 +15,10 @@ namespace Breakout.States {
         private const int maxMenuButtons = 2;
 
         public MainMenu() { 
+            Init();
+        }
+
+        private void Init() {
             //Initialize backGroundImage
             Vec2F imagePos = new Vec2F(0f,0f);
             Vec2F imageExtent = new Vec2F(1f, 1f);
@@ -24,14 +28,14 @@ namespace Breakout.States {
             backGroundImage = new Entity(shape, image);
 
             //Initialize Buttons
-            Text newGameButton = new Text("New Game", new Vec2F(0.3f, 0.5f),
-                new Vec2F(0.3f, 0.2f));
-            Text quitGameButton = new Text("Quit", new Vec2F(0.3f, 0.45f),
-                new Vec2F(0.3f, 0.2f));
+            Text newGameButton = new Text("New Game", new Vec2F(0.2f, 0.4f),
+                new Vec2F(0.3f, 0.3f));
+            Text quitGameButton = new Text("Quit", new Vec2F(0.2f, 0.3f),
+                new Vec2F(0.3f, 0.3f));
 
 
             menuButtons = new Text[maxMenuButtons] { newGameButton, quitGameButton };
-         }
+        }
 
         public static MainMenu GetInstance() {
             return MainMenu.instance ?? (MainMenu.instance = new MainMenu());
@@ -42,13 +46,13 @@ namespace Breakout.States {
         /// </summary>
         private void colorButtons() {
             for ( int i = 0; i < 2; i++ ) {
-                menuButtons[i].SetColor(new Vec3I(255,0,0));
+                menuButtons[i].SetColor(new Vec3I(192,192,192));
             }
-            menuButtons[activeMenuButton].SetColor(new Vec3I(0,255,0));
+            menuButtons[activeMenuButton].SetColor(new Vec3I(255,160,0));
         }
 
         public void ResetState() { 
-            MainMenu.instance = new MainMenu();
+            Init();
          }
 
         public void UpdateState() {
@@ -82,7 +86,7 @@ namespace Breakout.States {
                                 BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                                     EventType = GameEventType.GameStateEvent, 
                                     Message = "CHANGE_STATE",
-                                    StringArg1 = "GAME_RUNNING" });
+                                    StringArg1 = "GAME_NEWGAME" });
 
                             } else if (activeMenuButton == 1) { // Quit pressed
                                 BreakoutBus.GetBus().RegisterEvent( new GameEvent {

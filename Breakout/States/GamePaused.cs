@@ -15,24 +15,10 @@ namespace Breakout.States {
         private const int maxMenuButtons = 2;
 
         public GamePaused() {
-            //Initialize backGroundImage
-            Vec2F imagePos = new Vec2F(0f,0f);
-            Vec2F imageExtent = new Vec2F(1f, 1f);
-            StationaryShape shape = new StationaryShape(imagePos, imageExtent);
-            IBaseImage image = new Image(Path.Combine( ProjectPath.getPath(),
-                "Assets", "Images", "shipit_titlescreen.png"));
-            backGroundImage = new Entity(shape, image);
-
-            // Initialie Buttons
-            Text ContinueButton = new Text("Continue", new Vec2F(0.3f, 0.5f),
-                new Vec2F(0.3f, 0.2f));
-            Text quitGameButton = new Text("Main Menu", new Vec2F(0.3f, 0.45f),
-                new Vec2F(0.3f, 0.2f));
-
-            menuButtons = new Text[maxMenuButtons] { ContinueButton, quitGameButton };
+            Init();
         }
 
-        public void InitializeGameState() {
+        public void Init() {
             //Initialize backGroundImage
             Vec2F imagePos = new Vec2F(0f,0f);
             Vec2F imageExtent = new Vec2F(1f, 1f);
@@ -42,10 +28,10 @@ namespace Breakout.States {
             backGroundImage = new Entity(shape, image);
 
             // Initialie Buttons
-            Text ContinueButton = new Text("Continue", new Vec2F(0.3f, 0.5f),
-                new Vec2F(0.3f, 0.2f));
-            Text quitGameButton = new Text("Main Menu", new Vec2F(0.3f, 0.45f),
-                new Vec2F(0.3f, 0.2f));
+            Text ContinueButton = new Text("Continue", new Vec2F(0.2f, 0.4f),
+                new Vec2F(0.3f, 0.3f));
+            Text quitGameButton = new Text("Main Menu", new Vec2F(0.2f, 0.3f),
+                new Vec2F(0.3f, 0.3f));
 
             menuButtons = new Text[maxMenuButtons] { ContinueButton, quitGameButton };
         }
@@ -56,14 +42,14 @@ namespace Breakout.States {
 
         private void colorButtons() {
             for ( int i = 0; i < 2; i++ ) {
-                menuButtons[i].SetColor(new Vec3I(255,0,0));
+                menuButtons[i].SetColor(new Vec3I(192,192,192));
             }
             
-            menuButtons[activeMenuButton].SetColor(new Vec3I(0,255,0));
+            menuButtons[activeMenuButton].SetColor(new Vec3I(255,160,0));
         }
 
         public void ResetState() {
-            GamePaused.instance = new GamePaused();
+            Init();
         }
 
         public void UpdateState() {
