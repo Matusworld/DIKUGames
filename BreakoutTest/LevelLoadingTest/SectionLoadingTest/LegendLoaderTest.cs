@@ -25,21 +25,10 @@ namespace BreakoutTest {
 
         [SetUp]
         public void Setup() {
+            validFile = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", "level1.txt");
 
-            // DIKUGames\BreakoutTest\bin\Debug\net5.0
-            var dir = new DirectoryInfo(Path.GetDirectoryName(
-                System.Reflection.Assembly.GetExecutingAssembly().Location));
-
-            while (dir.Name != "bin") {
-                dir = dir.Parent;
-            }
-
-            // DIKUGames\BreakoutTest
-            dir = dir.Parent;
-
-            validFile = Path.Combine(dir.ToString(), "Assets", "Levels", "level1.txt");
-
-            invalidFile = Path.Combine(dir.ToString(), "Assets", "Levels", "wrongsectioncontent.txt");
+            invalidFile = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", 
+                "wrongsectioncontent.txt");
         }
 
         [Test]

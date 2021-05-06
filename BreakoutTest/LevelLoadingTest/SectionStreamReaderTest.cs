@@ -36,18 +36,7 @@ namespace BreakoutTest {
         
         [SetUp]
         public void Setup() {
-            // DIKUGames\BreakoutTest\bin\Debug\net5.0
-            var dir = new DirectoryInfo(Path.GetDirectoryName(
-                System.Reflection.Assembly.GetExecutingAssembly().Location));
-
-            while (dir.Name != "bin") {
-                dir = dir.Parent;
-            }
-            
-            // DIKUGames\BreakoutTest
-            dir = dir.Parent; 
-
-            path = Path.Combine(dir.ToString(), "Assets", "Levels", "level1.txt");
+            path = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", "level1.txt");
 
             mapReader = new SectionStreamReader(path, "Map");
 

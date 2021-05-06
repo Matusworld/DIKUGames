@@ -28,7 +28,7 @@ namespace BreakoutTest
 
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.02f)),
-                new Image(Path.Combine("Assets", "Images", "player.png")));
+                new Image(Path.Combine(TestProjectPath.getPath() ,"Assets", "Images", "player.png")));
 
             beforeX = player.GetPosition().X;
             beforeY = player.GetPosition().Y;

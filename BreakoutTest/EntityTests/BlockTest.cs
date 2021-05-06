@@ -22,8 +22,8 @@ namespace BreakoutTest
             Window.CreateOpenGLContext();
 
             block = new Block(new DynamicShape(new Vec2F(0.45f, 0.45f), new Vec2F(0.1f, 0.05f)), 
-                                        new Image(Path.Combine(
-                                            "Assets","Images", "blue-block.png")), 
+                                        new Image(Path.Combine( TestProjectPath.getPath(),
+                                            "Assets", "Images", "blue-block.png")), 
                                         15);
             
             eventBus = new GameEventBus();
