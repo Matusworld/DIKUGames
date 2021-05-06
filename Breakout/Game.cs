@@ -31,13 +31,12 @@ namespace Breakout {
 
             //levelloader = new LevelLoader(Path.Combine("Assets", "Levels", "level3.txt"));
             //levelloader.LoadLevel();
-
-            stateMachine = new StateMachine();
-
             BreakoutBus.GetBus().InitializeEventBus(new List<GameEventType> {
                 GameEventType.WindowEvent, GameEventType.PlayerEvent, GameEventType.ControlEvent,
                 GameEventType.GameStateEvent } );
             BreakoutBus.GetBus().Subscribe(GameEventType.WindowEvent, this);  
+
+            stateMachine = new StateMachine();
         }
 
         //KeyHandler sends singal on to ActiveState of StateMachine

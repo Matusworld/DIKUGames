@@ -30,6 +30,7 @@ namespace Breakout.States {
 
         //Process Event method
         public void ProcessEvent(GameEvent gameEvent) {
+            System.Console.WriteLine("Gotten event");
             if (gameEvent.EventType == GameEventType.GameStateEvent) {
                 switch (gameEvent.Message) {
                     case "CHANGE_STATE":

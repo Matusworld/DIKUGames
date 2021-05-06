@@ -115,12 +115,14 @@ namespace Breakout.States {
                                     EventType = GameEventType.GameStateEvent, 
                                     Message = "CHANGE_STATE",
                                     StringArg1 = "GAME_RUNNING" });
+                                    System.Console.WriteLine("Pressed enter on new game");
 
                             } else if (activeMenuButton == 1) { // Quit pressed
                                 BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                                     EventType = GameEventType.GameStateEvent, 
                                     Message = "CHANGE_STATE",
                                     StringArg1 = "GAME_QUIT" });
+                                    System.Console.WriteLine("Pressed enter on quit");
                             }
                             break;
                         }
