@@ -30,7 +30,7 @@ namespace Breakout.States {
             Vec2F imageExtent = new Vec2F(1f, 1f);
             StationaryShape shape = new StationaryShape(imagePos, imageExtent);
             IBaseImage image = new Image(Path.Combine( ProjectPath.getPath(),
-                "Assets", "Images", "shipit_titlescreen.png"));
+                "Breakout","Assets", "Images", "shipit_titlescreen.png"));
             backGroundImage = new Entity(shape, image);
 
             // Initialie Buttons

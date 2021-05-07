@@ -36,6 +36,7 @@ namespace Breakout.States {
                             case "GAME_NEWGAME":
                                 SwitchState(GameStateType.GameRunning);
                                 ActiveState.ResetState();
+                                //To properly render entities
                                 ActiveState.RenderState();
                                 break;
                             case "GAME_QUIT":

@@ -6,7 +6,7 @@ namespace Breakout {
             var dir = new DirectoryInfo(Path.GetDirectoryName(
                 System.Reflection.Assembly.GetExecutingAssembly().Location));
 
-            while (dir.Name != "Breakout") {
+            while (dir.Name != "DIKUGames") {
                 dir = dir.Parent;
             }
             return dir.ToString();
