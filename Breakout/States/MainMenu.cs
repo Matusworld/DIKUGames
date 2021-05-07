@@ -64,20 +64,33 @@ namespace Breakout.States {
                 button.Render();
             }
         }
+
+        public void ButtonMover(KeyboardKey key) {
+            activeButton.Value.SetPassive();
+
+            if (key == KeyboardKey.Up && activeButton == buttons.First) {
+                activeButton = buttons.Last;
+            }
+            else if (key == KeyboardKey.Down && activeButton == buttons.Last) {
+                activeButton = buttons.First;
+            }
+            else if (key == KeyboardKey.Up) {
+                activeButton = activeButton.Previous;
+            }
+            else if (key == KeyboardKey.Down) {
+                activeButton = activeButton.Next;
+            }
+
+            activeButton.Value.SetActive();
+        }
         
         public void HandleKeyEvent(KeyboardAction action, KeyboardKey key) {
             switch (action) {
                 case KeyboardAction.KeyRelease:
                     switch (key) {
-                        case KeyboardKey.Up:
-                            activeButton.Value.SetPassive();
-                            activeButton = activeButton.Previous;
-                            activeButton.Value.SetActive();
-                            break;
                         case KeyboardKey.Down:
-                            activeButton.Value.SetPassive();
-                            activeButton = activeButton.Next;
-                            activeButton.Value.SetActive();
+                        case KeyboardKey.Up:
+                            ButtonMover(key);
                             break;
                         case KeyboardKey.Enter:
                             activeButton.Value.Action();

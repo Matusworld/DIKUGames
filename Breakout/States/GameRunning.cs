@@ -1,14 +1,17 @@
+using System;
+using System.IO;
+using System.Collections.Generic;
+
 using DIKUArcade.State;
 using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Input;
-using System.IO;
-using System.Collections.Generic;
+using DIKUArcade.Physics;
+
 using Breakout.LevelLoading;
 using Breakout.Blocks;
-using DIKUArcade.Physics;
 
 namespace Breakout.States {
     public class GameRunning : IGameState {
@@ -36,7 +39,8 @@ namespace Breakout.States {
             ball = new Ball(
                 new DynamicShape (new Vec2F(0.45f, 0.5f), new Vec2F(0.05f,0.05f)),
                 new Image (Path.Combine(ProjectPath.getPath(),  
-                "Breakout", "Assets", "Images", "ball.png"))); 
+                "Breakout", "Assets", "Images", "ball.png")),
+                -(float) Math.PI /4f); 
             
 
             player = new Player(
@@ -77,6 +81,7 @@ namespace Breakout.States {
             CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(),
                 player.Shape.AsDynamicShape());
             if (check.Collision) {
+                Console.WriteLine(PlayerHitPosition());
                 string hitPosition = PlayerHitPosition().ToString();
                 BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                     EventType = GameEventType.ControlEvent, Message = hitPosition, 
@@ -96,7 +101,8 @@ namespace Breakout.States {
         public void UpdateState() {
             BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                 EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
-            ball.Move();
+            BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                EventType = GameEventType.ControlEvent, StringArg1 = "Move" });
             BallPlayerCollision();
         }
 

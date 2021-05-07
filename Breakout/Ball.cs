@@ -7,47 +7,37 @@ using System;
 namespace Breakout {
     public class Ball : Entity, IGameEventProcessor {   
 
-        //bool Trajectory; //This variable when false signals that the ball is moving left
-            // And when it is true, it should be moving right.
         const float speed = 0.02f;
         float theta;
 
-        public Ball(DynamicShape shape, IBaseImage image): base (shape, image) {
-            this.theta = (float)Math.PI/4f;
-            this.Shape.AsDynamicShape().Direction.X = (float)Math.Cos((double)theta)*speed;
-            this.Shape.AsDynamicShape().Direction.Y = (float)Math.Sin((double)theta)*speed;
+        public Ball(DynamicShape shape, IBaseImage image, float theta): base (shape, image) {
+            SetDirection(theta);
         }
         public Vec2F GetPosition() {
             return this.Shape.Position; 
         }
         
-        /*public void BoundaryCheck(){
-            if (this.Shape.Position.X <= 0.01){
-                this.Shape.AsDynamicShape().Direction.X = 
-            }
-        //We add extent on to the right side check, since entities are rendered from left to right
-            if (this.Shape.Position.X+this.Shape.Extent.X >= 0.99){
-                Trajectory = false;
-            }
-            if (this.Shape.Position.Y+this.Shape.Extent.Y >= 0.99){
-                if 
-            }
-        } */
-        public bool LeftBoudaryCheck() {
+        public void SetDirection(float theta) {
+            this.theta = theta;
+            this.Shape.AsDynamicShape().Direction.X = (float)Math.Cos((double)theta)*speed;
+            this.Shape.AsDynamicShape().Direction.Y = (float)Math.Sin((double)theta)*speed;
+        }
+
+        private bool LeftBoudaryCheck() {
             if (this.Shape.Position.X <= 0.01f) {
                 return true;
             } else {
                 return false;
             }
         }
-        public bool RightBoudaryCheck() {
+        private bool RightBoudaryCheck() {
             if (this.Shape.Position.X+this.Shape.Extent.X >= 0.99f) {
                 return true;
             } else {
                 return false;
             }
         }
-        public bool UpperBoundaryCheck() {
+        private bool UpperBoundaryCheck() {
             if (this.Shape.Position.Y+this.Shape.Extent.Y >= 0.99) {
                 return true;
             } else {
@@ -55,18 +45,17 @@ namespace Breakout {
             }
         }
 
-        public bool LowerBoundaryCheck() {
-            if (this.Shape.Position.Y+this.Shape.Extent.Y >= 0.01) {
+        private bool LowerBoundaryCheck() {
+            if (this.Shape.Position.Y+this.Shape.Extent.Y <= 0.01) {
                 return true;
             } else {
                 return false;
             }
         }
-//Eventuelt opdel den her funktion
+
         public void DirectionPlayerSetter(float PlayerPosition) {
-            theta = 0.75f * (float) Math.PI - (PlayerPosition*(float)Math.PI/2f);
-            this.Shape.AsDynamicShape().Direction.X = (float)Math.Cos((double)theta)*speed;
-            this.Shape.AsDynamicShape().Direction.Y = (float)Math.Sin((double)theta)*speed;
+            float angle = 0.75f * (float) Math.PI - (PlayerPosition*(float)Math.PI/2f);
+            SetDirection(angle);
         }
 
         public void DirectionBoundarySetter(){
@@ -79,8 +68,13 @@ namespace Breakout {
             
         }
         public void Move() {
-            DirectionBoundarySetter(); 
-            this.Shape.Move();
+            if(LowerBoundaryCheck()) {
+                this.DeleteEntity(); //not currently in entity container
+            }
+            else {
+                DirectionBoundarySetter(); 
+                this.Shape.Move();
+            }
         }
         public void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.EventType == GameEventType.ControlEvent) {
@@ -88,6 +82,9 @@ namespace Breakout {
                     case "PlayerCollision":
                         float PlayerPosition = float.Parse (gameEvent.Message);
                         DirectionPlayerSetter(PlayerPosition);
+                        break;
+                    case "Move":
+                        this.Move();
                         break;
                 }
             }
