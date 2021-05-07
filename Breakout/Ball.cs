@@ -17,7 +17,7 @@ namespace Breakout {
             return this.Shape.Position; 
         }
         
-        public void SetDirection(float theta) {
+        private void SetDirection(float theta) {
             this.theta = theta;
             this.Shape.AsDynamicShape().Direction.X = (float)Math.Cos((double)theta)*speed;
             this.Shape.AsDynamicShape().Direction.Y = (float)Math.Sin((double)theta)*speed;
@@ -53,14 +53,14 @@ namespace Breakout {
             }
         }
 
-        public void DirectionPlayerSetter(float PlayerPosition) {
+        private void DirectionPlayerSetter(float PlayerPosition) {
             //rebound angle depending on hit position
             float angle = 0.75f * (float) Math.PI - (PlayerPosition*(float)Math.PI / 2f);
             
             SetDirection(angle);
         }
 
-        public void DirectionBoundarySetter(){
+        private void DirectionBoundarySetter(){
             if (LeftBoudaryCheck() || RightBoudaryCheck()) {
                 this.Shape.AsDynamicShape().Direction.X = -this.Shape.AsDynamicShape().Direction.X;
             }
@@ -69,7 +69,7 @@ namespace Breakout {
             }
             
         }
-        public void Move() {
+        private void Move() {
             if(LowerBoundaryCheck()) {
                 this.DeleteEntity(); //not currently in entity container
             }

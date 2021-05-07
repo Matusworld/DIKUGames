@@ -13,7 +13,7 @@ namespace Breakout.States {
         private static MainMenu instance;
         private Entity backGroundImage;
         private LinkedList<Button> buttons;
-        private LinkedListNode<Button> activeButton;
+        public LinkedListNode<Button> activeButton { get; private set; }
 
         public MainMenu() { 
             Init();
@@ -65,7 +65,7 @@ namespace Breakout.States {
             }
         }
 
-        public void ButtonMover(KeyboardKey key) {
+        private void ButtonMover(KeyboardKey key) {
             activeButton.Value.SetPassive();
 
             if (key == KeyboardKey.Up && activeButton == buttons.First) {

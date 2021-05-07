@@ -40,7 +40,7 @@ namespace Breakout.States {
                 new DynamicShape (new Vec2F(0.45f, 0.5f), new Vec2F(0.05f,0.05f)),
                 new Image (Path.Combine(ProjectPath.getPath(),  
                 "Breakout", "Assets", "Images", "ball.png")),
-                (float) Math.PI /4f); 
+                (float) Math.PI /4f);
             
 
             player = new Player(

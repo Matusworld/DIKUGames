@@ -36,7 +36,7 @@ namespace BreakoutTest {
             eventBus.RegisterEvent( new GameEvent {
                     EventType = GameEventType.GameStateEvent, 
                     Message = "CHANGE_STATE",
-                    StringArg1 = "GAME_RUNNING" });
+                    StringArg1 = "GAME_NEWGAME" });
 
             eventBus.ProcessEvents();
 
