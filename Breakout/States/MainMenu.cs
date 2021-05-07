@@ -1,18 +1,19 @@
+using System.IO;
+using System.Collections.Generic;
 using DIKUArcade.State;
-using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Input;
-using System.IO;
+using Breakout.States.Buttons;
+
 
 namespace Breakout.States {
     public class MainMenu : IGameState {
         private static MainMenu instance;
         private Entity backGroundImage;
-        private Text[] menuButtons;
-        private int activeMenuButton;
-        private const int maxMenuButtons = 2;
+        private LinkedList<Button> buttons;
+        private LinkedListNode<Button> activeButton;
 
         public MainMenu() { 
             Init();
@@ -28,42 +29,39 @@ namespace Breakout.States {
             backGroundImage = new Entity(shape, image);
 
             //Initialize Buttons
-            Text newGameButton = new Text("New Game", new Vec2F(0.2f, 0.4f),
-                new Vec2F(0.3f, 0.3f));
-            Text quitGameButton = new Text("Quit", new Vec2F(0.2f, 0.3f),
-                new Vec2F(0.3f, 0.3f));
+            Vec3I passiveColor = new Vec3I(192,192,192);
+            Vec3I activeColor = new Vec3I(255,160,0);
+            //New Game
+            NewGameButton newGameButton = new NewGameButton("New Game", new Vec2F(0.2f, 0.4f),
+                new Vec2F(0.3f, 0.3f), activeColor, passiveColor);
+            //Quit Game
+            QuitGameButton quitGameButton = new QuitGameButton("Quit", new Vec2F(0.2f, 0.3f),
+                new Vec2F(0.3f, 0.3f), activeColor, passiveColor);
 
+            newGameButton.SetActive();
+            quitGameButton.SetPassive();
 
-            menuButtons = new Text[maxMenuButtons] { newGameButton, quitGameButton };
+            buttons = new LinkedList<Button>();
+            buttons.AddLast(newGameButton);
+            buttons.AddLast(quitGameButton);
+            activeButton = buttons.First;
         }
 
         public static MainMenu GetInstance() {
             return MainMenu.instance ?? (MainMenu.instance = new MainMenu());
         }
 
-        /// <summary>
-        /// Colors all non-active buttons red while active button is green
-        /// </summary>
-        private void colorButtons() {
-            for ( int i = 0; i < 2; i++ ) {
-                menuButtons[i].SetColor(new Vec3I(192,192,192));
-            }
-            menuButtons[activeMenuButton].SetColor(new Vec3I(255,160,0));
-        }
-
         public void ResetState() { 
             Init();
          }
 
-        public void UpdateState() {
-            colorButtons();
-        }
+        public void UpdateState() {}
 
         public void RenderState() {
             backGroundImage.RenderEntity();
 
-            foreach (Text button in menuButtons) {
-                button.RenderText();
+            foreach (Button button in buttons) {
+                button.Render();
             }
         }
         
@@ -72,30 +70,18 @@ namespace Breakout.States {
                 case KeyboardAction.KeyRelease:
                     switch (key) {
                         case KeyboardKey.Up:
-                            if (!(activeMenuButton == 0)) {
-                                activeMenuButton--;
-                            }
+                            activeButton.Value.SetPassive();
+                            activeButton = activeButton.Previous;
+                            activeButton.Value.SetActive();
                             break;
                         case KeyboardKey.Down:
-                            if (activeMenuButton < maxMenuButtons-1) {
-                                activeMenuButton++;
-                            }
+                            activeButton.Value.SetPassive();
+                            activeButton = activeButton.Next;
+                            activeButton.Value.SetActive();
                             break;
-                        case KeyboardKey.Enter: {
-                            if (activeMenuButton == 0) { // New Game pressed
-                                BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                                    EventType = GameEventType.GameStateEvent, 
-                                    Message = "CHANGE_STATE",
-                                    StringArg1 = "GAME_NEWGAME" });
-
-                            } else if (activeMenuButton == 1) { // Quit pressed
-                                BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                                    EventType = GameEventType.GameStateEvent, 
-                                    Message = "CHANGE_STATE",
-                                    StringArg1 = "GAME_QUIT" });
-                            }
+                        case KeyboardKey.Enter:
+                            activeButton.Value.Action();
                             break;
-                        }
                         default:
                             break;
                     }
