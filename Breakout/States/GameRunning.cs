@@ -40,7 +40,7 @@ namespace Breakout.States {
                 new DynamicShape (new Vec2F(0.45f, 0.5f), new Vec2F(0.05f,0.05f)),
                 new Image (Path.Combine(ProjectPath.getPath(),  
                 "Breakout", "Assets", "Images", "ball.png")),
-                -(float) Math.PI /4f); 
+                (float) Math.PI /4f); 
             
 
             player = new Player(
@@ -81,18 +81,34 @@ namespace Breakout.States {
             CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(),
                 player.Shape.AsDynamicShape());
             if (check.Collision) {
-                Console.WriteLine(PlayerHitPosition());
-                string hitPosition = PlayerHitPosition().ToString();
+                float hitPosition = PlayerHitPositionTruncator(PlayerHitPosition());
+                
                 BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                    EventType = GameEventType.ControlEvent, Message = hitPosition, 
+                    EventType = GameEventType.ControlEvent, Message = hitPosition.ToString(), 
                     StringArg1 = "PlayerCollision"
                 });
             }
         }
 
         private float PlayerHitPosition(){
-            return (ball.Shape.Position.X + ball.Shape.Extent.X/2f - player.Shape.Position.X)/
-                (player.Shape.Extent.X);
+            float numerator = ball.Shape.Position.X + ball.Shape.Extent.X - player.Shape.Position.X;
+            float denominator = player.Shape.Extent.X + ball.Shape.Extent.X; 
+
+            return numerator / denominator;
+            //return (ball.Shape.Position.X + ball.Shape.Extent.X/2f - player.Shape.Position.X)/
+            //    (player.Shape.Extent.X);
+        }
+
+        private float PlayerHitPositionTruncator(float hitPosition) {
+            if (hitPosition < 0.0f) {
+                return 0.0f;
+            } 
+            else if (hitPosition > 1.0f) {
+                return 1.0f;
+            }
+            else {
+                return hitPosition;
+            }
         }
         public void ResetState() {
             Init();
