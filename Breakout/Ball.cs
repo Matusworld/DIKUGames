@@ -55,9 +55,9 @@ namespace Breakout {
 
         private void DirectionPlayerSetter(float PlayerPosition) {
             //rebound angle depending on hit position
-            float angle = 0.75f * (float) Math.PI - (PlayerPosition*(float)Math.PI / 2f);
+            float theta = 0.75f * (float) Math.PI - (PlayerPosition*(float)Math.PI / 2f);
             
-            SetDirection(angle);
+            SetDirection(theta);
         }
 
         private void DirectionBoundarySetter(){
