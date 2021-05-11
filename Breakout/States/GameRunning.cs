@@ -212,8 +212,8 @@ namespace Breakout.States {
                     case KeyboardKey.Plus:
                         levelIndex++;
                         if (levelIndex < levelSequence.Count) {
-                            levelLoader = new LevelLoader(Path.Combine(
-                                "Assets", "Levels", levelSequence[levelIndex]));
+                            levelLoader = new LevelLoader(Path.Combine( ProjectPath.getPath(),
+                                "Breakout", "Assets", "Levels", levelSequence[levelIndex]));
                             levelLoader.LoadLevel();
                         }
                         else {

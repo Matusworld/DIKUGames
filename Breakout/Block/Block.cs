@@ -54,6 +54,11 @@ namespace Breakout.Blocks {
                             // Unsubscribe deleted blocks
                             BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, this);
                             DeleteEntity();
+
+                            // Could add points here
+                            BreakoutBus.GetBus().RegisterEvent( new GameEvent { 
+                                EventType = GameEventType.ControlEvent, StringArg1 = "ADD_SCORE",
+                                    Message = "1"});
                         }
                     }
                 }
