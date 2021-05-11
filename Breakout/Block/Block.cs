@@ -39,7 +39,16 @@ namespace Breakout.Blocks {
         public void ProcessEvent(GameEvent gameEvent) {
             if(gameEvent.EventType == GameEventType.ControlEvent ) {
                 if((Block) gameEvent.To == this) {
+                    /*
                     if(gameEvent.StringArg1 == "Damage") {
+                        Damage();
+                        if (!IsAlive()) {
+                            // Unsubscribe deleted blocks
+                            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, this);
+                            DeleteEntity();
+                        }
+                    }*/
+                    if(gameEvent.StringArg1 == "BlockCollision") {
                         Damage();
                         if (!IsAlive()) {
                             // Unsubscribe deleted blocks

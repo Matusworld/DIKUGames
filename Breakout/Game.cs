@@ -21,7 +21,7 @@ namespace Breakout {
 
             BreakoutBus.GetBus().InitializeEventBus(new List<GameEventType> {
                 GameEventType.WindowEvent, GameEventType.PlayerEvent, GameEventType.ControlEvent,
-                GameEventType.GameStateEvent } );
+                GameEventType.GameStateEvent, GameEventType.MovementEvent } );
             BreakoutBus.GetBus().Subscribe(GameEventType.WindowEvent, this);  
 
             stateMachine = new StateMachine();

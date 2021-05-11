@@ -2,6 +2,7 @@ using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
+using DIKUArcade.Timers;
 using System;
 
 namespace Breakout {
@@ -9,6 +10,7 @@ namespace Breakout {
 
         const float speed = 0.02f;
         float theta;
+        public bool Active { get; private set; } = true;
 
         public Ball(DynamicShape shape, IBaseImage image, float theta): base (shape, image) {
             SetDirection(theta);
@@ -79,14 +81,42 @@ namespace Breakout {
             }
         }
         public void ProcessEvent(GameEvent gameEvent) {
-            if (gameEvent.EventType == GameEventType.ControlEvent) {
+            if (gameEvent.EventType == GameEventType.MovementEvent) {
                 switch(gameEvent.StringArg1) {
                     case "PlayerCollision":
                         float PlayerPosition = float.Parse (gameEvent.Message);
                         DirectionPlayerSetter(PlayerPosition);
                         break;
+                    case "BlockCollision":
+                        if(this.Active) {
+                            switch (gameEvent.Message) {
+                                case "UpDown":
+                                    this.Shape.AsDynamicShape().Direction.Y = 
+                                        -this.Shape.AsDynamicShape().Direction.Y;
+                                    break;
+                                case "LeftRight":
+                                    this.Shape.AsDynamicShape().Direction.X = 
+                                        -this.Shape.AsDynamicShape().Direction.X;
+                                    break;
+                            }
+                            //Don't switch direction for a short while
+                            this.Active = false;
+                            //After some time Activate again
+                            BreakoutBus.GetBus().RegisterTimedEvent(
+                                new GameEvent{ EventType = GameEventType.ControlEvent,
+                                    StringArg1 = "BallActivate"},
+                                TimePeriod.NewMilliseconds(50));
+                        }
+                        break;
                     case "Move":
                         this.Move();
+                        break;
+                }
+            }
+            else if (gameEvent.EventType == GameEventType.ControlEvent) {
+                switch(gameEvent.StringArg1) {
+                    case "BallActivate":
+                        this.Active = true;
                         break;
                 }
             }
