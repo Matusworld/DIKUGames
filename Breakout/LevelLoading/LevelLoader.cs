@@ -42,13 +42,37 @@ namespace Breakout.LevelLoading {
                                     float posX = blockExtentX * i;
                                     float posY = 1.0f - (j + 1) * blockExtentY;
                                     Vec2F position = new Vec2F(posX, posY);
-                                    Block block = new Block(new DynamicShape(position, blockExtent), 
-                                        new Image(Path.Combine(
-                                            "Assets","Images", Legend.LegendList[l].Item2)), 
-                                        1);
-                                    Blocks.AddEntity(block);
-                                    // Subscribe every block 
-                                    BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, block);
+                                    string[] imagePath = new string[] { 
+                                        ProjectPath.getPath(), "Breakout", 
+                                            "Assets","Images", Legend.LegendList[l].Item2 };
+                                    if (map.RowList[j][i] == Meta.Hardened) {
+                                        string damageImg = 
+                                            Legend.LegendList[l].Item2.Split(".png")[0]
+                                                + "-damaged.png";
+                                        string[] damageImgPath = new string[] { 
+                                            ProjectPath.getPath(), "Breakout", 
+                                                "Assets","Images", damageImg}; 
+                                        HardenedBlock block = new HardenedBlock (
+                                            new DynamicShape(position, blockExtent), 
+                                            new Image(Path.Combine(imagePath)), 
+                                            new Image(Path.Combine(damageImgPath)));
+
+                                        Blocks.AddEntity(block);
+                                        BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, block);
+                                    } else if (map.RowList[j][i] == Meta.Unbreakable) {
+                                        UnbreakableBlock block = new UnbreakableBlock(
+                                            new DynamicShape(position, blockExtent), 
+                                            new Image(Path.Combine(
+                                                "Assets","Images", Legend.LegendList[l].Item2)));
+                                        Blocks.AddEntity(block);
+                                        BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, block);
+                                    } else {
+                                        Block block = new Block(new DynamicShape(position, blockExtent), 
+                                            new Image(Path.Combine(
+                                                "Assets","Images", Legend.LegendList[l].Item2)));
+                                        Blocks.AddEntity(block);
+                                        BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, block);
+                                    }
                                 }
                             }
                         }
