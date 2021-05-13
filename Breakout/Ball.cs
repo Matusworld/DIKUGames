@@ -1,8 +1,12 @@
+using System.Collections.Generic;
+using System.IO;
+using System;
+using Breakout;
+using DIKUArcade.GUI;
 using DIKUArcade.Events;
 using DIKUArcade.Entities;
-using DIKUArcade.Graphics;
 using DIKUArcade.Math;
-using System;
+using DIKUArcade.Graphics;
 
 namespace Breakout {
     public class Ball : Entity, IGameEventProcessor {   
@@ -23,21 +27,21 @@ namespace Breakout {
             this.Shape.AsDynamicShape().Direction.Y = (float)Math.Sin((double)theta)*speed;
         }
 
-        private bool LeftBoudaryCheck() {
+        public bool LeftBoundaryCheck() {
             if (this.Shape.Position.X <= 0.01f) {
                 return true;
             } else {
                 return false;
             }
         }
-        private bool RightBoudaryCheck() {
+        public bool RightBoundaryCheck() {
             if (this.Shape.Position.X+this.Shape.Extent.X >= 0.99f) {
                 return true;
             } else {
                 return false;
             }
         }
-        private bool UpperBoundaryCheck() {
+        public bool UpperBoundaryCheck() {
             if (this.Shape.Position.Y+this.Shape.Extent.Y >= 0.99) {
                 return true;
             } else {
@@ -45,7 +49,7 @@ namespace Breakout {
             }
         }
 
-        private bool LowerBoundaryCheck() {
+        public bool LowerBoundaryCheck() {
             if (this.Shape.Position.Y+this.Shape.Extent.Y <= 0.01) {
                 return true;
             } else {
@@ -61,7 +65,7 @@ namespace Breakout {
         }
 
         private void DirectionBoundarySetter(){
-            if (LeftBoudaryCheck() || RightBoudaryCheck()) {
+            if (LeftBoundaryCheck() || RightBoundaryCheck()) {
                 this.Shape.AsDynamicShape().Direction.X = -this.Shape.AsDynamicShape().Direction.X;
             }
             if (UpperBoundaryCheck()) {
