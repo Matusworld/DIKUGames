@@ -26,21 +26,21 @@ namespace Breakout {
         }
 
         private bool LeftBoudaryCheck() {
-            if (this.Shape.Position.X <= 0.01f) {
+            if (this.Shape.Position.X <= 0.0f) {
                 return true;
             } else {
                 return false;
             }
         }
         private bool RightBoudaryCheck() {
-            if (this.Shape.Position.X+this.Shape.Extent.X >= 0.99f) {
+            if (this.Shape.Position.X+this.Shape.Extent.X >= 1.0f) {
                 return true;
             } else {
                 return false;
             }
         }
         private bool UpperBoundaryCheck() {
-            if (this.Shape.Position.Y+this.Shape.Extent.Y >= 0.99) {
+            if (this.Shape.Position.Y+this.Shape.Extent.Y >= 1.0f) {
                 return true;
             } else {
                 return false;
@@ -48,7 +48,7 @@ namespace Breakout {
         }
 
         private bool LowerBoundaryCheck() {
-            if (this.Shape.Position.Y+this.Shape.Extent.Y <= 0.01) {
+            if (this.Shape.Position.Y+this.Shape.Extent.Y <= 0.0f) {
                 return true;
             } else {
                 return false;

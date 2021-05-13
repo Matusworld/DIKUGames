@@ -22,6 +22,8 @@ namespace Breakout.States {
         private LevelLoader levelLoader;
         private List<string> levelSequence;
         private int levelIndex;
+
+        private Score score;
         
         public GameRunning() {
             Init();
@@ -48,6 +50,7 @@ namespace Breakout.States {
                 new Image(Path.Combine(ProjectPath.getPath(),
                 "Breakout", "Assets", "Images", "player.png")));
 
+            score = new Score(new Vec2F(0.06f, -0.25f), new Vec2F(0.3f, 0.3f));
             
             levelSequence = new List<string> { "level1.txt", "level2.txt", "level3.txt",
                 "central-mass.txt", "columns.txt", "wall.txt" };
@@ -60,6 +63,7 @@ namespace Breakout.States {
 
             BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player); 
             BreakoutBus.GetBus().Subscribe(GameEventType.MovementEvent, ball);
+            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, score);
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, ball);
         }
 
@@ -160,6 +164,7 @@ namespace Breakout.States {
             player.Render();
             ball.RenderEntity();
             renderBlocks(levelLoader.Blocks);
+            score.RenderScore();
         }
 
         public void HandleKeyEvent(KeyboardAction action, KeyboardKey key) {

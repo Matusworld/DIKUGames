@@ -1,6 +1,7 @@
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Events;
+using Breakout.Blocks;
 
 namespace Breakout {
     public class Score : IGameEventProcessor {
@@ -12,13 +13,23 @@ namespace Breakout {
         public Score(Vec2F pos, Vec2F extent) {
             ScoreCount = 0;
 
-            display = new Text(ScoreCount.ToString(), pos, extent);
-            display.SetColor(new Vec3I(255,0,0));
+            display = new Text("Score: " + ScoreCount.ToString(), pos, extent);
+            display.SetColor(System.Drawing.Color.Gold);
         }
 
         // Unit only positive integers 
-        private void AddToScore(uint n) {
-            ScoreCount += n;
+        private void AddToScore(BlockTypes blocktype) {
+            switch (blocktype) {
+                case BlockTypes.Normal:
+                    ScoreCount += 1;
+                    break;
+                case BlockTypes.Hardened:
+                    ScoreCount += 2;
+                    break;
+                case BlockTypes.Unbreakable:
+                    break;
+            }
+            display.SetText("Score: " + ScoreCount.ToString());
         }
 
         public void RenderScore() {
@@ -28,8 +39,13 @@ namespace Breakout {
         public void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.EventType == GameEventType.ControlEvent) {
                 if (gameEvent.StringArg1 == "ADD_SCORE") {
-                    uint points = uint.Parse(gameEvent.Message);
-                    AddToScore(points);
+                    //uint points = uint.Parse(gameEvent.Message);
+                    //AddToScore(points);
+                    if (gameEvent.From is HardenedBlock) {
+                        AddToScore(BlockTypes.Hardened);
+                    } else if (gameEvent.From is Block) {
+                        AddToScore(BlockTypes.Normal);
+                    }
                 }
             }
         }
