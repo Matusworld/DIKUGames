@@ -23,7 +23,7 @@ namespace Breakout.LevelLoading.SectionLoading {
         /// <summary>
         /// Load text from section into internal fields
         /// </summary>
-        public override void LoadSection(string path) {
+        public override void LoadSection() {
             reader.SetSection(section);
 
             string line;

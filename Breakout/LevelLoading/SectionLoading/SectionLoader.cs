@@ -16,7 +16,7 @@ namespace Breakout.LevelLoading.SectionLoading {
         /// Load text from section into internal fields. 
         /// Assume reader is reset prior to loading.
         /// </summary>
-        public abstract void LoadSection(string path);
+        public abstract void LoadSection();
 
         /// <summary>
         /// Clear all previously loaded data

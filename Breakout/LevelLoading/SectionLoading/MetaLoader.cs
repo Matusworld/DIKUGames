@@ -38,7 +38,7 @@ namespace Breakout.LevelLoading.SectionLoading {
         }
 
 
-        public override void LoadSection(string path) {
+        public override void LoadSection() {
             reader.SetSection(section);
 
             string line;

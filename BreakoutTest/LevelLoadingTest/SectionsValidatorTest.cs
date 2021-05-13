@@ -39,7 +39,7 @@ namespace BreakoutTest {
 
         [Test]
         public void TestInvalidSectionsValidator() {
-            sectionsValidator = new SectionsValidator(invalidSectionsFile);
+            sectionsValidator = new SectionsValidator();
 
             Assert.IsFalse(sectionsValidator.ValidateSections(invalidSectionsFile));
         }

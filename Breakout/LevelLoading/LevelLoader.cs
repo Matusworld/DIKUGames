@@ -75,9 +75,9 @@ namespace Breakout.LevelLoading {
                 //Clear fields
                 ClearLoader();
                 //Load sections
-                map.LoadSection(path);
-                Meta.LoadSection(path);
-                Legend.LoadSection(path);
+                map.LoadSection();
+                Meta.LoadSection();
+                Legend.LoadSection();
 
                 Vec2F blockExtent = ComputeBlockExtent();
 

@@ -39,12 +39,6 @@ namespace BreakoutTest {
 
             reader = new SectionStreamReader();
             reader.SetPath(path);
-
-            //mapReader = new SectionStreamReader(path, "Map");
-
-            //metaReader = new SectionStreamReader(path, "Meta");
-
-            //legendReader = new SectionStreamReader(path, "Legend");
         }
 
         [Test]
@@ -55,7 +49,7 @@ namespace BreakoutTest {
 
             int i = 0;
 
-            while((line = mapReader.ReadSectionLine()) != null) {
+            while((line = reader.ReadSectionLine()) != null) {
                 Assert.AreEqual(line, map[i]);
                 i++;
             }
@@ -71,7 +65,7 @@ namespace BreakoutTest {
 
             int i = 0;
 
-            while((line = metaReader.ReadSectionLine()) != null) {
+            while((line = reader.ReadSectionLine()) != null) {
                 Assert.AreEqual(line, meta[i]);
                 i++;
             }
@@ -87,7 +81,7 @@ namespace BreakoutTest {
 
             int i = 0;
 
-            while((line = legendReader.ReadSectionLine()) != null) {
+            while((line = reader.ReadSectionLine()) != null) {
                 Assert.AreEqual(line, legend[i]);
                 i++;
             }
