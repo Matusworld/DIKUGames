@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Breakout.LevelLoading.SectionLoading {
     public class MapLoader : SectionLoader {
-        private SectionStreamReader reader;
+        //private SectionStreamReader reader;
         private string section = "Map"; 
 
         public List<string> RowList { get; private set; } = new List<string>();
@@ -12,9 +12,7 @@ namespace Breakout.LevelLoading.SectionLoading {
 
         public int Width { get; private set; }
         
-        public MapLoader(string filepath) {
-            reader = new SectionStreamReader(filepath, section);
-        }
+        public MapLoader(SectionStreamReader reader) : base(reader) {}
 
         protected override void ProcessSectionLine(string line) {
             //find height og width
@@ -25,7 +23,9 @@ namespace Breakout.LevelLoading.SectionLoading {
         /// <summary>
         /// Load text from section into internal fields
         /// </summary>
-        public override void LoadSection() {
+        public override void LoadSection(string path) {
+            reader.SetSection(section);
+
             string line;
             
             while((line = reader.ReadSectionLine()) != null) {
@@ -35,7 +35,15 @@ namespace Breakout.LevelLoading.SectionLoading {
             Width = RowList[0].Length;
             Height = RowList.Count;
 
-            reader.File.Close();
-        } 
+            reader.Reset();
+            //reader.File.Close();
+        }
+
+        public override void ClearLoader()
+        {
+            RowList = new List<string>();
+            Height = 0;
+            Width = 0;
+        }
     }
 }

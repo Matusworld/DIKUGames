@@ -15,7 +15,7 @@ using DIKUArcade.Graphics;
 namespace BreakoutTest {
 
     public class MapLoaderTest {
-
+        SectionStreamReader reader;
         MapLoader loader;
         string path;
         int width = 12;
@@ -30,11 +30,15 @@ namespace BreakoutTest {
         [SetUp]
         public void Setup() {
             path = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", "level1.txt");
+
+            reader = new SectionStreamReader();
         }
 
         [Test]
         public void Testloader() {
-            loader = new MapLoader(path);
+            reader.SetPath(path);
+
+            loader = new MapLoader(reader);
 
             loader.LoadSection();
 

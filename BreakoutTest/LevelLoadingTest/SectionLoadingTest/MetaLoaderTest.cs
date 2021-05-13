@@ -14,6 +14,7 @@ using DIKUArcade.Graphics;
 
 namespace BreakoutTest {
     public class MetaLoaderTest {
+        SectionStreamReader reader;
         MetaLoader loader;
         string name = "LEVEL 1";
         int time = 300;
@@ -30,11 +31,15 @@ namespace BreakoutTest {
 
             invalidFile = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", 
                 "wrongsectioncontent.txt");
+
+            reader = new SectionStreamReader();
         }
 
         [Test]
         public void ValidMetaTest() {
-            loader = new MetaLoader(validFile);
+            reader.SetPath(validFile);
+
+            loader = new MetaLoader(reader);
 
             loader.LoadSection();
 
@@ -45,16 +50,21 @@ namespace BreakoutTest {
             Assert.AreEqual(loader.Hardened, hardened);
 
             Assert.AreEqual(loader.Powerup, powerup);
+
+            loader.ClearLoader();
         }
 
         [Test]
         public void InvalidMetaTest() {
-            loader = new MetaLoader(invalidFile);
+            reader.SetPath(invalidFile);
+
+            loader = new MetaLoader(reader);
             
             bool check = false;
 
             try {
                 loader.LoadSection();
+                loader.ClearLoader();
             } catch (InvalidDataException) {
                 check = true;
                 Assert.True(check);

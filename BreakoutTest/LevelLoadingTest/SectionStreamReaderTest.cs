@@ -14,11 +14,10 @@ using DIKUArcade.Graphics;
 namespace BreakoutTest {
 
     public class SectionStreamReaderTest {
-        SectionStreamReader mapReader;
-
-        SectionStreamReader metaReader;
-
-        SectionStreamReader legendReader;
+        SectionStreamReader reader;
+        //SectionStreamReader mapReader;
+        //SectionStreamReader metaReader;
+        //SectionStreamReader legendReader;
 
         string path;
 
@@ -38,15 +37,19 @@ namespace BreakoutTest {
         public void Setup() {
             path = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", "level1.txt");
 
-            mapReader = new SectionStreamReader(path, "Map");
+            reader = new SectionStreamReader();
+            reader.SetPath(path);
 
-            metaReader = new SectionStreamReader(path, "Meta");
+            //mapReader = new SectionStreamReader(path, "Map");
 
-            legendReader = new SectionStreamReader(path, "Legend");
+            //metaReader = new SectionStreamReader(path, "Meta");
+
+            //legendReader = new SectionStreamReader(path, "Legend");
         }
 
         [Test]
         public void TestMapReadSection() {
+            reader.SetSection("Map");
 
             string line;
 
@@ -56,10 +59,14 @@ namespace BreakoutTest {
                 Assert.AreEqual(line, map[i]);
                 i++;
             }
+
+            reader.Reset();
         }
 
         [Test]
         public void TestMetaReadSection() {
+            reader.SetSection("Meta");
+
             string line;
 
             int i = 0;
@@ -68,10 +75,14 @@ namespace BreakoutTest {
                 Assert.AreEqual(line, meta[i]);
                 i++;
             }
+
+            reader.Reset();
         }
 
         [Test]
         public void TestLegendReadSection() {
+            reader.SetSection("Legend");
+
             string line;
 
             int i = 0;
@@ -80,6 +91,8 @@ namespace BreakoutTest {
                 Assert.AreEqual(line, legend[i]);
                 i++;
             }
+
+            reader.Reset();
         }
     }
 }

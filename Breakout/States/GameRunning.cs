@@ -56,10 +56,10 @@ namespace Breakout.States {
                 "central-mass.txt", "columns.txt", "wall.txt" };
             levelIndex = 0;
 
-            levelLoader = new LevelLoader(Path.Combine(ProjectPath.getPath(),
+            levelLoader = new LevelLoader();
+            levelLoader.LoadLevel(Path.Combine(ProjectPath.getPath(),
                 "Breakout", "Assets", "Levels", 
                 levelSequence[levelIndex]));
-            levelLoader.LoadLevel();
 
             BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player); 
             BreakoutBus.GetBus().Subscribe(GameEventType.MovementEvent, ball);
@@ -146,10 +146,28 @@ namespace Breakout.States {
             Init();
         }
 
+        /// <summary>
+        /// Load next level if legal, else go to main menu
+        /// </summary>
+        private void NextLevel() {
+            levelIndex++;
+            if (levelIndex < levelSequence.Count) {
+                levelLoader.LoadLevel(Path.Combine( new string[] { ProjectPath.getPath(),
+                    "Breakout", "Assets", "Levels", levelSequence[levelIndex] }));
+            }
+            else {
+                BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                    EventType = GameEventType.GameStateEvent,
+                    Message = "CHANGE_STATE",
+                    StringArg1 = "GAME_MAINMENU" });
+            }
+        }
+
         public void UpdateState() {
             //player move
             BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                 EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
+            
             //ball move
             BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                 EventType = GameEventType.MovementEvent, StringArg1 = "Move" });
@@ -157,6 +175,10 @@ namespace Breakout.States {
             levelLoader.Blocks.Iterate(block => {
                 BallBlockCollision(block);
             });
+
+            if(levelLoader.LevelEnded()) {
+                NextLevel();
+            }
         }
 
         public void RenderState() {
@@ -215,18 +237,7 @@ namespace Breakout.States {
                             StringArg1 = "GAME_PAUSED" });
                             break;
                     case KeyboardKey.Plus:
-                        levelIndex++;
-                        if (levelIndex < levelSequence.Count) {
-                            levelLoader = new LevelLoader(Path.Combine( ProjectPath.getPath(),
-                                "Breakout", "Assets", "Levels", levelSequence[levelIndex]));
-                            levelLoader.LoadLevel();
-                        }
-                        else {
-                            BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                                EventType = GameEventType.GameStateEvent,
-                                Message = "CHANGE_STATE",
-                                StringArg1 = "GAME_MAINMENU" });
-                        }
+                        NextLevel();
                         break;
                     default:
                         break;
