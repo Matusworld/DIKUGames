@@ -13,7 +13,7 @@ using Breakout.LevelLoading;
 
 namespace BreakoutTest {
     public class UnbreakableBlockTest {
-        UnbreakableBlock uBlock;
+        Unbreakable uBlock;
 
         GameEventBus eventBus;
 
@@ -21,7 +21,7 @@ namespace BreakoutTest {
         public void Setup() {
             Window.CreateOpenGLContext();
 
-            uBlock = new UnbreakableBlock(new DynamicShape(
+            uBlock = new Unbreakable(new DynamicShape(
                 new Vec2F(0.45f, 0.45f), new Vec2F(0.1f, 0.05f)), 
                 new Image(Path.Combine( TestProjectPath.getPath(),
                     "Assets", "Images", "blue-block.png")));

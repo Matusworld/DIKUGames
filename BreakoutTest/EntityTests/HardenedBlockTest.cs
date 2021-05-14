@@ -13,7 +13,7 @@ using Breakout.LevelLoading;
 
 namespace BreakoutTest {
     public class HardenedBlockTest {
-        HardenedBlock hblock;
+        Hardened hblock;
 
         Block block;
 
@@ -27,7 +27,7 @@ namespace BreakoutTest {
                                         new Image(Path.Combine( TestProjectPath.getPath(),
                                             "Assets", "Images", "blue-block.png")));
 
-            hblock = new HardenedBlock(new DynamicShape(
+            hblock = new Hardened(new DynamicShape(
                 new Vec2F(0.45f, 0.45f), new Vec2F(0.1f, 0.05f)), 
                 new Image(Path.Combine(
                     TestProjectPath.getPath(),"Assets", "Images", "blue-block.png")),
