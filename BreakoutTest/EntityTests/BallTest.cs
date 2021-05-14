@@ -58,16 +58,34 @@ namespace BreakoutTest
             ball.Shape.AsDynamicShape().Direction.X = 0.01f;
             ball.Shape.AsDynamicShape().Direction.Y = 0.01f;
             ball.DirectionBoundarySetter();
-            Assert.IsTrue(ball.Shape.AsDynamicShape().Direction.X+-tolerance == -0.01f+-tolerance && 
-                ball.Shape.AsDynamicShape().Direction.Y+-tolerance == -0.01f+-tolerance);
+            Assert.IsTrue(tolerance >= Math.Abs(0.01f-ball.Shape.AsDynamicShape().Direction.X) && 
+                tolerance >= Math.Abs(0.01f-ball.Shape.AsDynamicShape().Direction.Y));
         }
         [Test]
         public void testDirectionPlayerSetter(){
             float testTheta = ball.ReturnTheta(0.23f);
             ball.DirectionPlayerSetter(0.23f);
-            Assert.IsTrue(testTheta == 1.9949113f);
+            Assert.IsTrue(tolerance >=Math.Abs(testTheta-1.9949113f));           
             //The values in this test have been calculated in maple to find the appropriate values
             //to test for.
+        }
+        [Test]
+        public void testDirectionPlayerSetterLeftBounce(){
+            float testTheta = ball.ReturnTheta(0.0f);
+            ball.DirectionPlayerSetter(0.0f);
+            Assert.IsTrue(tolerance >= Math.Abs(testTheta - (3f/4f*(float)Math.PI)));
+        }
+        [Test]
+        public void testDirectionPlayerSetterMiddleBounce(){
+            float testTheta = ball.ReturnTheta(0.5f);
+            ball.DirectionPlayerSetter(0.5f);
+            Assert.IsTrue(tolerance >= Math.Abs(testTheta - (2f/4f*(float)Math.PI)));
+        }
+        [Test]
+        public void testDirectionPlayerSetterRightBounce(){
+            float testTheta = ball.ReturnTheta(1.0f);
+            ball.DirectionPlayerSetter(1.0f);
+            Assert.IsTrue(tolerance >= Math.Abs(testTheta - (1f/4f*(float)Math.PI)));
         }
     }
 }
