@@ -1,8 +1,3 @@
-using System.IO;
-using System.Collections.Generic;
-using DIKUArcade;
-using DIKUArcade.GUI;
-using DIKUArcade.Input;
 using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;

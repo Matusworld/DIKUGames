@@ -109,7 +109,7 @@ namespace Breakout.LevelLoading {
                                         string[] damageImgPath = new string[] { 
                                             ProjectPath.getPath(), "Breakout", 
                                                 "Assets","Images", damageImg}; 
-                                        HardenedBlock block = new HardenedBlock (
+                                        Hardened block = new Hardened (
                                             new DynamicShape(position, blockExtent), 
                                             new Image(Path.Combine(imagePath)), 
                                             new Image(Path.Combine(damageImgPath)));
@@ -119,7 +119,7 @@ namespace Breakout.LevelLoading {
                                     } 
                                     else if (cell == Meta.Unbreakable) {
                                         numberOfUnbreakables++;
-                                        UnbreakableBlock block = new UnbreakableBlock(
+                                        Unbreakable block = new Unbreakable (
                                             new DynamicShape(position, blockExtent), 
                                             new Image(Path.Combine(
                                                 "Assets","Images", Legend.LegendList[l].Item2)));

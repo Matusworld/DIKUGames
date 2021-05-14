@@ -58,7 +58,7 @@ namespace Breakout {
                 return false;
             }
         }
-        public float ReturnTheta(float PlayerPosition){
+        public float ReturnTheta(float PlayerPosition) {
             float theta = 0.75f * (float) Math.PI - (PlayerPosition*(float)Math.PI / 2f);
             
             return theta;

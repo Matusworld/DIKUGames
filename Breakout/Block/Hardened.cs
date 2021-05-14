@@ -1,18 +1,12 @@
-using System.IO;
-using System.Collections.Generic;
-using DIKUArcade;
-using DIKUArcade.GUI;
-using DIKUArcade.Input;
 using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
-using DIKUArcade.Math;
 
 namespace Breakout.Blocks {
-    public class HardenedBlock : Block {
+    public class Hardened : Block {
         private IBaseImage damageImage;
         private int maxHP;
-        public HardenedBlock(DynamicShape shape, IBaseImage image, IBaseImage damageImage) 
+        public Hardened(DynamicShape shape, IBaseImage image, IBaseImage damageImage) 
             : base(shape, image) {
                 this.damageImage = damageImage;
                 HP = HP * 2;

@@ -41,7 +41,7 @@ namespace Breakout {
                 if (gameEvent.StringArg1 == "ADD_SCORE") {
                     //uint points = uint.Parse(gameEvent.Message);
                     //AddToScore(points);
-                    if (gameEvent.From is HardenedBlock) {
+                    if (gameEvent.From is Hardened) {
                         AddToScore(BlockTypes.Hardened);
                     } else if (gameEvent.From is Block) {
                         AddToScore(BlockTypes.Normal);
