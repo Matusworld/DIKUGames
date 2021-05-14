@@ -41,5 +41,33 @@ namespace BreakoutTest
             ball.Shape.Position.X = 0.0f;
             Assert.IsTrue(ball.LeftBoundaryCheck());
         }
+        [Test]
+        public void TestUBoundaryCheckers(){
+            ball.Shape.Position.Y = 1.0f;
+             Assert.IsTrue(ball.UpperBoundaryCheck());
+        }
+        [Test]
+        public void TestLOBoundaryCheckers(){
+            ball.Shape.Position.Y = -0.1f;
+             Assert.IsTrue(ball.LowerBoundaryCheck());
+        }
+        [Test]
+        public void TestDirectionBoundarySetter(){
+            ball.Shape.Position.X = 0.0f;
+            ball.Shape.Position.Y = 1.0f;
+            ball.Shape.AsDynamicShape().Direction.X = 0.01f;
+            ball.Shape.AsDynamicShape().Direction.Y = 0.01f;
+            ball.DirectionBoundarySetter();
+            Assert.IsTrue(ball.Shape.AsDynamicShape().Direction.X+-tolerance == -0.01f+-tolerance && 
+                ball.Shape.AsDynamicShape().Direction.Y+-tolerance == -0.01f+-tolerance);
+        }
+        [Test]
+        public void testDirectionPlayerSetter(){
+            float testTheta = ball.ReturnTheta(0.23f);
+            ball.DirectionPlayerSetter(0.23f);
+            Assert.IsTrue(testTheta == 1.9949113f);
+            //The values in this test have been calculated in maple to find the appropriate values
+            //to test for.
+        }
     }
 }

@@ -23,8 +23,8 @@ namespace BreakoutTest
 
             block = new Block(new DynamicShape(new Vec2F(0.45f, 0.45f), new Vec2F(0.1f, 0.05f)), 
                                         new Image(Path.Combine( TestProjectPath.getPath(),
-                                            "Assets", "Images", "blue-block.png")), 
-                                        15);
+                                            "Assets", "Images", "blue-block.png"))
+                                        );
             
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.ControlEvent });
@@ -36,7 +36,7 @@ namespace BreakoutTest
             int beforedamage = block.HP;
 
             eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.ControlEvent, StringArg1 = "Damage",
+                EventType = GameEventType.ControlEvent, StringArg1 = "BlockCollision",
                 To = block
             });
 

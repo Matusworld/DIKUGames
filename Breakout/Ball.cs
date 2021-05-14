@@ -58,11 +58,14 @@ namespace Breakout {
                 return false;
             }
         }
-
+        public float ReturnTheta(float PlayerPosition){
+            float theta = 0.75f * (float) Math.PI - (PlayerPosition*(float)Math.PI / 2f);
+            
+            return theta;
+        }
         public void DirectionPlayerSetter(float PlayerPosition) {
             //rebound angle depending on hit position
             float theta = 0.75f * (float) Math.PI - (PlayerPosition*(float)Math.PI / 2f);
-            
             SetDirection(theta);
         }
 
