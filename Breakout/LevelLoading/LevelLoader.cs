@@ -25,7 +25,7 @@ namespace Breakout.LevelLoading {
         }
 
         /// <summary>
-        /// Computes the block extent such based on height and width such that
+        /// Compute the block extent such based on height and width such that
         /// block pattern cover top half of map
         /// </summary>
         /// <returns>Vec2F BlockExtent</returns>
@@ -35,6 +35,13 @@ namespace Breakout.LevelLoading {
             return new Vec2F(blockExtentX, blockExtentY);
         }
 
+        /// <summary>
+        /// Compute the block position based on ASCII map coordinate and extent
+        /// </summary>
+        /// <param name="i" - row coordinate></param>
+        /// <param name="j" - column coordinate></param>
+        /// <param name="blockExtent"></param>
+        /// <returns>Vec2F BlockPosistion</returns>
         private Vec2F ComputeBlockPosition(int i, int j, Vec2F blockExtent) {
             float posX = blockExtent.X * j;
             float posY = 1.0f - (i + 1) * blockExtent.Y;
