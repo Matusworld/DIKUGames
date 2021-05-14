@@ -10,7 +10,7 @@ using DIKUArcade.Math;
 
 namespace Breakout.Blocks {
     public class Block : Entity, IGameEventProcessor {
-        public bool Alive { get; protected set; }
+        public bool Alive { get; protected set; } = true;
 
         public int HP { get; protected set; } = 1;
         public string Value { get; protected set; }
