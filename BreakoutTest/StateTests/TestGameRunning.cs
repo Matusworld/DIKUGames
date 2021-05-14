@@ -78,6 +78,9 @@ namespace BreakoutTest {
             eventBus.ProcessEvents();
             game.UpdateState();
             Assert.AreEqual(1, game.LevelIndex);
+
+
+            //Test ball in the middle start
         } 
     }
 }

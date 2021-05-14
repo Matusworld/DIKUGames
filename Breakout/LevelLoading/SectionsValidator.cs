@@ -15,9 +15,9 @@ namespace Breakout.LevelLoading {
         /// also checks that these sections are correctly ended
         /// </summary>
         /// <returns>True if valid</returns>
-        public bool ValidateSections(string filepath) {
+        public bool ValidateSections(string path) {
             //init new reader
-            StreamReader reader = BreakoutStreamReader.GetReader(filepath);
+            StreamReader reader = BreakoutStreamReader.GetReader(path);
             int sectionState = 0;
 
             while((line = reader.ReadLine()) != null) {
