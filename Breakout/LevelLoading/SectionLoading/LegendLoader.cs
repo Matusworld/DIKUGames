@@ -3,13 +3,10 @@ using System.Collections.Generic;
 
 namespace Breakout.LevelLoading.SectionLoading {
     public class LegendLoader : SectionLoader {
-        private SectionStreamReader reader;
         private string section = "Legend"; 
         public List<(char,string)> LegendList { get; private set; } = new List<(char, string)>();
 
-        public LegendLoader(string filepath) {
-            reader = new SectionStreamReader(filepath, section);
-        }
+        public LegendLoader(SectionStreamReader reader) : base(reader) {}
 
         protected override void ProcessSectionLine(string line) {
             string[] splitArray = line.Split(") ");
@@ -20,18 +17,21 @@ namespace Breakout.LevelLoading.SectionLoading {
             }
         }
 
-
-        /// <summary>
-        /// Load text from section into internal fields
-        /// </summary>
         public override void LoadSection() {
+            reader.SetSection(section);
+
             string line;
             
             while((line = reader.ReadSectionLine()) != null) {
                 ProcessSectionLine(line);
             }
 
-            reader.File.Close();
-        } 
+            reader.Reset();
+        }
+
+        public override void ClearLoader()
+        {
+            LegendList = new List<(char, string)>();
+        }
     }
 }

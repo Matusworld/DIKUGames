@@ -112,7 +112,7 @@ namespace Breakout {
                             BreakoutBus.GetBus().RegisterTimedEvent(
                                 new GameEvent{ EventType = GameEventType.ControlEvent,
                                     StringArg1 = "BallActivate"},
-                                TimePeriod.NewMilliseconds(50));
+                                TimePeriod.NewMilliseconds(10));
                         }
                         break;
                     case "Move":

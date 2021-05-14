@@ -25,24 +25,22 @@ namespace BreakoutTest {
 
             inValidFile = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", 
                 "wrongsectionorder.txt");
+
+            loader = new LevelLoader();
         }
 
         [Test]
         // Tested Visaully, that blocks have the correct position compared to level files. 
         public void validFileLevelLoaderTest() {
-            loader = new LevelLoader(validFile);
-
-            loader.LoadLevel();
+            loader.LoadLevel(validFile);
         }
 
         [Test]
         public void InvalidFileLevelLoaderTest() {
-            loader = new LevelLoader(inValidFile);
-
             bool check = false;
 
             try {
-                loader.LoadLevel();
+                loader.LoadLevel(inValidFile);
             } catch (InvalidDataException) {
                 check = true;
                 Assert.True(check);

@@ -6,15 +6,35 @@ namespace Breakout.LevelLoading {
     /// Responsibility of closing Stream passes to user
     /// </summary>
     public class SectionStreamReader {
-        public StreamReader File { get; private set; }
+        private string path;
         private string section;
         private string line;
         private int state = 0;
 
 
-        public SectionStreamReader(string filepath, string section) {
-            File = new StreamReader(filepath);
+        public SectionStreamReader() {}
+
+        /// <summary>
+        /// Set section to prepare reading
+        /// </summary>
+        /// <param name="section"></param>
+        public void SetSection(string section) {
             this.section = section; 
+        }
+
+        /// <summary>
+        /// Reset reader position
+        /// </summary>
+        public void Reset() {
+            BreakoutStreamReader.ResetReader();
+        }
+        
+        /// <summary>
+        /// Set path for reading
+        /// </summary>
+        /// <param name="path"></param>
+        public void SetPath(string path) {
+            this.path = path;
         }
 
         /// <summary>
@@ -23,16 +43,18 @@ namespace Breakout.LevelLoading {
         /// - When the section end is reached, null is returned 
         /// </summary>
         /// <returns> the read line </returns>
-        public string ReadSectionLine(){
-            while ((line = File.ReadLine()) != null) {
+        public string ReadSectionLine() {
+            StreamReader reader = BreakoutStreamReader.GetReader(path);
+            while ((line = reader.ReadLine()) != null) {
                 //skip if section is not reached
                 if (state != 0 || (state == 0 && line == section + ":")) {
                     //increase state if section start is reached
                     if (state == 0 && line == section + ":") {
                         state++;
                     }
-                    //return null if section end is reached
+                    //return null if section end is reached and reset state
                     if (state == 1 && line == section + "/") {
+                        state = 0;
                         return null;
                     }
                     //return line if within section

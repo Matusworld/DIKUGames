@@ -6,23 +6,21 @@ namespace Breakout.LevelLoading {
     /// Validates the given ASCII map
     /// </summary>
     public class SectionsValidator {
-
-        private StreamReader file;
         private string line;
 
-        public SectionsValidator(string filepath) {
-            file = new StreamReader(filepath);
-        }
+        public SectionsValidator() {}
 
         /// <summary>
         /// Validates that the sections of the given ASCII map are Map, Meta, and Legends in that order
         /// also checks that these sections are correctly ended
         /// </summary>
         /// <returns>True if valid</returns>
-        public bool ValidateSections() {
+        public bool ValidateSections(string filepath) {
+            //init new reader
+            StreamReader reader = BreakoutStreamReader.GetReader(filepath);
             int sectionState = 0;
 
-            while((line = file.ReadLine()) != null) {
+            while((line = reader.ReadLine()) != null) {
                 if (line == "Map:" && sectionState == 0) {  
                     sectionState++;
                 } 
@@ -39,11 +37,10 @@ namespace Breakout.LevelLoading {
                     sectionState++;
                 }
                 if (line == "Legend/" && sectionState == 5) {
-                    file.Close();
+                    BreakoutStreamReader.ResetReader();
                     return true; 
                 }
             }
-            file.Close();
             return false;
         }
 

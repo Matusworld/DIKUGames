@@ -11,10 +11,12 @@ using DIKUArcade.Math;
 using DIKUArcade.Graphics;
 using Breakout.LevelLoading;
 
-namespace BreakoutTest
-{
-    public class BlockTest {
+namespace BreakoutTest {
+    public class HardenedBlockTest {
+        HardenedBlock hblock;
+
         Block block;
+
         GameEventBus eventBus;
 
         [SetUp]
@@ -24,38 +26,40 @@ namespace BreakoutTest
             block = new Block(new DynamicShape(new Vec2F(0.45f, 0.45f), new Vec2F(0.1f, 0.05f)), 
                                         new Image(Path.Combine( TestProjectPath.getPath(),
                                             "Assets", "Images", "blue-block.png")));
+
+            hblock = new HardenedBlock(new DynamicShape(
+                new Vec2F(0.45f, 0.45f), new Vec2F(0.1f, 0.05f)), 
+                new Image(Path.Combine(
+                    TestProjectPath.getPath(),"Assets", "Images", "blue-block.png")),
+                new Image(Path.Combine(TestProjectPath.getPath(),
+                    "Assets", "Images", "blue-block-damaged.png")));
             
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.ControlEvent });
             eventBus.Subscribe(GameEventType.ControlEvent, block);
+            eventBus.Subscribe(GameEventType.ControlEvent, hblock);
         }
 
         [Test]
-        public void TestBlockDamage() {
-            int beforedamage = block.HP;
+        public void TestDoubleHPThanNormalBlock() {
+            Assert.AreEqual(block.HP * 2, hblock.HP);
+        }
+
+        [Test]
+        public void TestDamageImage() {
+            var beforeimg = hblock.Image;
 
             eventBus.RegisterEvent( new GameEvent {
                 EventType = GameEventType.ControlEvent, StringArg1 = "BlockCollision",
-                To = block
+                To = hblock
             });
 
             eventBus.ProcessEvents();
 
-            Assert.AreEqual(block.HP, beforedamage - 1);
+            var afterimg = hblock.Image;
+
+            Assert.AreNotEqual(beforeimg, afterimg);
         }
 
-        [Test]
-        public void TestBlockDead() {
-            for(int i = 0; i < 15; i++) {
-                eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.ControlEvent, StringArg1 = "BlockCollision",
-                To = block
-                });
-
-                eventBus.ProcessEvents();
-            }
-
-            Assert.IsFalse(block.Alive);
-        }
     }
 }

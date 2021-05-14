@@ -14,6 +14,7 @@ using DIKUArcade.Graphics;
 
 namespace BreakoutTest {
     public class LegendLoaderTest {
+        SectionStreamReader reader;
         LegendLoader loader;
 
         List<(char,string)> legendList = new List<(char, string)> {('#', "teal-block.png"), 
@@ -29,25 +30,31 @@ namespace BreakoutTest {
 
             invalidFile = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", 
                 "wrongsectioncontent.txt");
+
+            reader = new SectionStreamReader();
         }
 
         [Test]
         public void ValidLegendTest() {
-            loader = new LegendLoader(validFile);
+            reader.SetPath(validFile);
 
+            loader = new LegendLoader(reader);
             loader.LoadSection();
 
             Assert.AreEqual(loader.LegendList, legendList);
         }
 
         [Test]
-        public void InvalidLegengTest() {
-            loader = new LegendLoader(invalidFile);
+        public void InvalidLegendTest() {
+            reader.SetPath(invalidFile);
+
+            loader = new LegendLoader(reader);
 
             bool check = false;
 
             try {
                 loader.LoadSection();
+                loader.ClearLoader();
             } catch (InvalidDataException) {
                 check = true;
                 Assert.True(check);

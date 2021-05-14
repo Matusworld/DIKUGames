@@ -27,6 +27,9 @@ namespace Breakout.States.Buttons {
             this.RenderText();
         }
 
+        /// <summary>
+        /// Implement button action, typically with events
+        /// </summary>
         public abstract void Action();
     }
 }

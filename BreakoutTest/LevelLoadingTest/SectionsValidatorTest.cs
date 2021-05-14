@@ -32,16 +32,16 @@ namespace BreakoutTest {
 
         [Test]
         public void TestValidSectionsValidator() {
-            sectionsValidator = new SectionsValidator(validSectionsFile);
+            sectionsValidator = new SectionsValidator();
 
-            Assert.IsTrue(sectionsValidator.ValidateSections());
+            Assert.IsTrue(sectionsValidator.ValidateSections(validSectionsFile));
         }
 
         [Test]
         public void TestInvalidSectionsValidator() {
-            sectionsValidator = new SectionsValidator(invalidSectionsFile);
+            sectionsValidator = new SectionsValidator();
 
-            Assert.IsFalse(sectionsValidator.ValidateSections());
+            Assert.IsFalse(sectionsValidator.ValidateSections(invalidSectionsFile));
         }
     }
 }

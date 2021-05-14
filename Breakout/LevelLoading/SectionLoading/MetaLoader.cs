@@ -2,7 +2,6 @@ using System.IO;
 
 namespace Breakout.LevelLoading.SectionLoading {
     public class MetaLoader : SectionLoader {
-        private SectionStreamReader reader;
         private string section = "Meta";
         public string Name { get; private set; }
         public int Time { get; private set; }
@@ -11,9 +10,7 @@ namespace Breakout.LevelLoading.SectionLoading {
         public char Unbreakable { get; private set; }
 
 
-        public MetaLoader(string filepath) {
-            reader = new SectionStreamReader(filepath, section);
-        }
+        public MetaLoader(SectionStreamReader reader) : base(reader) {}
 
         protected override void ProcessSectionLine(string line) {
             string[] splitArray = line.Split(": ");
@@ -42,13 +39,24 @@ namespace Breakout.LevelLoading.SectionLoading {
 
 
         public override void LoadSection() {
+            reader.SetSection(section);
+
             string line;
             
             while((line = reader.ReadSectionLine()) != null) {
                 ProcessSectionLine(line);
             }
 
-            reader.File.Close();
-        } 
+            reader.Reset();
+        }
+
+        public override void ClearLoader()
+        {
+            Name = "";
+            Time = 0;
+            Hardened = ' ';
+            Powerup = ' ';
+            Unbreakable = ' ';
+        }
     }
 }
