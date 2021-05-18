@@ -18,7 +18,7 @@ namespace Breakout.States {
         private static GameRunning instance;
         private Entity backGroundImage;
         private Player player;
-        private Ball ball;
+        private EntityContainer<Ball> balls;
         public LevelLoader LevelLoader { get; private set; }
         private List<string> levelSequence;
         public int LevelIndex { get; private set; }
@@ -38,12 +38,13 @@ namespace Breakout.States {
                 "Breakout", "Assets", "Images", "SpaceBackground.png"));
             backGroundImage = new Entity(shape, image);
             
-            ball = new Ball(
+            balls = new EntityContainer<Ball>();
+            Ball ball = new Ball(
                 new DynamicShape (new Vec2F(0.45f, 0.5f), new Vec2F(0.025f,0.025f)),
                 new Image (Path.Combine(ProjectPath.getPath(),  
                 "Breakout", "Assets", "Images", "ball.png")),
                 (float) Math.PI /4f);
-            
+            balls.AddEntity(ball); 
 
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.02f)),
@@ -76,26 +77,26 @@ namespace Breakout.States {
         /// render even though they are deleted.
         /// </summary>
         /// <param name="blocks"></param>
-        private void renderBlocks(EntityContainer<Block> blocks) {
-            blocks.Iterate(block => {
-                block.RenderEntity();
+        private void renderEntityContainer(EntityContainer<Entity> entities) {
+            entities.Iterate(entity => {
+                entity.RenderEntity();
             });
         }
 
-        private void BallPlayerCollision() {
+        private void BallPlayerCollision(Ball ball) {
             CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(),
                 player.Shape.AsDynamicShape());
             if (check.Collision) {
-                float hitPosition = PlayerHitPositionTruncator(PlayerHitPosition());
+                float hitPosition = PlayerHitPositionTruncator(PlayerHitPosition(ball));
                 
                 BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                     EventType = GameEventType.MovementEvent, Message = hitPosition.ToString(), 
-                    StringArg1 = "PlayerCollision"
+                    StringArg1 = "PlayerCollision", To = ball
                 });
             }
         }
 
-        private void BallBlockCollision(Block block) {
+        private void BallBlockCollision(Block block, Ball ball) {
             CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(), block.Shape);
             if (check.Collision) {
                 //to block
@@ -107,22 +108,22 @@ namespace Breakout.States {
                     case CollisionDirection.CollisionDirDown:
                     case CollisionDirection.CollisionDirUp:
                         BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                        EventType = GameEventType.MovementEvent, 
-                        StringArg1 = "BlockCollision", Message = "UpDown"
+                            EventType = GameEventType.MovementEvent, 
+                            StringArg1 = "BlockCollision", Message = "UpDown", To = ball
                         });
                         break;
                     case CollisionDirection.CollisionDirLeft:
                     case CollisionDirection.CollisionDirRight:
                         BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                        EventType = GameEventType.MovementEvent, 
-                        StringArg1 = "BlockCollision", Message = "LeftRight"
+                            EventType = GameEventType.MovementEvent, 
+                            StringArg1 = "BlockCollision", Message = "LeftRight", To = ball
                         });
                         break;
                 }
             }
         }
 
-        private float PlayerHitPosition(){
+        private float PlayerHitPosition(Ball ball){
             float numerator = ball.Shape.Position.X + ball.Shape.Extent.X - player.Shape.Position.X;
             float denominator = player.Shape.Extent.X + ball.Shape.Extent.X; 
 
@@ -160,6 +161,25 @@ namespace Breakout.States {
                     StringArg1 = "GAME_MAINMENU" });
             }
         }
+//Name is up for debate
+        public void CheckLifeLost() {
+            if (balls.CountEntities() == 0 ) {
+                BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                        EventType = GameEventType.PlayerEvent,
+                        StringArg1 = "PlayerDamage" });
+                Console.WriteLine(player.Lives);
+                if (player.Lives > 0) {
+                    Ball ball = new Ball(
+                        new DynamicShape (new Vec2F(0.45f, 0.5f), new Vec2F(0.025f,0.025f)),
+                        new Image (Path.Combine(ProjectPath.getPath(),  
+                        "Breakout", "Assets", "Images", "ball.png")),
+                        (float) Math.PI /4f);
+                    balls.AddEntity(ball); 
+
+                    
+                    }
+                }
+            }
 
         public void UpdateState() {
             //player move
@@ -167,12 +187,19 @@ namespace Breakout.States {
                 EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
             
             //ball move
-            BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                EventType = GameEventType.MovementEvent, StringArg1 = "Move" });
-            BallPlayerCollision();
-            LevelLoader.Blocks.Iterate(block => {
-                BallBlockCollision(block);
+            balls.Iterate(ball => {
+                BallPlayerCollision(ball);
+                BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                    EventType = GameEventType.MovementEvent, StringArg1 = "Move" , To = ball });
             });
+
+            LevelLoader.Blocks.Iterate(block => {
+                balls.Iterate(ball => {
+                    BallBlockCollision(block, ball);
+                });
+            });
+            
+            CheckLifeLost();
 
             if(LevelLoader.LevelEnded()) {
                 NextLevel();
@@ -182,8 +209,14 @@ namespace Breakout.States {
         public void RenderState() {
             backGroundImage.RenderEntity();
             player.Render();
-            ball.RenderEntity();
-            renderBlocks(LevelLoader.Blocks);
+            //ball.RenderEntity();
+            //renderEntityContainer((EntityContainer<Entity>)LevelLoader.Blocks);
+            balls.Iterate(ball => {
+                ball.RenderEntity();
+            });
+            LevelLoader.Blocks.Iterate(block => {
+                block.RenderEntity();
+            });
             score.RenderScore();
         }
 

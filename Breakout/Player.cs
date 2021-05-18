@@ -7,6 +7,7 @@ namespace Breakout {
         //private Entity entity;
         //private DynamicShape shape;
         private float moveLeft = 0.0f;
+        public int Lives { get; private set; } = 3;
         private float moveRight = 0.0f;
         private const float MOVEMENT_SPEED = 0.02f;
         public float LeftBound { get; private set; }
@@ -68,6 +69,9 @@ namespace Breakout {
             }
             UpdateDirection();
         }
+        private void PlayerDamage() {
+            Lives --;
+        }
 
         public void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.EventType == GameEventType.PlayerEvent) {  
@@ -94,6 +98,9 @@ namespace Breakout {
                         break;
                     case "Move":
                         Move();
+                        break;
+                    case "PlayerDamage":
+                        PlayerDamage();
                         break;
                 }
             }
