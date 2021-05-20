@@ -18,6 +18,9 @@ namespace Breakout {
         const int bounceDelay = 10;
 
         public Ball(DynamicShape shape, IBaseImage image, float theta): base (shape, image) {
+            BreakoutBus.GetBus().Subscribe(GameEventType.MovementEvent, this);
+            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this);
+
             SetDirection(theta);
         }
         public Vec2F GetPosition() {

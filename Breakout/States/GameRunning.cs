@@ -9,9 +9,11 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Input;
 using DIKUArcade.Physics;
+using DIKUArcade.Timers;
 
 using Breakout.LevelLoading;
 using Breakout.Blocks;
+using Breakout.PlayerEntity;
 
 namespace Breakout.States {
     public class GameRunning : IGameState {
@@ -22,8 +24,8 @@ namespace Breakout.States {
         public LevelLoader LevelLoader { get; private set; }
         private List<string> levelSequence;
         public int LevelIndex { get; private set; }
-
         private Score score;
+        private Timer gameTimer;
         
         public GameRunning() {
             Init();
@@ -37,7 +39,16 @@ namespace Breakout.States {
             IBaseImage image = new Image(Path.Combine( ProjectPath.getPath(),
                 "Breakout", "Assets", "Images", "SpaceBackground.png"));
             backGroundImage = new Entity(shape, image);
-            
+                        
+            levelSequence = new List<string> { "level1.txt", "level2.txt", "level3.txt",
+                "central-mass.txt", "columns.txt", "wall.txt" };
+            LevelIndex = 0;
+
+            LevelLoader = new LevelLoader();
+            LevelLoader.LoadLevel(Path.Combine(ProjectPath.getPath(),
+                "Breakout", "Assets", "Levels", 
+                levelSequence[LevelIndex]));
+
             balls = new EntityContainer<Ball>();
             Ball ball = new Ball(
                 new DynamicShape (new Vec2F(0.45f, 0.5f), new Vec2F(0.025f,0.025f)),
@@ -51,21 +62,9 @@ namespace Breakout.States {
                 new Image(Path.Combine(ProjectPath.getPath(),
                 "Breakout", "Assets", "Images", "player.png")));
 
-            score = new Score(new Vec2F(0.06f, -0.25f), new Vec2F(0.3f, 0.3f));
-            
-            levelSequence = new List<string> { "level1.txt", "level2.txt", "level3.txt",
-                "central-mass.txt", "columns.txt", "wall.txt" };
-            LevelIndex = 0;
+            score = new Score(new Vec2F(0.00f, -0.26f), new Vec2F(0.3f, 0.3f));
 
-            LevelLoader = new LevelLoader();
-            LevelLoader.LoadLevel(Path.Combine(ProjectPath.getPath(),
-                "Breakout", "Assets", "Levels", 
-                levelSequence[LevelIndex]));
-
-            BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player); 
-            BreakoutBus.GetBus().Subscribe(GameEventType.MovementEvent, ball);
-            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, score);
-            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, ball);
+            gameTimer = new Timer(LevelLoader.Meta.Time, new Vec2F(0.33f, -0.26f), new Vec2F(0.3f, 0.3f));
         }
 
         public static GameRunning GetInstance() {
@@ -153,31 +152,43 @@ namespace Breakout.States {
             if (LevelIndex < levelSequence.Count) {
                 LevelLoader.LoadLevel(Path.Combine( new string[] { ProjectPath.getPath(),
                     "Breakout", "Assets", "Levels", levelSequence[LevelIndex] }));
+                
+                StaticTimer.RestartTimer();
+                if (LevelLoader.Meta.Time != 0) {
+                    gameTimer.NewTimer(LevelLoader.Meta.Time);
+                }
             }
             else {
                 BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                     EventType = GameEventType.GameStateEvent,
                     Message = "CHANGE_STATE",
-                    StringArg1 = "GAME_MAINMENU" });
+                    StringArg1 = "GAME_WON" });
             }
         }
         //Name is up for debate
         public void CheckLifeLost() {
             if (balls.CountEntities() == 0 ) {
-                BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                        EventType = GameEventType.PlayerEvent,
-                        StringArg1 = "PlayerDamage" });
+                /* BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                        EventType = GameEventType.ControlEvent,
+                        StringArg1 = "HealthLost" }); */
+                player.Hpbar.HealthLost();
                 //damage via event will never happen instantaneously
-                if (player.Lives > 0+1) {
+                if (player.Hpbar.Lives > 0) {
                     Ball ball = new Ball(
                         new DynamicShape (new Vec2F(0.45f, 0.5f), new Vec2F(0.025f,0.025f)),
                         new Image (Path.Combine(ProjectPath.getPath(),  
                         "Breakout", "Assets", "Images", "ball.png")),
                         (float) Math.PI /4f);
                     balls.AddEntity(ball); 
-                    }
+                } else {
+                    BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                        EventType = GameEventType.GameStateEvent,
+                        Message = "CHANGE_STATE",
+                        StringArg1 = "GAME_LOST"
+                    });
                 }
             }
+        }
 
         public void UpdateState() {
             //player move
@@ -199,6 +210,17 @@ namespace Breakout.States {
             
             CheckLifeLost();
 
+            if (LevelLoader.Meta.Time != 0) {
+                gameTimer.UpdateTimer();
+
+                if (gameTimer.TimeRunOut()) {
+                    BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                        EventType = GameEventType.GameStateEvent, Message = "CHANGE_STATE",
+                        StringArg1 = "GAME_LOST"
+                    });
+                }
+            }
+
             if(LevelLoader.LevelEnded()) {
                 NextLevel();
             }
@@ -207,13 +229,19 @@ namespace Breakout.States {
         public void RenderState() {
             backGroundImage.RenderEntity();
             player.Render();
+            player.Hpbar.Render();
             balls.Iterate(ball => {
                 ball.RenderEntity();
             });
             LevelLoader.Blocks.Iterate(block => {
                 block.RenderEntity();
             });
-            score.RenderScore();
+            score.Render();
+
+            // if time is not 0 render Timer else do not render
+            if (LevelLoader.Meta.Time != 0) {
+                gameTimer.Render();
+            }
         }
 
         public void HandleKeyEvent(KeyboardAction action, KeyboardKey key) {

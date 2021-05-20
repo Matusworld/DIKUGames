@@ -1,5 +1,6 @@
 using DIKUArcade.Events;
 using DIKUArcade.State;
+using DIKUArcade.Timers;
 
 namespace Breakout.States {
     public class StateMachine : IGameEventProcessor {
@@ -22,6 +23,12 @@ namespace Breakout.States {
                 case GameStateType.MainMenu:
                     ActiveState = MainMenu.GetInstance();
                     break;
+                case GameStateType.GameLost:
+                    ActiveState = GameLost.GetInstance();
+                    break;
+                case GameStateType.GameWon:
+                    ActiveState = GameWon.GetInstance();
+                    break;
                 default:
                     break;
             }
@@ -38,6 +45,7 @@ namespace Breakout.States {
                                 ActiveState.ResetState();
                                 //To properly render entities
                                 ActiveState.RenderState();
+                                StaticTimer.RestartTimer();
                                 break;
                             case "GAME_QUIT":
                                 BreakoutBus.GetBus().RegisterEvent(new GameEvent {
@@ -47,12 +55,22 @@ namespace Breakout.States {
                             case "GAME_PAUSED":
                                 SwitchState(GameStateType.GamePause);
                                 ActiveState.ResetState();
+                                StaticTimer.PauseTimer();
                                 break;
                             case "GAME_CONTINUE":
                                 SwitchState(GameStateType.GameRunning);
+                                StaticTimer.ResumeTimer();
                                 break;
                             case "GAME_MAINMENU":
                                 SwitchState(GameStateType.MainMenu);
+                                ActiveState.ResetState();
+                                break;
+                            case "GAME_LOST":
+                                SwitchState(GameStateType.GameLost);
+                                ActiveState.ResetState();
+                                break;
+                            case "GAME_WON":
+                                SwitchState(GameStateType.GameWon);
                                 ActiveState.ResetState();
                                 break;
                             default:

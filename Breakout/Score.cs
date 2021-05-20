@@ -11,6 +11,8 @@ namespace Breakout {
         private Text display;
 
         public Score(Vec2F pos, Vec2F extent) {
+            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this);
+            
             ScoreCount = 0;
 
             display = new Text("Score: " + ScoreCount.ToString(), pos, extent);
@@ -32,7 +34,7 @@ namespace Breakout {
             display.SetText("Score: " + ScoreCount.ToString());
         }
 
-        public void RenderScore() {
+        public void Render() {
             display.RenderText();
         }
 

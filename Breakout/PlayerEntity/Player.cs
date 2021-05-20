@@ -2,21 +2,27 @@ using DIKUArcade.Entities;
 using DIKUArcade.Events;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
-namespace Breakout {
+
+namespace Breakout.PlayerEntity {
     public class Player : Entity, IGameEventProcessor {
         //private Entity entity;
         //private DynamicShape shape;
         private float moveLeft = 0.0f;
-        public uint Lives { get; private set; } = 3;
+        private uint lives = 1;
+        private uint maxLives = 5;
         private float moveRight = 0.0f;
         private const float MOVEMENT_SPEED = 0.02f;
         public float LeftBound { get; private set; }
         public float RightBound { get; private set; }
+
+        public Healthbar Hpbar { get; private set; }
         public Player(DynamicShape shape, IBaseImage image) : base(shape, image) {
-            //entity = new Entity(shape, image);
-            //this.shape = shape;
+            BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, this); 
+
             LeftBound = 0f;
             RightBound = 1.0f - shape.Extent.X;
+
+            Hpbar = new Healthbar(lives, maxLives);
         }
 
         public Vec2F GetPosition() {
@@ -69,11 +75,11 @@ namespace Breakout {
             }
             UpdateDirection();
         }
-        private void PlayerDamage() {
+/*        private void PlayerDamage() {
             if (Lives > 0) {
                 Lives --;
             }
-        }
+        } */
 
         public void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.EventType == GameEventType.PlayerEvent) {  
@@ -100,13 +106,6 @@ namespace Breakout {
                         break;
                     case "Move":
                         Move();
-                        break;
-                    case "PlayerDamage":
-                        PlayerDamage();
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType = GameEventType.PlayerEvent, 
-                            StringArg1 = "PlayerDamagePerformed"
-                        });
                         break;
                 }
             }
