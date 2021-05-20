@@ -123,7 +123,7 @@ namespace BreakoutTest
 
             eventBus.RegisterEvent( new GameEvent {
                 EventType = GameEventType.MovementEvent,
-                StringArg1 = "Move" });
+                StringArg1 = "Move", To = ball });
             eventBus.ProcessEvents();
 
             Assert.IsTrue(tolerance >= Math.Abs(newPosX-ball.Shape.Position.X) && 

@@ -7,7 +7,7 @@ namespace Breakout {
         //private Entity entity;
         //private DynamicShape shape;
         private float moveLeft = 0.0f;
-        public int Lives { get; private set; } = 3;
+        public uint Lives { get; private set; } = 3;
         private float moveRight = 0.0f;
         private const float MOVEMENT_SPEED = 0.02f;
         public float LeftBound { get; private set; }
@@ -70,7 +70,9 @@ namespace Breakout {
             UpdateDirection();
         }
         private void PlayerDamage() {
-            Lives --;
+            if (Lives > 0) {
+                Lives --;
+            }
         }
 
         public void ProcessEvent(GameEvent gameEvent) {
@@ -101,6 +103,10 @@ namespace Breakout {
                         break;
                     case "PlayerDamage":
                         PlayerDamage();
+                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                            EventType = GameEventType.PlayerEvent, 
+                            StringArg1 = "PlayerDamagePerformed"
+                        });
                         break;
                 }
             }

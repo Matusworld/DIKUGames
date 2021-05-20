@@ -39,8 +39,6 @@ namespace Breakout {
         public void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.EventType == GameEventType.ControlEvent) {
                 if (gameEvent.StringArg1 == "ADD_SCORE") {
-                    //uint points = uint.Parse(gameEvent.Message);
-                    //AddToScore(points);
                     if (gameEvent.From is Hardened) {
                         AddToScore(BlockTypes.Hardened);
                     } else if (gameEvent.From is Block) {

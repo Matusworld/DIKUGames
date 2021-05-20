@@ -161,22 +161,20 @@ namespace Breakout.States {
                     StringArg1 = "GAME_MAINMENU" });
             }
         }
-//Name is up for debate
+        //Name is up for debate
         public void CheckLifeLost() {
             if (balls.CountEntities() == 0 ) {
                 BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                         EventType = GameEventType.PlayerEvent,
                         StringArg1 = "PlayerDamage" });
-                Console.WriteLine(player.Lives);
-                if (player.Lives > 0) {
+                //damage via event will never happen instantaneously
+                if (player.Lives > 0+1) {
                     Ball ball = new Ball(
                         new DynamicShape (new Vec2F(0.45f, 0.5f), new Vec2F(0.025f,0.025f)),
                         new Image (Path.Combine(ProjectPath.getPath(),  
                         "Breakout", "Assets", "Images", "ball.png")),
                         (float) Math.PI /4f);
                     balls.AddEntity(ball); 
-
-                    
                     }
                 }
             }
@@ -209,8 +207,6 @@ namespace Breakout.States {
         public void RenderState() {
             backGroundImage.RenderEntity();
             player.Render();
-            //ball.RenderEntity();
-            //renderEntityContainer((EntityContainer<Entity>)LevelLoader.Blocks);
             balls.Iterate(ball => {
                 ball.RenderEntity();
             });
