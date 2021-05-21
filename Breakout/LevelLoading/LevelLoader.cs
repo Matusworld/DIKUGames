@@ -97,42 +97,43 @@ namespace Breakout.LevelLoading {
                                 if (cell == Legend.LegendList[l].Item1) {
 
                                     Vec2F position = ComputeBlockPosition(i, j, blockExtent);
-
-                                    string[] imagePath = new string[] { 
+                                    Block block;
+                                    string[] imagePathArr = new string[] { 
                                         ProjectPath.getPath(), "Breakout", 
                                             "Assets","Images", Legend.LegendList[l].Item2 };
+                                    string imagePath = Path.Combine(imagePathArr); 
                                     
                                     if (cell == Meta.Hardened) {
-                                        string damageImg = 
+                                        //extract image name and add "-damaged"
+                                        string damageImgName = 
                                             Legend.LegendList[l].Item2.Split(".png")[0]
                                                 + "-damaged.png";
-                                        string[] damageImgPath = new string[] { 
+                                        string[] damageImgPathArr = new string[] { 
                                             ProjectPath.getPath(), "Breakout", 
-                                                "Assets","Images", damageImg}; 
-                                        Hardened block = new Hardened (
+                                                "Assets","Images", damageImgName};
+                                        string damageImgPath = Path.Combine(damageImgPathArr); 
+                                        block = new Hardened (
                                             new DynamicShape(position, blockExtent), 
-                                            new Image(Path.Combine(imagePath)), 
-                                            new Image(Path.Combine(damageImgPath)));
-
-                                        Blocks.AddEntity(block);
-                                        BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, block);
+                                            new Image(imagePath), 
+                                            new Image(damageImgPath));
                                     } 
                                     else if (cell == Meta.Unbreakable) {
                                         numberOfUnbreakables++;
-                                        Unbreakable block = new Unbreakable (
+                                        block = new Unbreakable (
                                             new DynamicShape(position, blockExtent), 
-                                            new Image(Path.Combine(
-                                                "Assets","Images", Legend.LegendList[l].Item2)));
-                                        Blocks.AddEntity(block);
-                                        BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, block);
+                                            new Image(imagePath));
                                     } 
-                                    else {
-                                        Block block = new Block(new DynamicShape(position, blockExtent), 
-                                            new Image(Path.Combine(
-                                                "Assets","Images", Legend.LegendList[l].Item2)));
-                                        Blocks.AddEntity(block);
-                                        BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, block);
+                                    else if (cell == Meta.Powerup) {
+                                        block = new PowerUp(new DynamicShape(position, blockExtent), 
+                                            new Image(imagePath));
                                     }
+                                    else {
+                                        block = new Block(new DynamicShape(position, blockExtent), 
+                                            new Image(imagePath));
+                                    }
+                                    Blocks.AddEntity(block);
+                                    BreakoutBus.GetBus().Subscribe(
+                                        GameEventType.ControlEvent, block);
                                 }
                             }
                         }

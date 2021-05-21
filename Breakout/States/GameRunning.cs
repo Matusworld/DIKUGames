@@ -20,7 +20,8 @@ namespace Breakout.States {
         private static GameRunning instance;
         private Entity backGroundImage;
         private Player player;
-        private EntityContainer<Ball> balls;
+        private BallOrganizer ballOrganizer;
+        private PowerUpOrganizer PUorganizer;
         public LevelLoader LevelLoader { get; private set; }
         private List<string> levelSequence;
         public int LevelIndex { get; private set; }
@@ -49,13 +50,12 @@ namespace Breakout.States {
                 "Breakout", "Assets", "Levels", 
                 levelSequence[LevelIndex]));
 
-            balls = new EntityContainer<Ball>();
-            Ball ball = new Ball(
-                new DynamicShape (new Vec2F(0.45f, 0.5f), new Vec2F(0.025f,0.025f)),
-                new Image (Path.Combine(ProjectPath.getPath(),  
-                "Breakout", "Assets", "Images", "ball.png")),
-                (float) Math.PI /4f);
-            balls.AddEntity(ball); 
+            PUorganizer = new PowerUpOrganizer();
+
+            ballOrganizer = new BallOrganizer();
+            //BreakoutBus.GetBus().RegisterEvent ( new GameEvent {
+            //    EventType = GameEventType.ControlEvent, StringArg1 = "BallGained" });
+            ballOrganizer.AddBall();
 
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.02f)),
@@ -122,6 +122,29 @@ namespace Breakout.States {
             }
         }
 
+        private void OrbPlayerCollision(PowerUpOrb orb) {
+            CollisionData check = CollisionDetection.Aabb(orb.Shape.AsDynamicShape(), player.Shape);
+
+            if(check.Collision) {
+                switch(orb.Type) {
+                    case PowerUpTypes.ExtraLife:
+                        BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                            EventType = GameEventType.ControlEvent, StringArg1 = "HealthGained"
+                        });
+                        break;
+                    case PowerUpTypes.ExtraBall:
+                        ballOrganizer.AddBall();
+                        break;
+                    case PowerUpTypes.ExtraPoints:
+                        BreakoutBus.GetBus().RegisterEvent ( new GameEvent {
+                            EventType = GameEventType.ControlEvent, StringArg1 = "PowerUpScore"
+                        });
+                        break;
+                }
+                orb.DeleteEntity();
+            }
+        }
+
         private float PlayerHitPosition(Ball ball){
             float numerator = ball.Shape.Position.X + ball.Shape.Extent.X - player.Shape.Position.X;
             float denominator = player.Shape.Extent.X + ball.Shape.Extent.X; 
@@ -167,19 +190,14 @@ namespace Breakout.States {
         }
         //Name is up for debate
         public void CheckLifeLost() {
-            if (balls.CountEntities() == 0 ) {
+            if (ballOrganizer.Balls.CountEntities() == 0 ) {
                 /* BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                         EventType = GameEventType.ControlEvent,
                         StringArg1 = "HealthLost" }); */
                 player.Hpbar.HealthLost();
                 //damage via event will never happen instantaneously
                 if (player.Hpbar.Lives > 0) {
-                    Ball ball = new Ball(
-                        new DynamicShape (new Vec2F(0.45f, 0.5f), new Vec2F(0.025f,0.025f)),
-                        new Image (Path.Combine(ProjectPath.getPath(),  
-                        "Breakout", "Assets", "Images", "ball.png")),
-                        (float) Math.PI /4f);
-                    balls.AddEntity(ball); 
+                    ballOrganizer.AddBall();
                 } else {
                     BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                         EventType = GameEventType.GameStateEvent,
@@ -196,14 +214,21 @@ namespace Breakout.States {
                 EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
             
             //ball move
-            balls.Iterate(ball => {
+            ballOrganizer.Balls.Iterate(ball => {
                 BallPlayerCollision(ball);
                 BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                     EventType = GameEventType.MovementEvent, StringArg1 = "Move" , To = ball });
             });
 
+            //PowerUpOrb move
+            PUorganizer.MoveOrbs();
+
+            PUorganizer.Orbs.Iterate(orb => {
+                OrbPlayerCollision(orb);
+            });
+
             LevelLoader.Blocks.Iterate(block => {
-                balls.Iterate(ball => {
+                ballOrganizer.Balls.Iterate(ball => {
                     BallBlockCollision(block, ball);
                 });
             });
@@ -230,12 +255,11 @@ namespace Breakout.States {
             backGroundImage.RenderEntity();
             player.Render();
             player.Hpbar.Render();
-            balls.Iterate(ball => {
-                ball.RenderEntity();
-            });
+            ballOrganizer.RenderBalls();
             LevelLoader.Blocks.Iterate(block => {
                 block.RenderEntity();
             });
+            PUorganizer.RenderOrbs();
             score.Render();
 
             // if time is not 0 render Timer else do not render

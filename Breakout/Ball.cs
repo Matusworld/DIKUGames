@@ -83,11 +83,10 @@ namespace Breakout {
             
         }
         private void Move() {
-            if(LowerBoundaryCheck()) {
+            if (LowerBoundaryCheck()) {
                 this.DeleteEntity(); //not currently in entity container
                 
-            }
-            else {
+            } else {
                 DirectionBoundarySetter(); 
                 this.Shape.Move();
             }

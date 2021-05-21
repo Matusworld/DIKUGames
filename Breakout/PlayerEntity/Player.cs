@@ -8,7 +8,7 @@ namespace Breakout.PlayerEntity {
         //private Entity entity;
         //private DynamicShape shape;
         private float moveLeft = 0.0f;
-        private uint lives = 1;
+        private uint startLives = 3;
         private uint maxLives = 5;
         private float moveRight = 0.0f;
         private const float MOVEMENT_SPEED = 0.02f;
@@ -22,7 +22,7 @@ namespace Breakout.PlayerEntity {
             LeftBound = 0f;
             RightBound = 1.0f - shape.Extent.X;
 
-            Hpbar = new Healthbar(lives, maxLives);
+            Hpbar = new Healthbar(startLives, maxLives);
         }
 
         public Vec2F GetPosition() {
@@ -75,11 +75,6 @@ namespace Breakout.PlayerEntity {
             }
             UpdateDirection();
         }
-/*        private void PlayerDamage() {
-            if (Lives > 0) {
-                Lives --;
-            }
-        } */
 
         public void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.EventType == GameEventType.PlayerEvent) {  

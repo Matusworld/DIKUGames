@@ -10,8 +10,7 @@ namespace Breakout.Blocks {
         public int HP { get; protected set; } = 1;
         public string Value { get; protected set; }
 
-        public Block(DynamicShape shape, IBaseImage image): base(shape, image) {
-        }
+        public Block(DynamicShape shape, IBaseImage image): base(shape, image) {}
         public Vec2F GetPosition() {
             return this.Shape.Position; 
         }

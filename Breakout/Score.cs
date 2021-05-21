@@ -3,9 +3,12 @@ using DIKUArcade.Math;
 using DIKUArcade.Events;
 using Breakout.Blocks;
 
+using System;
 namespace Breakout {
     public class Score : IGameEventProcessor {
-
+        Random rand;
+        private const int minPowerUpPoints = 1;
+        private const int maxPowerUpPoints = 30;
         public uint ScoreCount { get; private set; }
 
         private Text display;
@@ -13,22 +16,33 @@ namespace Breakout {
         public Score(Vec2F pos, Vec2F extent) {
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this);
             
+            rand = new Random();
+
             ScoreCount = 0;
 
             display = new Text("Score: " + ScoreCount.ToString(), pos, extent);
             display.SetColor(System.Drawing.Color.Gold);
         }
 
+        private void AddPowerUpScore() {
+            ScoreCount += (uint) rand.Next(minPowerUpPoints, maxPowerUpPoints+1);
+
+            display.SetText("Score: " + ScoreCount.ToString());
+        }
+
         // Unit only positive integers 
         private void AddToScore(BlockTypes blocktype) {
             switch (blocktype) {
                 case BlockTypes.Normal:
-                    ScoreCount += 1;
+                    ScoreCount++;
                     break;
                 case BlockTypes.Hardened:
                     ScoreCount += 2;
                     break;
                 case BlockTypes.Unbreakable:
+                    break;
+                case BlockTypes.PowerUp:
+                    ScoreCount++;
                     break;
             }
             display.SetText("Score: " + ScoreCount.ToString());
@@ -40,12 +54,20 @@ namespace Breakout {
 
         public void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.EventType == GameEventType.ControlEvent) {
-                if (gameEvent.StringArg1 == "ADD_SCORE") {
-                    if (gameEvent.From is Hardened) {
-                        AddToScore(BlockTypes.Hardened);
-                    } else if (gameEvent.From is Block) {
-                        AddToScore(BlockTypes.Normal);
-                    }
+                switch(gameEvent.StringArg1) {
+                    case "ADD_SCORE":
+                        if (gameEvent.From is Hardened) {
+                            AddToScore(BlockTypes.Hardened);
+                        } else if (gameEvent.From is PowerUp) {
+                            AddToScore(BlockTypes.PowerUp);
+                        } 
+                        else if (gameEvent.From is Block) {
+                            AddToScore(BlockTypes.Normal);
+                        }
+                        break;
+                    case "PowerUpScore":
+                        AddPowerUpScore();
+                        break;
                 }
             }
         }
