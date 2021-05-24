@@ -14,12 +14,13 @@ namespace Breakout {
 
         const float baseSpeed = 0.02f;
         float speed;
-        float theta;
+        public float Theta { get; private set; }
         public bool Active { get; private set; } = true;
         const int bounceDelay = 10;
 
         public Ball(DynamicShape shape, IBaseImage image, float theta): base (shape, image) {
             speed = baseSpeed;
+            Theta = theta;
             BreakoutBus.GetBus().Subscribe(GameEventType.MovementEvent, this);
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this);
 
@@ -30,9 +31,10 @@ namespace Breakout {
         }
         
         private void SetDirection(float theta) {
-            this.theta = theta;
+            //this.theta = theta;
             this.Shape.AsDynamicShape().Direction.X = (float)Math.Cos((double)theta)*speed;
             this.Shape.AsDynamicShape().Direction.Y = (float)Math.Sin((double)theta)*speed;
+            UpdateTheta();
         }
 
         public bool LeftBoundaryCheck() {
@@ -64,10 +66,13 @@ namespace Breakout {
                 return false;
             }
         }
-        public float ReturnTheta(float PlayerPosition) {
-            float theta = 0.75f * (float) Math.PI - (PlayerPosition*(float)Math.PI / 2f);
+        private void UpdateTheta() {
+            float Dnorm = (float) Shape.AsDynamicShape().Direction.Length();
+            float Dx = Shape.AsDynamicShape().Direction.X;
+            Theta = (float) Math.Acos(Dx/Dnorm);
+            //float theta = 0.75f * (float) Math.PI - (this.Shape.Position*(float)Math.PI / 2f);
             
-            return theta;
+            //return theta;
         }
         public void DirectionPlayerSetter(float PlayerPosition) {
             //rebound angle depending on hit position
@@ -92,6 +97,7 @@ namespace Breakout {
                 DirectionBoundarySetter(); 
                 this.Shape.Move();
             }
+            UpdateTheta();
         }
         private void Deactivate() {
             //Don't switch direction for a short while
@@ -139,10 +145,14 @@ namespace Breakout {
                             switch(gameEvent.Message) {
                                 case "Activate":
                                     speed = speed * 2f;
+                                    //We update the direction vector manually here, 
+                                    //else it will only be updated on a player collision
+                                    SetDirection(Theta);
                                     break;
 
                                 case "Deactivate":
                                     speed = speed * 0.5f;
+                                    SetDirection(Theta);
                                     break;
                             }
                             break; 
@@ -151,10 +161,12 @@ namespace Breakout {
                             switch(gameEvent.Message) {
                                 case "Activate":
                                     speed = speed * 0.5f;
+                                    SetDirection(Theta);
                                     break;
 
                                 case "Deactivate":
                                     speed = speed * 2f;
+                                    SetDirection(Theta);
                                     break;
                             }
                             break; 
