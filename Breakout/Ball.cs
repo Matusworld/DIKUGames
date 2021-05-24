@@ -49,7 +49,7 @@ namespace Breakout {
                 return true;
             } else {
                 return false;
-            }
+            }           
         }
         public bool UpperBoundaryCheck() {
             if (this.Shape.Position.Y+this.Shape.Extent.Y >= 1.0f) {
@@ -67,9 +67,10 @@ namespace Breakout {
             }
         }
         private void UpdateTheta() {
-            float Dnorm = (float) Shape.AsDynamicShape().Direction.Length();
+            //float Dnorm = (float) Shape.AsDynamicShape().Direction.Length();
             float Dx = Shape.AsDynamicShape().Direction.X;
-            Theta = (float) Math.Acos(Dx/Dnorm);
+            float Dy = Shape.AsDynamicShape().Direction.Y;
+            Theta = (float) Math.Atan2(Dy,Dx);
             //float theta = 0.75f * (float) Math.PI - (this.Shape.Position*(float)Math.PI / 2f);
             
             //return theta;
@@ -87,17 +88,16 @@ namespace Breakout {
             if (UpperBoundaryCheck()) {
                 this.Shape.AsDynamicShape().Direction.Y = -this.Shape.AsDynamicShape().Direction.Y;
             }
-            
+            UpdateTheta();
         }
         private void Move() {
             if (LowerBoundaryCheck()) {
-                this.DeleteEntity(); //not currently in entity container
+                this.DeleteEntity();
                 
             } else {
                 DirectionBoundarySetter(); 
                 this.Shape.Move();
             }
-            UpdateTheta();
         }
         private void Deactivate() {
             //Don't switch direction for a short while
@@ -122,10 +122,12 @@ namespace Breakout {
                                     case "UpDown":
                                         this.Shape.AsDynamicShape().Direction.Y = 
                                             -this.Shape.AsDynamicShape().Direction.Y;
+                                        UpdateTheta();
                                         break;
                                     case "LeftRight":
                                         this.Shape.AsDynamicShape().Direction.X = 
                                             -this.Shape.AsDynamicShape().Direction.X;
+                                        UpdateTheta();
                                         break;
                                 }
                                 Deactivate();
