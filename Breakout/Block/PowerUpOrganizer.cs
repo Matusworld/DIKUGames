@@ -5,7 +5,7 @@ namespace Breakout.Blocks {
     public class PowerUpOrganizer : IGameEventProcessor {
         public EntityContainer<PowerUpOrb> Orbs { get; private set; } 
             
-
+        public int PowerUpDuration { get; private set; } = 5000;
         public PowerUpOrganizer() {
             Orbs = new EntityContainer<PowerUpOrb>();
 

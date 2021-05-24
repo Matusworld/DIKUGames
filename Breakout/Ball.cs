@@ -12,12 +12,14 @@ using DIKUArcade.Graphics;
 namespace Breakout {
     public class Ball : Entity, IGameEventProcessor {   
 
-        const float speed = 0.02f;
+        const float baseSpeed = 0.02f;
+        float speed;
         float theta;
         public bool Active { get; private set; } = true;
         const int bounceDelay = 10;
 
         public Ball(DynamicShape shape, IBaseImage image, float theta): base (shape, image) {
+            speed = baseSpeed;
             BreakoutBus.GetBus().Subscribe(GameEventType.MovementEvent, this);
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this);
 
@@ -96,9 +98,9 @@ namespace Breakout {
             this.Active = false;
             //After some time Activate again
             BreakoutBus.GetBus().RegisterTimedEvent(
-            new GameEvent{ EventType = GameEventType.ControlEvent,
-                StringArg1 = "BallActivate", To = this },
-            TimePeriod.NewMilliseconds(bounceDelay));
+                new GameEvent{ EventType = GameEventType.ControlEvent,
+                    StringArg1 = "BallActivate", To = this },
+                TimePeriod.NewMilliseconds(bounceDelay));
         }
         public void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.To == this) {
@@ -133,6 +135,29 @@ namespace Breakout {
                         case "BallActivate":
                             this.Active = true;
                             break;
+                        case "DoubleSpeed":
+                            switch(gameEvent.Message) {
+                                case "Activate":
+                                    speed = speed * 2f;
+                                    break;
+
+                                case "Deactivate":
+                                    speed = speed * 0.5f;
+                                    break;
+                            }
+                            break; 
+                            
+                        case "HalfSpeed":
+                            switch(gameEvent.Message) {
+                                case "Activate":
+                                    speed = speed * 0.5f;
+                                    break;
+
+                                case "Deactivate":
+                                    speed = speed * 2f;
+                                    break;
+                            }
+                            break; 
                     }
                 }
             }

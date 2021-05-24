@@ -33,6 +33,14 @@ namespace Breakout.Blocks {
                     image = new Image(Path.Combine(ProjectPath.getPath(), 
                         "Breakout", "Assets", "Images", "pointImage.png"));
                     break;
+                case PowerUpTypes.HalfSpeed:
+                    image = new Image(Path.Combine(ProjectPath.getPath(), 
+                        "Breakout", "Assets", "Images", "HalfSpeedPowerUp.png"));
+                    break;
+                case PowerUpTypes.DoubleSpeed:
+                    image = new Image(Path.Combine(ProjectPath.getPath(), 
+                        "Breakout", "Assets", "Images", "DoubleSpeedPowerUp.png"));
+                    break;
                 default:
                     image = new Image(Path.Combine(ProjectPath.getPath(), 
                         "Breakout", "Assets", "Images", "purple-circle.png"));

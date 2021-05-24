@@ -140,6 +140,30 @@ namespace Breakout.States {
                             EventType = GameEventType.ControlEvent, StringArg1 = "PowerUpScore"
                         });
                         break;
+                    case PowerUpTypes.HalfSpeed:
+                        ballOrganizer.Balls.Iterate(ball => {
+                            BreakoutBus.GetBus().RegisterEvent ( new GameEvent {
+                                EventType = GameEventType.ControlEvent, StringArg1 = "HalfSpeed",
+                                Message = "Activate", To = ball                            
+                                });
+                            BreakoutBus.GetBus().RegisterTimedEvent(
+                                new GameEvent{ EventType = GameEventType.ControlEvent,
+                                    StringArg1 = "HalfSpeed", Message = "Deactivate", To = ball },
+                                TimePeriod.NewMilliseconds(PUorganizer.PowerUpDuration));
+                        });
+                        break;
+                    case PowerUpTypes.DoubleSpeed:
+                        ballOrganizer.Balls.Iterate(ball => {
+                            BreakoutBus.GetBus().RegisterEvent ( new GameEvent {
+                                EventType = GameEventType.ControlEvent, StringArg1 = "DoubleSpeed",
+                                Message = "Activate", To = ball                            
+                                });
+                            BreakoutBus.GetBus().RegisterTimedEvent(
+                                new GameEvent{ EventType = GameEventType.ControlEvent,
+                                    StringArg1 = "DoubleSpeed", Message = "Deactivate", To = ball },
+                                TimePeriod.NewMilliseconds(PUorganizer.PowerUpDuration));
+                        });
+                        break;
                 }
                 orb.DeleteEntity();
             }

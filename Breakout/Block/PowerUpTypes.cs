@@ -4,7 +4,9 @@ namespace Breakout.Blocks {
     public enum PowerUpTypes {
         ExtraLife,
         ExtraBall,
-        ExtraPoints
+        ExtraPoints,
+        HalfSpeed,
+        DoubleSpeed
     }
 
     public static class PowerUpRandom {
