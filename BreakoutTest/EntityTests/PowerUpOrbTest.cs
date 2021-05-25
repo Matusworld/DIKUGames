@@ -55,13 +55,13 @@ namespace BreakoutTest
                         "Assets", "Images", "LifePickUp.png"));
             Assert.IsTrue(Orb.Image != null);
         }
-
+        /*
         [Test]
         public void TestLOBoundaryCheckers() {
             Orb.Shape.Position.Y = 0.00f;
 
             Assert.IsTrue(2 = 2);
             NUnit.Framework.TestContext.Progress.WriteLine(Orb.LowerBoundaryCheck());
-        }
+        }*/
     }
 }
