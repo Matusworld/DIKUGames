@@ -93,8 +93,8 @@ namespace BreakoutTest {
         //Test that PowerUp bonus score between 1 and 30 is awarded
         [Test]
         public void PowerUpScoreTest() {
-            int min = 1;
-            int max = 30;
+            int min = Score.MinPowerUpPoints;
+            int max = Score.MaxPowerUpPoints;
 
             uint formerScore = score.ScoreCount;
 

@@ -189,7 +189,8 @@ namespace BreakoutTest
 
             Assert.IsTrue(ball.DoubleSpeedActive);
 
-            Thread.Sleep(PUorganizer.PowerUpDuration);
+            //Extra sleep time added to be sure timed event is completed
+            Thread.Sleep(PUorganizer.PowerUpDuration + 500);
 
             eventBus.ProcessEvents();
 
@@ -221,7 +222,8 @@ namespace BreakoutTest
 
             Assert.IsTrue(ball.HalfSpeedActive);
 
-            Thread.Sleep(PUorganizer.PowerUpDuration);
+            //Extra sleep time added to be sure timed event is completed
+            Thread.Sleep(PUorganizer.PowerUpDuration + 500);
 
             eventBus.ProcessEvents();
 
