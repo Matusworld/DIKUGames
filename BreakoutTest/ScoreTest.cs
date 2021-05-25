@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 using DIKUArcade.GUI;
 using DIKUArcade.Events;
@@ -102,11 +103,13 @@ namespace BreakoutTest {
                     EventType = GameEventType.ControlEvent, 
                     StringArg1 = "PowerUpScore"});
 
+                Thread.Sleep(10);
                 eventBus.ProcessEvents();
-                formerScore = score.ScoreCount;
 
                 Assert.GreaterOrEqual(score.ScoreCount, formerScore + min);
                 Assert.LessOrEqual(score.ScoreCount, formerScore + max);
+
+                formerScore = score.ScoreCount;
             }
             
         }

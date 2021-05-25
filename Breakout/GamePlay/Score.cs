@@ -9,8 +9,8 @@ using Breakout.GamePlay.BlockEntity;
 namespace Breakout.GamePlay {
     public class Score : IGameEventProcessor {
         Random rand;
-        private const int minPowerUpPoints = 1;
-        private const int maxPowerUpPoints = 30;
+        public const int MinPowerUpPoints = 1;
+        public const int MaxPowerUpPoints = 30;
         public uint ScoreCount { get; private set; }
 
         private Text display;
@@ -27,7 +27,7 @@ namespace Breakout.GamePlay {
         }
 
         private void AddPowerUpScore() {
-            ScoreCount += (uint) rand.Next(minPowerUpPoints, maxPowerUpPoints+1);
+            ScoreCount += (uint) rand.Next(MinPowerUpPoints, MaxPowerUpPoints+1);
 
             display.SetText("Score: " + ScoreCount.ToString());
         }
