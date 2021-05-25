@@ -26,7 +26,7 @@ namespace Breakout.States {
         private List<string> levelSequence;
         public int LevelIndex { get; private set; }
         private Score score;
-        private Timer gameTimer;
+        private BreakoutTimer gameTimer;
         
         public GameRunning() {
             Init();
@@ -64,7 +64,7 @@ namespace Breakout.States {
 
             score = new Score(new Vec2F(0.00f, -0.26f), new Vec2F(0.3f, 0.3f));
 
-            gameTimer = new Timer(LevelLoader.Meta.Time, new Vec2F(0.33f, -0.26f), new Vec2F(0.3f, 0.3f));
+            gameTimer = new BreakoutTimer(LevelLoader.Meta.Time, new Vec2F(0.33f, -0.26f), new Vec2F(0.3f, 0.3f));
         }
 
         public static GameRunning GetInstance() {
@@ -240,8 +240,9 @@ namespace Breakout.States {
             //ball move
             ballOrganizer.Balls.Iterate(ball => {
                 BallPlayerCollision(ball);
-                BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                    EventType = GameEventType.MovementEvent, StringArg1 = "Move" , To = ball });
+                //BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                //    EventType = GameEventType.MovementEvent, StringArg1 = "Move" , To = ball });
+                ball.Move();
             });
 
             //PowerUpOrb move

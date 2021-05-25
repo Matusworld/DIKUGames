@@ -3,7 +3,7 @@ using DIKUArcade.Math;
 using DIKUArcade.Timers;
 
 namespace Breakout.States {
-    public class Timer : StaticTimer {
+    public class BreakoutTimer : StaticTimer {
         private Text display;
 
         //internal level counter, from levelTime down to 0
@@ -15,7 +15,7 @@ namespace Breakout.States {
         //The static/global time at point of level start
         private int staticStartTime;
 
-        public Timer(int levelTime, Vec2F pos, Vec2F extent) {
+        public BreakoutTimer(int levelTime, Vec2F pos, Vec2F extent) {
             timer = levelTime;
             this.levelTime = levelTime;
             staticStartTime = (int) GetElapsedSeconds();

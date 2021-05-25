@@ -16,7 +16,9 @@ namespace Breakout {
         float speed;
         public float Theta { get; private set; }
         public bool Active { get; private set; } = true;
-        const int bounceDelay = 10;
+        public bool HalfSpeedActive;
+        public bool DoubleSpeedActive;
+        const int bounceDelay = 0;
 
         public Ball(DynamicShape shape, IBaseImage image, float theta): base (shape, image) {
             speed = baseSpeed;
@@ -26,33 +28,35 @@ namespace Breakout {
 
             SetDirection(theta);
         }
-        public Vec2F GetPosition() {
-            return this.Shape.Position; 
+
+        private void UpdateTheta() {
+            float Dx = Shape.AsDynamicShape().Direction.X;
+            float Dy = Shape.AsDynamicShape().Direction.Y;
+            Theta = (float) Math.Atan2(Dy,Dx);
         }
-        
+
         private void SetDirection(float theta) {
-            //this.theta = theta;
             this.Shape.AsDynamicShape().Direction.X = (float)Math.Cos((double)theta)*speed;
             this.Shape.AsDynamicShape().Direction.Y = (float)Math.Sin((double)theta)*speed;
             UpdateTheta();
         }
 
         public bool LeftBoundaryCheck() {
-            if (this.Shape.Position.X <= 0.0f) {
+            if (this.Shape.Position.X < 0.0f) {
                 return true;
             } else {
                 return false;
             }
         }
         public bool RightBoundaryCheck() {
-            if (this.Shape.Position.X+this.Shape.Extent.X >= 1.0f) {
+            if (this.Shape.Position.X+this.Shape.Extent.X > 1.0f) {
                 return true;
             } else {
                 return false;
             }           
         }
         public bool UpperBoundaryCheck() {
-            if (this.Shape.Position.Y+this.Shape.Extent.Y >= 1.0f) {
+            if (this.Shape.Position.Y+this.Shape.Extent.Y > 1.0f) {
                 return true;
             } else {
                 return false;
@@ -60,21 +64,13 @@ namespace Breakout {
         }
 
         public bool LowerBoundaryCheck() {
-            if (this.Shape.Position.Y+this.Shape.Extent.Y <= 0.0f) {
+            if (this.Shape.Position.Y < 0.0f) {
                 return true;
             } else {
                 return false;
             }
         }
-        private void UpdateTheta() {
-            //float Dnorm = (float) Shape.AsDynamicShape().Direction.Length();
-            float Dx = Shape.AsDynamicShape().Direction.X;
-            float Dy = Shape.AsDynamicShape().Direction.Y;
-            Theta = (float) Math.Atan2(Dy,Dx);
-            //float theta = 0.75f * (float) Math.PI - (this.Shape.Position*(float)Math.PI / 2f);
-            
-            //return theta;
-        }
+
         public void DirectionPlayerSetter(float PlayerPosition) {
             //rebound angle depending on hit position
             float theta = 0.75f * (float) Math.PI - (PlayerPosition*(float)Math.PI / 2f);
@@ -90,9 +86,11 @@ namespace Breakout {
             }
             UpdateTheta();
         }
-        private void Move() {
+        public void Move() {
             if (LowerBoundaryCheck()) {
                 this.DeleteEntity();
+                BreakoutBus.GetBus().Unsubscribe(GameEventType.MovementEvent, this);
+                BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, this);
                 
             } else {
                 DirectionBoundarySetter(); 
@@ -146,13 +144,15 @@ namespace Breakout {
                         case "DoubleSpeed":
                             switch(gameEvent.Message) {
                                 case "Activate":
-                                    speed = speed * 2f;
-                                    //We update the direction vector manually here, 
-                                    //else it will only be updated on a player collision
-                                    SetDirection(Theta);
+                                    if (!DoubleSpeedActive) {
+                                        DoubleSpeedActive = true;
+                                        speed = speed * 2f;
+                                        //Update the direction vector
+                                        SetDirection(Theta);
+                                    }
                                     break;
-
                                 case "Deactivate":
+                                    DoubleSpeedActive = false;
                                     speed = speed * 0.5f;
                                     SetDirection(Theta);
                                     break;
@@ -162,11 +162,14 @@ namespace Breakout {
                         case "HalfSpeed":
                             switch(gameEvent.Message) {
                                 case "Activate":
-                                    speed = speed * 0.5f;
-                                    SetDirection(Theta);
+                                    if (!HalfSpeedActive) {
+                                        HalfSpeedActive = true;
+                                        speed = speed * 0.5f;
+                                        SetDirection(Theta);
+                                    }
                                     break;
-
                                 case "Deactivate":
+                                    HalfSpeedActive = false;
                                     speed = speed * 2f;
                                     SetDirection(Theta);
                                     break;
