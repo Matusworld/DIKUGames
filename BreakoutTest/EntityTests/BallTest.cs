@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System;
+using System.Threading;
 using NUnit.Framework;
 
 using DIKUArcade.GUI;
@@ -8,8 +9,10 @@ using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
+using DIKUArcade.Timers;
 
 using Breakout.GamePlay.BallEntity;
+using Breakout.GamePlay.BlockEntity.PowerUpOrbEntity;
 
 namespace BreakoutTest
 {
@@ -31,8 +34,9 @@ namespace BreakoutTest
                 (float) Math.PI /4f);
 
             eventBus = new GameEventBus();
-            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.MovementEvent });
+            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.MovementEvent, GameEventType.ControlEvent});
             eventBus.Subscribe(GameEventType.MovementEvent, ball);
+            eventBus.Subscribe(GameEventType.ControlEvent, ball);
 
             tolerance = 0.0001f;
         }
@@ -135,6 +139,93 @@ namespace BreakoutTest
             Assert.IsTrue(tolerance >= Math.Abs(expPosX - ball.Shape.Position.X) 
                 && 
                 tolerance >= Math.Abs(expPosY - ball.Shape.Position.Y));
+        }
+
+        // Testing when the ball "hits" a block from the bottom or top
+        // and get the correct angle (theta)
+        // also testing that the ball deactives for a period of time
+        /*
+        [Test]
+        public void TestBallBlockCollisionUPDown() {
+            eventBus.RegisterEvent( new GameEvent {
+                EventType = GameEventType.MovementEvent, 
+                StringArg1 = "BlockCollision", Message = "UpDown", To = ball
+            });
+
+            float dx = ball.Shape.AsDynamicShape().Direction.X;
+            float dy = ball.Shape.AsDynamicShape().Direction.Y;
+            float theta = (float) Math.Atan2(dy, dx);
+
+            eventBus.ProcessEvents();
+
+            float diff = (ball.Theta - theta);
+
+            Assert.LessOrEqual(diff, tolerance);
+
+        } */
+
+        // Testing When player picks up powerorb double speed, that the ball gains double speed
+        [Test]
+        public void TestDoubleSpeed() {
+            float startspeed = ball.speed;
+
+            PowerUpOrbOrganizer PUorganizer = new PowerUpOrbOrganizer();
+
+            eventBus.RegisterEvent ( new GameEvent {
+                EventType = GameEventType.ControlEvent, StringArg1 = "DoubleSpeed",
+                Message = "Activate", To = ball                            
+            });
+
+            eventBus.RegisterTimedEvent (
+                new GameEvent{ EventType = GameEventType.ControlEvent,
+                    StringArg1 = "DoubleSpeed", Message = "Deactivate", To = ball},
+                    TimePeriod.NewMilliseconds(PUorganizer.PowerUpDuration));
+
+            eventBus.ProcessEvents();
+
+            float diff = Math.Abs(ball.speed - startspeed * 2f);
+
+            Assert.LessOrEqual(diff, tolerance);
+
+            Assert.IsTrue(ball.DoubleSpeedActive);
+
+            Thread.Sleep(PUorganizer.PowerUpDuration);
+
+            eventBus.ProcessEvents();
+
+            Assert.IsFalse(ball.DoubleSpeedActive);
+        }
+
+        // Testing When player picks up powerorb half speed, that the ball gets half speed
+        [Test]
+        public void TestHalfSpeed() {
+            float startspeed = ball.speed;
+
+            PowerUpOrbOrganizer PUorganizer = new PowerUpOrbOrganizer();
+
+            eventBus.RegisterEvent ( new GameEvent {
+                EventType = GameEventType.ControlEvent, StringArg1 = "HalfSpeed",
+                Message = "Activate", To = ball                            
+            });
+
+            eventBus.RegisterTimedEvent (
+                new GameEvent{ EventType = GameEventType.ControlEvent,
+                    StringArg1 = "HalfSpeed", Message = "Deactivate", To = ball},
+                    TimePeriod.NewMilliseconds(PUorganizer.PowerUpDuration));
+
+            eventBus.ProcessEvents();
+
+            float diff = Math.Abs(ball.speed - startspeed * 0.5f);
+
+            Assert.LessOrEqual(diff, tolerance);
+
+            Assert.IsTrue(ball.HalfSpeedActive);
+
+            Thread.Sleep(PUorganizer.PowerUpDuration);
+
+            eventBus.ProcessEvents();
+
+            Assert.IsFalse(ball.HalfSpeedActive);
         }
     }
 }
