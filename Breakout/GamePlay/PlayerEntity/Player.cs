@@ -3,7 +3,7 @@ using DIKUArcade.Events;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 
-namespace Breakout.PlayerEntity {
+namespace Breakout.GamePlay.PlayerEntity {
     public class Player : Entity, IGameEventProcessor {
         //private Entity entity;
         //private DynamicShape shape;

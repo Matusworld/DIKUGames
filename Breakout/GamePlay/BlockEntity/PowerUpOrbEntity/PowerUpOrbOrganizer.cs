@@ -1,12 +1,12 @@
 using DIKUArcade.Entities;
 using DIKUArcade.Events;
 
-namespace Breakout.Blocks {
-    public class PowerUpOrganizer : IGameEventProcessor {
+namespace Breakout.BlockEntity.PowerUpOrbEntity {
+    public class PowerUpOrbOrganizer : IGameEventProcessor {
         public EntityContainer<PowerUpOrb> Orbs { get; private set; } 
             
-        public int PowerUpDuration { get; private set; } = 25000; //ms
-        public PowerUpOrganizer() {
+        public int PowerUpDuration { get; private set; } = 5000; //ms
+        public PowerUpOrbOrganizer() {
             Orbs = new EntityContainer<PowerUpOrb>();
 
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this);

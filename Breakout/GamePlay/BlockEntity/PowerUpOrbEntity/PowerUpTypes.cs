@@ -1,6 +1,6 @@
 using System;
 
-namespace Breakout.Blocks {
+namespace Breakout.BlockEntity.PowerUpOrbEntity {
     public enum PowerUpTypes {
         ExtraLife,
         ExtraBall,

@@ -1,4 +1,4 @@
-namespace Breakout.Blocks {
+namespace Breakout.BlockEntity {
     public enum BlockTypes {
         Normal,
         Hardened,

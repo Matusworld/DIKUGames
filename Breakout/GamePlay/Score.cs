@@ -1,10 +1,10 @@
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Events;
-using Breakout.Blocks;
+using Breakout.BlockEntity;
 
 using System;
-namespace Breakout {
+namespace Breakout.GamePlay {
     public class Score : IGameEventProcessor {
         Random rand;
         private const int minPowerUpPoints = 1;

@@ -8,7 +8,7 @@ using DIKUArcade.Math;
 
 using Breakout;
 
-namespace Breakout.PlayerEntity {
+namespace Breakout.GamePlay.PlayerEntity {
     public class Healthbar : IGameEventProcessor {
 
         public uint Lives { get; private set; }

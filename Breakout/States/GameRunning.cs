@@ -11,9 +11,12 @@ using DIKUArcade.Input;
 using DIKUArcade.Physics;
 using DIKUArcade.Timers;
 
+using Breakout.GamePlay;
+using Breakout.GamePlay.PlayerEntity;
+using Breakout.GamePlay.BallEntity;
 using Breakout.LevelLoading;
-using Breakout.Blocks;
-using Breakout.PlayerEntity;
+using Breakout.BlockEntity;
+using Breakout.BlockEntity.PowerUpOrbEntity;
 
 namespace Breakout.States {
     public class GameRunning : IGameState {
@@ -21,7 +24,7 @@ namespace Breakout.States {
         private Entity backGroundImage;
         private Player player;
         private BallOrganizer ballOrganizer;
-        private PowerUpOrganizer PUorganizer;
+        private PowerUpOrbOrganizer PUorganizer;
         public LevelLoader LevelLoader { get; private set; }
         private List<string> levelSequence;
         public int LevelIndex { get; private set; }
@@ -50,7 +53,7 @@ namespace Breakout.States {
                 "Breakout", "Assets", "Levels", 
                 levelSequence[LevelIndex]));
 
-            PUorganizer = new PowerUpOrganizer();
+            PUorganizer = new PowerUpOrbOrganizer();
 
             ballOrganizer = new BallOrganizer();
             //BreakoutBus.GetBus().RegisterEvent ( new GameEvent {

@@ -2,7 +2,7 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Timers;
 
-namespace Breakout.States {
+namespace Breakout.GamePlay {
     public class BreakoutTimer : StaticTimer {
         private Text display;
 

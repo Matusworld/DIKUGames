@@ -4,11 +4,6 @@ using DIKUArcade;
 using DIKUArcade.GUI;
 using DIKUArcade.Input;
 using DIKUArcade.Events;
-using DIKUArcade.Entities;
-using DIKUArcade.Graphics;
-using DIKUArcade.Math;
-using Breakout.LevelLoading;
-using Breakout.Blocks;
 using Breakout.States;
 
 namespace Breakout {

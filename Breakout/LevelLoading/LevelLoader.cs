@@ -4,7 +4,7 @@ using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
 using Breakout.LevelLoading.SectionLoading;
-using Breakout.Blocks;
+using Breakout.BlockEntity;
 
 namespace Breakout.LevelLoading {
     public class LevelLoader {

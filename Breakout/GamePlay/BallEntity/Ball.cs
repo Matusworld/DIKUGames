@@ -9,7 +9,7 @@ using DIKUArcade.Math;
 using DIKUArcade.Timers;
 using DIKUArcade.Graphics;
 
-namespace Breakout {
+namespace Breakout.GamePlay.BallEntity {
     public class Ball : Entity, IGameEventProcessor {   
 
         const float baseSpeed = 0.02f;
@@ -18,7 +18,7 @@ namespace Breakout {
         public bool Active { get; private set; } = true;
         public bool HalfSpeedActive;
         public bool DoubleSpeedActive;
-        const int bounceDelay = 0;
+        const int bounceDelay = 2;
 
         public Ball(DynamicShape shape, IBaseImage image, float theta): base (shape, image) {
             speed = baseSpeed;
@@ -152,9 +152,11 @@ namespace Breakout {
                                     }
                                     break;
                                 case "Deactivate":
-                                    DoubleSpeedActive = false;
-                                    speed = speed * 0.5f;
-                                    SetDirection(Theta);
+                                    if (DoubleSpeedActive) {
+                                        DoubleSpeedActive = false;
+                                        speed = speed * 0.5f;
+                                        SetDirection(Theta);
+                                    }
                                     break;
                             }
                             break; 
@@ -169,9 +171,11 @@ namespace Breakout {
                                     }
                                     break;
                                 case "Deactivate":
-                                    HalfSpeedActive = false;
-                                    speed = speed * 2f;
-                                    SetDirection(Theta);
+                                    if (HalfSpeedActive) {
+                                        HalfSpeedActive = false;
+                                        speed = speed * 2f;
+                                        SetDirection(Theta);
+                                    }
                                     break;
                             }
                             break; 

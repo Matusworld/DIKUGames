@@ -2,7 +2,7 @@ using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 
-namespace Breakout.Blocks {
+namespace Breakout.BlockEntity {
     public class Hardened : Block {
         private IBaseImage damageImage;
         private int maxHP;

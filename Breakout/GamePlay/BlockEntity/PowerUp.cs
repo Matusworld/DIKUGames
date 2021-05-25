@@ -5,7 +5,9 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 
-namespace Breakout.Blocks {
+using Breakout.BlockEntity.PowerUpOrbEntity;
+
+namespace Breakout.BlockEntity {
     public class PowerUp : Block {
 
         public PowerUp (DynamicShape shape, IBaseImage image) : base(shape, image) {}

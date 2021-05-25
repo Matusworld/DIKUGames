@@ -6,7 +6,7 @@ using DIKUArcade.Math;
 using System;
 using System.IO;
 
-namespace Breakout {
+namespace Breakout.GamePlay.BallEntity {
     public class BallOrganizer {
         public EntityContainer<Ball> Balls { get; private set; }
 
