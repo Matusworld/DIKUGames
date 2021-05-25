@@ -2,14 +2,16 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
 using System;
-using Breakout;
-using Breakout.Blocks;
+
 using DIKUArcade.GUI;
 using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
+
 using Breakout.LevelLoading;
+using Breakout;
+using Breakout.GamePlay.BlockEntity;
 
 namespace BreakoutTest {
     public class UnbreakableBlockTest {

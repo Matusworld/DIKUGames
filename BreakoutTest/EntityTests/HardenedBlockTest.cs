@@ -4,7 +4,7 @@ using System.IO;
 using System;
 
 using Breakout;
-using Breakout.Blocks;
+using Breakout.GamePlay.BlockEntity;
 using Breakout.LevelLoading;
 
 using DIKUArcade.GUI;

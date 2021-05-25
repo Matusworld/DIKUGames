@@ -2,12 +2,14 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 using NUnit.Framework;
-using Breakout;
+
 using DIKUArcade.GUI;
 using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
+
+using Breakout.GamePlay.PlayerEntity;
 
 namespace BreakoutTest
 {

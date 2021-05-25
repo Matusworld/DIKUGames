@@ -2,12 +2,14 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 using NUnit.Framework;
-using Breakout;
+
 using DIKUArcade.GUI;
 using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
+
+using Breakout.GamePlay.BallEntity;
 
 namespace BreakoutTest
 {
@@ -38,36 +40,37 @@ namespace BreakoutTest
         [Test]
         public void TestRBoundaryCheckers() {
 
-            ball.Shape.Position.X = 1.0f;
+            ball.Shape.Position.X = 1.01f;
             Assert.IsTrue(ball.RightBoundaryCheck());
         }
 
         [Test]
         public void TestLBoundaryCheckers() {
 
-            ball.Shape.Position.X = 0.0f;
+            ball.Shape.Position.X = -0.01f;
             Assert.IsTrue(ball.LeftBoundaryCheck());
         }
 
         [Test]
         public void TestUBoundaryCheckers() {
 
-            ball.Shape.Position.Y = 1.0f;
+            ball.Shape.Position.Y = 1.01f;
              Assert.IsTrue(ball.UpperBoundaryCheck());
         }
 
         [Test]
         public void TestLOBoundaryCheckers() {
 
-            ball.Shape.Position.Y = -0.1f;
+            ball.Shape.Position.Y = -0.01f;
              Assert.IsTrue(ball.LowerBoundaryCheck());
         }
 
+        //Test that correct dimension direction is reversed when hitting a boundary
         [Test]
         public void TestDirectionBoundarySetter() {   
 
-            ball.Shape.Position.X = 0.0f;
-            ball.Shape.Position.Y = 1.0f;
+            ball.Shape.Position.X = -0.01f;
+            ball.Shape.Position.Y = 1.01f;
 
             ball.Shape.AsDynamicShape().Direction.X = 0.01f;
             ball.Shape.AsDynamicShape().Direction.Y = 0.01f;
@@ -76,44 +79,46 @@ namespace BreakoutTest
             float oldDirectionY = ball.Shape.AsDynamicShape().Direction.Y;
 
             ball.DirectionBoundarySetter();
-            Assert.IsTrue(tolerance >= Math.Abs(oldDirectionX+ball.Shape.AsDynamicShape().Direction.X) && 
-                tolerance >= Math.Abs(oldDirectionY+ball.Shape.AsDynamicShape().Direction.Y));
+            Assert.IsTrue(
+                tolerance >= Math.Abs(oldDirectionX + ball.Shape.AsDynamicShape().Direction.X) 
+                && 
+                tolerance >= Math.Abs(oldDirectionY + ball.Shape.AsDynamicShape().Direction.Y));
         }
 
-        [Test]
-        public void testDirectionPlayerSetter( ) {
-            float testTheta = ball.ReturnTheta(0.23f);
-            ball.DirectionPlayerSetter(0.23f);
-            Assert.IsTrue(tolerance >=Math.Abs(testTheta-1.9949113f));           
-            //The values in this test have been calculated in maple to find the appropriate values
-            //to test for.
-        }
         [Test]
         public void testDirectionPlayerSetterLeftBounce() {
+            float playerHitPos = 0.0f;
+            ball.DirectionPlayerSetter(playerHitPos);
 
-            float testTheta = ball.ReturnTheta(0.0f);
-            ball.DirectionPlayerSetter(0.0f);
-            Assert.IsTrue(tolerance >= Math.Abs(testTheta - (3f/4f*(float)Math.PI)));
+            Assert.IsTrue(tolerance >= Math.Abs(ball.Theta - (0.75f*(float)Math.PI)));
         }
         [Test]
         public void testDirectionPlayerSetterMiddleBounce() {
+            float playerHitPos = 0.5f;
+            ball.DirectionPlayerSetter(playerHitPos);
 
-            float testTheta = ball.ReturnTheta(0.5f);
-            ball.DirectionPlayerSetter(0.5f);
-            Assert.IsTrue(tolerance >= Math.Abs(testTheta - (2f/4f*(float)Math.PI)));
+            Assert.IsTrue(tolerance >= Math.Abs(ball.Theta - (0.5f*(float)Math.PI)));
         }
         [Test]
         public void testDirectionPlayerSetterRightBounce() {
-            float testTheta = ball.ReturnTheta(1.0f);
+            float playerHitPos = 1.0f;
+            ball.DirectionPlayerSetter(playerHitPos);
 
-            ball.DirectionPlayerSetter(1.0f);
-            Assert.IsTrue(tolerance >= Math.Abs(testTheta - (1f/4f*(float)Math.PI)));
+            Assert.IsTrue(tolerance >= Math.Abs(ball.Theta - (0.25*(float)Math.PI)));
         }
+
+        [Test]
+        public void testDirectionPlayerSetterNonTrivialBounce() {
+            float playerHitPos = 0.23f;
+            ball.DirectionPlayerSetter(playerHitPos);
+            //math to compute rebounce dir
+            float expTheta = 0.75f * (float) Math.PI - (playerHitPos*(float)Math.PI / 2f);
+
+            Assert.IsTrue(tolerance >= Math.Abs(ball.Theta - expTheta));           
+        }
+
         [Test]
         public void testMove() {
-
-            float newPosX = 0.5f;
-            float newPosY = 0.5f;
 
             ball.Shape.Position.X = 0.49f;
             ball.Shape.Position.Y = 0.49f;
@@ -121,13 +126,15 @@ namespace BreakoutTest
             ball.Shape.AsDynamicShape().Direction.X = 0.01f;
             ball.Shape.AsDynamicShape().Direction.Y = 0.01f;
 
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.MovementEvent,
-                StringArg1 = "Move", To = ball });
-            eventBus.ProcessEvents();
+            float expPosX = ball.Shape.Position.X + ball.Shape.AsDynamicShape().Direction.X;
+            float expPosY = ball.Shape.Position.Y + ball.Shape.AsDynamicShape().Direction.Y;
 
-            Assert.IsTrue(tolerance >= Math.Abs(newPosX-ball.Shape.Position.X) && 
-                tolerance >= Math.Abs(newPosY-ball.Shape.Position.Y));
+            //update position by moving
+            ball.Move();
+
+            Assert.IsTrue(tolerance >= Math.Abs(expPosX - ball.Shape.Position.X) 
+                && 
+                tolerance >= Math.Abs(expPosY - ball.Shape.Position.Y));
         }
     }
 }
