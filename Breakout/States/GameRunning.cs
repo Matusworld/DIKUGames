@@ -200,9 +200,9 @@ namespace Breakout.States {
                 LevelLoader.LoadLevel(Path.Combine( new string[] { ProjectPath.getPath(),
                     "Breakout", "Assets", "Levels", levelSequence[LevelIndex] }));
                 
-                StaticTimer.RestartTimer();
+                //StaticTimer.RestartTimer();
                 if (LevelLoader.Meta.Time != 0) {
-                    gameTimer.NewTimer(LevelLoader.Meta.Time);
+                    gameTimer.LevelSwitch(LevelLoader.Meta.Time);
                 }
             }
             else {

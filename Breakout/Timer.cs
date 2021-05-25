@@ -6,22 +6,33 @@ namespace Breakout.States {
     public class Timer : StaticTimer {
         private Text display;
 
+        //internal level counter, from levelTime down to 0
         private int timer;
 
-        private int startTime;
+        //Max duration of level
+        private int levelTime;
 
-        public Timer(int starttime, Vec2F pos, Vec2F extent) {
-            this.startTime = starttime;
-            timer = starttime;
+        //The static/global time at point of level start
+        private int staticStartTime;
+
+        public Timer(int levelTime, Vec2F pos, Vec2F extent) {
+            timer = levelTime;
+            this.levelTime = levelTime;
+            staticStartTime = (int) GetElapsedSeconds();
 
             display = new Text("Time left: " + timer.ToString(), pos, extent);
             display.SetColor(System.Drawing.Color.Gold);
         }
 
+        public void LevelSwitch(int levelTime) {
+            timer = levelTime;
+            this.levelTime = levelTime;
+            staticStartTime = (int) GetElapsedSeconds();
+        }
         
 
         public void UpdateTimer() {
-            timer = startTime - (int) GetElapsedSeconds();
+            timer = (levelTime + staticStartTime) - (int) GetElapsedSeconds();
             display.SetText("Time left: " + timer.ToString());
         }
 
@@ -32,11 +43,12 @@ namespace Breakout.States {
                 return false;
             }
         }
-
-        public void NewTimer(int starttime) {
-            this.startTime = starttime;
-            timer = starttime;
-        }
+        /*
+        public void NewTimer(int levelTime) {
+            timer = levelTime;
+            this.levelTime = levelTime;
+            staticStartTime = (int) GetElapsedSeconds();
+        }*/
 
         public void Render() {
             display.RenderText();
