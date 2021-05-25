@@ -1,10 +1,12 @@
 using System.IO;
+
 using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
+
 using Breakout.LevelLoading.SectionLoading;
-using Breakout.BlockEntity;
+using Breakout.GamePlay.BlockEntity;
 
 namespace Breakout.LevelLoading {
     public class LevelLoader {

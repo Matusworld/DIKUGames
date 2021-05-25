@@ -18,7 +18,7 @@ namespace Breakout.GamePlay.BallEntity {
         public bool Active { get; private set; } = true;
         public bool HalfSpeedActive;
         public bool DoubleSpeedActive;
-        const int bounceDelay = 2;
+        const int bounceDelay = 1;
 
         public Ball(DynamicShape shape, IBaseImage image, float theta): base (shape, image) {
             speed = baseSpeed;

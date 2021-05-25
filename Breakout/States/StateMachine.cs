@@ -42,10 +42,11 @@ namespace Breakout.States {
                         switch (gameEvent.StringArg1) {
                             case "GAME_NEWGAME":
                                 SwitchState(GameStateType.GameRunning);
+                                //reset timer before reset state
+                                StaticTimer.RestartTimer();
                                 ActiveState.ResetState();
                                 //To properly render entities
                                 ActiveState.RenderState();
-                                StaticTimer.RestartTimer();
                                 break;
                             case "GAME_QUIT":
                                 BreakoutBus.GetBus().RegisterEvent(new GameEvent {

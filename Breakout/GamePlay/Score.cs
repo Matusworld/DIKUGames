@@ -1,9 +1,11 @@
+using System;
+
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Events;
-using Breakout.BlockEntity;
 
-using System;
+using Breakout.GamePlay.BlockEntity;
+
 namespace Breakout.GamePlay {
     public class Score : IGameEventProcessor {
         Random rand;

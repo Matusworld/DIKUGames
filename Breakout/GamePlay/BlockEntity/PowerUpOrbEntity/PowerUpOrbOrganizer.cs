@@ -1,7 +1,7 @@
 using DIKUArcade.Entities;
 using DIKUArcade.Events;
 
-namespace Breakout.BlockEntity.PowerUpOrbEntity {
+namespace Breakout.GamePlay.BlockEntity.PowerUpOrbEntity {
     public class PowerUpOrbOrganizer : IGameEventProcessor {
         public EntityContainer<PowerUpOrb> Orbs { get; private set; } 
             

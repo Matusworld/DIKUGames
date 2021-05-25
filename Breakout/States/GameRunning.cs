@@ -14,9 +14,9 @@ using DIKUArcade.Timers;
 using Breakout.GamePlay;
 using Breakout.GamePlay.PlayerEntity;
 using Breakout.GamePlay.BallEntity;
+using Breakout.GamePlay.BlockEntity;
+using Breakout.GamePlay.BlockEntity.PowerUpOrbEntity;
 using Breakout.LevelLoading;
-using Breakout.BlockEntity;
-using Breakout.BlockEntity.PowerUpOrbEntity;
 
 namespace Breakout.States {
     public class GameRunning : IGameState {
@@ -243,10 +243,8 @@ namespace Breakout.States {
             //ball move
             ballOrganizer.Balls.Iterate(ball => {
                 BallPlayerCollision(ball);
-                //BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                //    EventType = GameEventType.MovementEvent, StringArg1 = "Move" , To = ball });
-                ball.Move();
             });
+            ballOrganizer.MoveBalls();
 
             //PowerUpOrb move
             PUorganizer.MoveOrbs();

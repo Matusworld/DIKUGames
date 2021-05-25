@@ -3,7 +3,7 @@ using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 
-namespace Breakout.BlockEntity {
+namespace Breakout.GamePlay.BlockEntity {
     public class Block : Entity, IGameEventProcessor {
         public bool Alive { get; protected set; } = true;
 

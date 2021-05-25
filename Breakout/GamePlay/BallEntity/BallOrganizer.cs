@@ -25,6 +25,12 @@ namespace Breakout.GamePlay.BallEntity {
             Balls.AddEntity(ball);
         }
 
+        public void MoveBalls() {
+            Balls.Iterate(ball => {
+                ball.Move();
+            });
+        }
+
         public void RenderBalls() {
             Balls.Iterate(ball => {
                 ball.RenderEntity();

@@ -5,13 +5,10 @@ using DIKUArcade.Timers;
 namespace Breakout.GamePlay {
     public class BreakoutTimer : StaticTimer {
         private Text display;
-
-        //internal level counter, from levelTime down to 0
+        //internal level time counter, from levelTime down to 0
         private int timer;
-
         //Max duration of level
         private int levelTime;
-
         //The static/global time at point of level start
         private int staticStartTime;
 

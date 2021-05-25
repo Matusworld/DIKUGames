@@ -2,14 +2,17 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
 using System;
+
 using Breakout;
 using Breakout.Blocks;
+using Breakout.LevelLoading;
+
 using DIKUArcade.GUI;
 using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
-using Breakout.LevelLoading;
+
 
 namespace BreakoutTest {
     public class HardenedBlockTest {
