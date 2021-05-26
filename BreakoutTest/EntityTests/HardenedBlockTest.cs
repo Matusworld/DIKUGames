@@ -1,11 +1,7 @@
 using NUnit.Framework;
-using System.Collections.Generic;
 using System.IO;
-using System;
 
-using Breakout;
 using Breakout.GamePlay.BlockEntity;
-using Breakout.LevelLoading;
 
 using DIKUArcade.GUI;
 using DIKUArcade.Events;
@@ -19,8 +15,6 @@ namespace BreakoutTest {
         Hardened hblock;
 
         Block block;
-
-        GameEventBus eventBus;
 
         [SetUp]
         public void Setup() {
@@ -36,11 +30,6 @@ namespace BreakoutTest {
                     TestProjectPath.getPath(),"Assets", "Images", "blue-block.png")),
                 new Image(Path.Combine(TestProjectPath.getPath(),
                     "Assets", "Images", "blue-block-damaged.png")));
-            
-            eventBus = new GameEventBus();
-            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.ControlEvent });
-            eventBus.Subscribe(GameEventType.ControlEvent, block);
-            eventBus.Subscribe(GameEventType.ControlEvent, hblock);
         }
 
         [Test]
@@ -52,12 +41,11 @@ namespace BreakoutTest {
         public void TestDamageImage() {
             var beforeimg = hblock.Image;
 
-            eventBus.RegisterEvent( new GameEvent {
+            hblock.ReceiveEvent( new GameEvent {
                 EventType = GameEventType.ControlEvent, StringArg1 = "BlockCollision",
-                To = hblock
             });
 
-            eventBus.ProcessEvents();
+            //eventBus.ProcessEvents();
 
             var afterimg = hblock.Image;
 

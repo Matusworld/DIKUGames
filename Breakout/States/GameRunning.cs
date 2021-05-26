@@ -15,7 +15,7 @@ using Breakout.GamePlay;
 using Breakout.GamePlay.PlayerEntity;
 using Breakout.GamePlay.BallEntity;
 using Breakout.GamePlay.BlockEntity;
-using Breakout.GamePlay.BlockEntity.PowerUpOrbEntity;
+using Breakout.GamePlay.PowerUpOrbEntity;
 using Breakout.LevelLoading;
 
 namespace Breakout.States {
@@ -56,8 +56,6 @@ namespace Breakout.States {
             PUorganizer = new PowerUpOrbOrganizer();
 
             ballOrganizer = new BallOrganizer();
-            //BreakoutBus.GetBus().RegisterEvent ( new GameEvent {
-            //    EventType = GameEventType.ControlEvent, StringArg1 = "BallGained" });
             ballOrganizer.AddEntity(ballOrganizer.GenerateBallRandomDir());
 
             player = new Player(
@@ -79,17 +77,24 @@ namespace Breakout.States {
             Init();
         }
 
+        /// <summary>
+        /// Unsubscribe all IGameEventProcessors in GamePlay Scope
+        /// </summary>
+        public void UnsubscribeAll() {
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, PUorganizer);
+            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, LevelLoader.BlockOrganizer);
+            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, player.Hpbar);
+            BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player); 
+            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, score);
+        }
+
         private void BallPlayerCollision(Ball ball) {
             CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(),
                 player.Shape.AsDynamicShape());
             if (check.Collision) {
                 float hitPosition = PlayerHitPositionTruncator(PlayerHitPosition(ball));
                 
-                /*
-                BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                    EventType = GameEventType.MovementEvent, Message = hitPosition.ToString(), 
-                    StringArg1 = "PlayerCollision", To = ball
-                });*/
                 ball.DirectionPlayerSetter(hitPosition);
             }
         }
@@ -231,16 +236,17 @@ namespace Breakout.States {
             });
         }
 
-        /// <summary>
-        /// Unsubscribe all IGameEventProcessors in GamePlay Scope
-        /// </summary>
-        public void UnsubscribeAll() {
-            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
-            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, PUorganizer);
-            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, LevelLoader.BlockOrganizer);
-            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, player.Hpbar);
-            BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player); 
-            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, score);
+        public void TimerUpdate() {
+            if (LevelLoader.Meta.Time != 0) {
+                gameTimer.UpdateTimer();
+
+                if (gameTimer.TimeRunOut()) {
+                    BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                        EventType = GameEventType.GameStateEvent, Message = "CHANGE_STATE",
+                        StringArg1 = "GAME_LOST"
+                    });
+                }
+            }
         }
 
         public void UpdateState() {
@@ -263,25 +269,10 @@ namespace Breakout.States {
             });
 
             BallBlockCollisionIterate();
-            /*
-            LevelLoader.Blocks.Iterate(block => {
-                ballOrganizer.Balls.Iterate(ball => {
-                    BallBlockCollision(block, ball);
-                });
-            }); */
             
             CheckLifeLost();
 
-            if (LevelLoader.Meta.Time != 0) {
-                gameTimer.UpdateTimer();
-
-                if (gameTimer.TimeRunOut()) {
-                    BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                        EventType = GameEventType.GameStateEvent, Message = "CHANGE_STATE",
-                        StringArg1 = "GAME_LOST"
-                    });
-                }
-            }
+            TimerUpdate();
 
             if(LevelLoader.LevelEnded()) {
                 NextLevel();

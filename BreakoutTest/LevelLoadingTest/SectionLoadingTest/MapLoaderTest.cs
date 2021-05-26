@@ -1,16 +1,10 @@
 using System.Collections.Generic;
-using System.Collections;
 using System.IO;
-using System;
+
 using NUnit.Framework;
-using Breakout;
+
 using Breakout.LevelLoading;
 using Breakout.LevelLoading.SectionLoading;
-using DIKUArcade.GUI;
-using DIKUArcade.Events;
-using DIKUArcade.Entities;
-using DIKUArcade.Math;
-using DIKUArcade.Graphics;
 
 namespace BreakoutTest {
 

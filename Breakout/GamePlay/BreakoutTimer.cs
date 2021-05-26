@@ -40,13 +40,7 @@ namespace Breakout.GamePlay {
                 return false;
             }
         }
-        /*
-        public void NewTimer(int levelTime) {
-            timer = levelTime;
-            this.levelTime = levelTime;
-            staticStartTime = (int) GetElapsedSeconds();
-        }*/
-
+        
         public void Render() {
             display.RenderText();
         }

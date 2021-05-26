@@ -5,8 +5,6 @@ using DIKUArcade.Math;
 
 namespace Breakout.GamePlay.PlayerEntity {
     public class Player : Entity, IGameEventProcessor {
-        //private Entity entity;
-        //private DynamicShape shape;
         private float moveLeft = 0.0f;
         private uint startLives = 3;
         private uint maxLives = 5;

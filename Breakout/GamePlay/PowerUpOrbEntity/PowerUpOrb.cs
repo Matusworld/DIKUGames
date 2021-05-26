@@ -3,7 +3,7 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 
-namespace Breakout.GamePlay.BlockEntity.PowerUpOrbEntity {
+namespace Breakout.GamePlay.PowerUpOrbEntity {
     public class PowerUpOrb : Entity {
         const float speed = 0.005f;
         public PowerUpTypes Type { get; private set;}

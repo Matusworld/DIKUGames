@@ -47,7 +47,6 @@ namespace BreakoutTest {
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.ControlEvent });
             eventBus.Subscribe(GameEventType.ControlEvent, score);
-            eventBus.Subscribe(GameEventType.ControlEvent, block);
         }
 
         //Precondition

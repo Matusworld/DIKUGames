@@ -8,7 +8,7 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 
-using Breakout.GamePlay.BlockEntity.PowerUpOrbEntity;
+using Breakout.GamePlay.PowerUpOrbEntity;
 
 namespace BreakoutTest {
     public class PowerUpOrbOrganizerTest {
@@ -41,7 +41,7 @@ namespace BreakoutTest {
         // Testing that the PowerUpOrbOrganizer start with 0 orbs in the entitycontainer
         [Test]
         public void TestInitialPowerUpOrbOrganizer() {
-            Assert.AreEqual(PUOrganizer.Orbs.CountEntities(), 0);
+            Assert.AreEqual(PUOrganizer.Entities.CountEntities(), 0);
         }
 
         // Testing adding a orb to the PowerUpOrbOrganizer's entitycontainer
@@ -49,12 +49,12 @@ namespace BreakoutTest {
         public void TestAddOrb() {
             eventBus.RegisterEvent( new GameEvent {
                 EventType = GameEventType.ControlEvent, StringArg1 = "ADD_ORB",
-                From = orb
+                ObjectArg1 = orb
             });
 
             eventBus.ProcessEvents();
 
-            Assert.AreEqual(PUOrganizer.Orbs.CountEntities(), 1);
+            Assert.AreEqual(PUOrganizer.Entities.CountEntities(), 1);
         }
     }
 }

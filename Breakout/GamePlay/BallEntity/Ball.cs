@@ -24,8 +24,6 @@ namespace Breakout.GamePlay.BallEntity {
         public Ball(DynamicShape shape, IBaseImage image, float theta): base (shape, image) {
             speed = baseSpeed;
             Theta = theta;
-            //BreakoutBus.GetBus().Subscribe(GameEventType.MovementEvent, this);
-            //BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this);
 
             SetDirection(theta);
         }
@@ -98,22 +96,6 @@ namespace Breakout.GamePlay.BallEntity {
         }
 
         public void DirectionBlockSetter(CollisionDirection dir) {
-            /*
-            if(this.Active) {
-                switch (Message) {
-                    case "UpDown":
-                        this.Shape.AsDynamicShape().Direction.Y = 
-                            -this.Shape.AsDynamicShape().Direction.Y;
-                        UpdateTheta();
-                        break;
-                    case "LeftRight":
-                        this.Shape.AsDynamicShape().Direction.X = 
-                            -this.Shape.AsDynamicShape().Direction.X;
-                        UpdateTheta();
-                        break;
-                }
-                Deactivate();
-            }*/
             switch (dir) {
                 case CollisionDirection.CollisionDirUp:
                 case CollisionDirection.CollisionDirDown:
@@ -135,16 +117,6 @@ namespace Breakout.GamePlay.BallEntity {
                 this.Shape.Move();
             }
         }
-        /*
-        private void Deactivate() {
-            //Don't switch direction for a short while
-            this.Active = false;
-            //After some time Activate again
-            BreakoutBus.GetBus().RegisterTimedEvent(
-                new GameEvent{ EventType = GameEventType.ControlEvent,
-                    StringArg1 = "BallActivate", To = this },
-                TimePeriod.NewMilliseconds(bounceDelay));
-        }*/
 
         private void ReceiveEventHalfSpeed(string Message) {
             switch(Message) {
@@ -186,29 +158,8 @@ namespace Breakout.GamePlay.BallEntity {
         }
 
         public void ReceiveEvent(GameEvent gameEvent) {
-            /*if (gameEvent.EventType == GameEventType.MovementEvent) {
-                switch(gameEvent.StringArg1) {
-                    
-                    case "PlayerCollision":
-                        float PlayerPosition = float.Parse (gameEvent.Message);
-                        DirectionPlayerSetter(PlayerPosition);
-                        break;
-                    case "BlockCollision":
-                        DirectionBlockSetter(gameEvent.Message);
-                        break;
-                    case "Move":
-                        this.Move();
-                        break;
-                    
-                }
-            }*/
             if (gameEvent.EventType == GameEventType.ControlEvent) {
                 switch(gameEvent.StringArg1) {
-                    /*
-                    case "BallActivate":
-                        this.Active = true;
-                        break;
-                    */
                     case "DoubleSpeed":
                         ReceiveEventDoubleSpeed(gameEvent.Message);
                         break;     

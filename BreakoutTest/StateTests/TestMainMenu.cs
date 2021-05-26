@@ -1,16 +1,11 @@
-using System.Collections.Generic;
-using System.IO;
-using System;
 using NUnit.Framework;
-using Breakout;
+
 using Breakout.States;
 using Breakout.States.Buttons;
+
 using DIKUArcade.GUI;
-using DIKUArcade.Events;
 using DIKUArcade.Input;
-using DIKUArcade.Entities;
-using DIKUArcade.Math;
-using DIKUArcade.Graphics;
+
 
 namespace BreakoutTest {
     public class MainMenuTest {
