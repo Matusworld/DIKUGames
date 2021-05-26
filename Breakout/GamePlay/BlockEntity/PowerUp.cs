@@ -59,15 +59,9 @@ namespace Breakout.GamePlay.BlockEntity {
         protected override void BlockHit() {
             Damage();
             if (!IsAlive()) {
-                // Unsubscribe deleted blocks
-                BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, this);
                 DeleteEntity();
+                ScoreEvent();
                 SpawnPowerUp();
-
-                // Could add points here
-                BreakoutBus.GetBus().RegisterEvent( new GameEvent { 
-                    EventType = GameEventType.ControlEvent, StringArg1 = "ADD_SCORE",
-                        From = this});
             }
         }
     }

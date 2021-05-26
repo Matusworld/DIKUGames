@@ -4,7 +4,7 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 
 namespace Breakout.GamePlay.BlockEntity {
-    public class Block : Entity, IGameEventProcessor {
+    public class Block : Entity {
         public bool Alive { get; protected set; } = true;
 
         public int HP { get; protected set; } = 1;
@@ -29,26 +29,24 @@ namespace Breakout.GamePlay.BlockEntity {
             }
         }
 
+        protected void ScoreEvent() {
+            BreakoutBus.GetBus().RegisterEvent( new GameEvent { 
+                EventType = GameEventType.ControlEvent, StringArg1 = "ADD_SCORE",
+                    From = this});
+        }
+
         protected virtual void BlockHit() {
             Damage();
             if (!IsAlive()) {
-                // Unsubscribe deleted blocks
-                BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, this);
                 DeleteEntity();
-
-                // Could add points here
-                BreakoutBus.GetBus().RegisterEvent( new GameEvent { 
-                    EventType = GameEventType.ControlEvent, StringArg1 = "ADD_SCORE",
-                        From = this});
+                ScoreEvent();
             }
         }
 
-        public void ProcessEvent(GameEvent gameEvent) {
+        public void ReceiveEvent(GameEvent gameEvent) {
             if(gameEvent.EventType == GameEventType.ControlEvent ) {
-                if((Block) gameEvent.To == this) {
-                    if(gameEvent.StringArg1 == "BlockCollision") {
-                        BlockHit();
-                    }
+                if(gameEvent.StringArg1 == "BlockCollision") {
+                    BlockHit();
                 }
             }
         }

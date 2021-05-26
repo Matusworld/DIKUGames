@@ -5,16 +5,19 @@ using DIKUArcade.Math;
 
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Breakout.GamePlay.BallEntity {
-    public class BallOrganizer {
-        public EntityContainer<Ball> Balls { get; private set; }
+    public class BallOrganizer : EntityOrganizer<Ball> {
+        //public EntityContainer<Ball> Balls { get; private set; }
+        private Random rand = new Random();
+        public BallOrganizer() : base() {
+            //Balls = new EntityContainer<Ball>();
 
-        public BallOrganizer() {
-            Balls = new EntityContainer<Ball>();
+            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this);
         }
 
-
+        /*
         //made public (not IGameEventProcessor) to fix eventbus causing crashes
         public void AddBall() {
             Ball ball = new Ball(
@@ -22,31 +25,43 @@ namespace Breakout.GamePlay.BallEntity {
                 new Image (Path.Combine(ProjectPath.getPath(),  
                 "Breakout", "Assets", "Images", "ball.png")),
                 (float) Math.PI /4f);
-            Balls.AddEntity(ball);
-        }
+            Entities.AddEntity(ball);
+        }*/
 
-        public void MoveBalls() {
-            Balls.Iterate(ball => {
+        public override void MoveEntities() {
+            Entities.Iterate(ball => {
                 ball.Move();
             });
         }
-
+        /*
         public void RenderBalls() {
             Balls.Iterate(ball => {
                 ball.RenderEntity();
             });
 
+        }*/
+
+        /// <summary>
+        /// Generate a random ball in mid of map with dir from 45 to 135 degree.
+        /// </summary>
+        public Ball GenerateBallRandomDir() {
+            int factor = rand.Next(100,301);
+            float theta = 0.25f * (float) Math.PI * factor/100f;
+            Ball ball = new Ball(
+                new DynamicShape (new Vec2F(0.5f, 0.5f), new Vec2F(0.025f,0.025f)),
+                new Image (Path.Combine(ProjectPath.getPath(),  
+                "Breakout", "Assets", "Images", "ball.png")),
+                theta);
+            return ball;
         }
 
-        /*
-        public void ProcessEvent(GameEvent gameEvent) {
-            if (gameEvent.EventType == GameEventType.ControlEvent) {
-                switch(gameEvent.StringArg1) {
-                    case "BallGained":
-                        AddBall();
-                        break;
-                }
+        public override void ProcessEvent(GameEvent gameEvent) {
+            if (gameEvent.To == this) {
+                ProcessEventValidator(gameEvent);
+
+                Ball ball = (Ball) gameEvent.ObjectArg1;
+                ball.ReceiveEvent(gameEvent);
             }
-        }*/
+        }
     }
 }
