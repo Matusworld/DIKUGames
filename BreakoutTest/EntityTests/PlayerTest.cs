@@ -34,11 +34,6 @@ namespace BreakoutTest
 
             beforeX = player.GetPosition().X;
             beforeY = player.GetPosition().Y;
-
-            //BreakoutBus.GetBus().InitializeEventBus(new List<GameEventType> {
-            //    GameEventType.PlayerEvent } );
-
-            //BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player);
             
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.PlayerEvent });

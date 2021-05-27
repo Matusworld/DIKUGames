@@ -1,13 +1,6 @@
-using System.Collections.Generic;
-using System;
-using System.IO;
 using NUnit.Framework;
 
-using DIKUArcade.Events;
 using DIKUArcade.GUI;
-using DIKUArcade.Graphics;
-using DIKUArcade.Entities;
-using DIKUArcade.Math;
 
 using Breakout.GamePlay.BallEntity;
 
@@ -26,15 +19,15 @@ namespace BreakoutTest {
         // Testing that the BallOrganizer start with 0 balls in the entitycontainer
         [Test]
         public void TestInitialBallOrganizer() {
-            Assert.AreEqual(ballOrganizer.Balls.CountEntities(), 0);
+            Assert.AreEqual(ballOrganizer.Entities.CountEntities(), 0);
         }
         
         // Testing adding a ball to the BallOrganizer's entitycontainer
         [Test]
         public void TestAddBall() {
-            ballOrganizer.AddBall();
+            ballOrganizer.AddEntity(ballOrganizer.GenerateBallRandomDir());
 
-            Assert.AreEqual(ballOrganizer.Balls.CountEntities(), 1);
+            Assert.AreEqual(ballOrganizer.Entities.CountEntities(), 1);
         }
 
     }

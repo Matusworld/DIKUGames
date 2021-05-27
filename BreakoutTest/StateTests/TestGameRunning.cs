@@ -4,18 +4,12 @@
 // it should return the game state to main menu
 
 using System.Collections.Generic;
-using System.IO;
-using System;
 using NUnit.Framework;
-using Breakout;
+
 using Breakout.States;
-using Breakout.States.Buttons;
+
 using DIKUArcade.GUI;
 using DIKUArcade.Events;
-using DIKUArcade.Input;
-using DIKUArcade.Entities;
-using DIKUArcade.Math;
-using DIKUArcade.Graphics;
 
 namespace BreakoutTest {
     public class GameRunningTest {
@@ -30,9 +24,7 @@ namespace BreakoutTest {
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.ControlEvent });
             
-            game.LevelLoader.Blocks.Iterate(block => {
-                eventBus.Subscribe(GameEventType.ControlEvent, block);
-            });
+            eventBus.Subscribe(GameEventType.ControlEvent, game.LevelLoader.BlockOrganizer);
 
         }
 
@@ -40,7 +32,7 @@ namespace BreakoutTest {
         [Test]
         public void PreCondition() {
             Assert.AreEqual(0, game.LevelIndex);
-            Assert.AreNotEqual(0, game.LevelLoader.Blocks.CountEntities());
+            Assert.AreNotEqual(0, game.LevelLoader.BlockOrganizer.Entities.CountEntities());
         }
 
 
@@ -52,10 +44,11 @@ namespace BreakoutTest {
         [Test]
         public void TestNextLevelNotFinish() {
             //level 1 contains hardened blocks which survives one hit
-            game.LevelLoader.Blocks.Iterate(block => {
+            game.LevelLoader.BlockOrganizer.Entities.Iterate(block => {
                 eventBus.RegisterEvent(new GameEvent {
                     EventType = GameEventType.ControlEvent, 
-                    StringArg1 = "BlockCollision", To = block
+                    StringArg1 = "BlockCollision", To = game.LevelLoader.BlockOrganizer,
+                    ObjectArg1 = block
                 });
             });
             eventBus.ProcessEvents();
@@ -68,10 +61,11 @@ namespace BreakoutTest {
         public void TestNextLevel() {
             //damage twice
             for(int i = 0; i < 2; i++) {
-                game.LevelLoader.Blocks.Iterate(block => {
+                game.LevelLoader.BlockOrganizer.Entities.Iterate(block => {
                     eventBus.RegisterEvent(new GameEvent {
                         EventType = GameEventType.ControlEvent, 
-                        StringArg1 = "BlockCollision", To = block
+                        StringArg1 = "BlockCollision", To = game.LevelLoader.BlockOrganizer,
+                        ObjectArg1 = block
                     });
                 });
             }

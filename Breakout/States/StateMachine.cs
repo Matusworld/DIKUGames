@@ -44,6 +44,7 @@ namespace Breakout.States {
                                 SwitchState(GameStateType.GameRunning);
                                 //reset timer before reset state
                                 StaticTimer.RestartTimer();
+                                //Reset state
                                 ActiveState.ResetState();
                                 //To properly render entities
                                 ActiveState.RenderState();

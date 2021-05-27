@@ -5,7 +5,7 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 
-using Breakout.GamePlay.BlockEntity.PowerUpOrbEntity;
+using Breakout.GamePlay.PowerUpOrbEntity;
 
 namespace Breakout.GamePlay.BlockEntity {
     public class PowerUp : Block {
@@ -52,22 +52,16 @@ namespace Breakout.GamePlay.BlockEntity {
 
             BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                 EventType = GameEventType.ControlEvent, StringArg1 = "ADD_ORB",
-                From = orb
+                ObjectArg1 = orb
             });
         }
 
         protected override void BlockHit() {
             Damage();
             if (!IsAlive()) {
-                // Unsubscribe deleted blocks
-                BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, this);
                 DeleteEntity();
+                ScoreEvent();
                 SpawnPowerUp();
-
-                // Could add points here
-                BreakoutBus.GetBus().RegisterEvent( new GameEvent { 
-                    EventType = GameEventType.ControlEvent, StringArg1 = "ADD_SCORE",
-                        From = this});
             }
         }
     }

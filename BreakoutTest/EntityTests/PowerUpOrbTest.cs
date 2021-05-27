@@ -9,13 +9,12 @@ using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
 
-using Breakout.GamePlay.BlockEntity.PowerUpOrbEntity;
+using Breakout.GamePlay.PowerUpOrbEntity;
 namespace BreakoutTest
 {
     public class PowerUpOrbTest {
         PowerUpOrb Orb;
         GameEventBus eventBus;
-        EntityContainer<PowerUpOrb> Orbs;
         float tolerance;
         [SetUp]
 

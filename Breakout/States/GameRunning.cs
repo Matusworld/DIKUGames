@@ -15,7 +15,7 @@ using Breakout.GamePlay;
 using Breakout.GamePlay.PlayerEntity;
 using Breakout.GamePlay.BallEntity;
 using Breakout.GamePlay.BlockEntity;
-using Breakout.GamePlay.BlockEntity.PowerUpOrbEntity;
+using Breakout.GamePlay.PowerUpOrbEntity;
 using Breakout.LevelLoading;
 
 namespace Breakout.States {
@@ -56,9 +56,7 @@ namespace Breakout.States {
             PUorganizer = new PowerUpOrbOrganizer();
 
             ballOrganizer = new BallOrganizer();
-            //BreakoutBus.GetBus().RegisterEvent ( new GameEvent {
-            //    EventType = GameEventType.ControlEvent, StringArg1 = "BallGained" });
-            ballOrganizer.AddBall();
+            ballOrganizer.AddEntity(ballOrganizer.GenerateBallRandomDir());
 
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.02f)),
@@ -74,15 +72,21 @@ namespace Breakout.States {
             return GameRunning.instance ?? (GameRunning.instance = new GameRunning());
         }
 
+        public void ResetState() {
+            UnsubscribeAll();
+            Init();
+        }
+
         /// <summary>
-        /// Render blocks from a EntityContainer with blocks, to fix problem of blocks still being
-        /// render even though they are deleted.
+        /// Unsubscribe all IGameEventProcessors in GamePlay Scope
         /// </summary>
-        /// <param name="blocks"></param>
-        private void renderEntityContainer(EntityContainer<Entity> entities) {
-            entities.Iterate(entity => {
-                entity.RenderEntity();
-            });
+        public void UnsubscribeAll() {
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, PUorganizer);
+            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, LevelLoader.BlockOrganizer);
+            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, player.Hpbar);
+            BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player); 
+            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, score);
         }
 
         private void BallPlayerCollision(Ball ball) {
@@ -91,36 +95,24 @@ namespace Breakout.States {
             if (check.Collision) {
                 float hitPosition = PlayerHitPositionTruncator(PlayerHitPosition(ball));
                 
-                BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                    EventType = GameEventType.MovementEvent, Message = hitPosition.ToString(), 
-                    StringArg1 = "PlayerCollision", To = ball
-                });
+                ball.DirectionPlayerSetter(hitPosition);
             }
         }
 
-        private void BallBlockCollision(Block block, Ball ball) {
+        private void BallBlockCollision(Block block, Ball ball, ref bool priorHit) {
             CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(), block.Shape);
             if (check.Collision) {
                 //to block
                 BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                     EventType = GameEventType.ControlEvent, 
-                    StringArg1 = "BlockCollision", To = block
+                    StringArg1 = "BlockCollision", To = LevelLoader.BlockOrganizer, 
+                    ObjectArg1 = block
                 });
-                switch(check.CollisionDir) {
-                    case CollisionDirection.CollisionDirDown:
-                    case CollisionDirection.CollisionDirUp:
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType = GameEventType.MovementEvent, 
-                            StringArg1 = "BlockCollision", Message = "UpDown", To = ball
-                        });
-                        break;
-                    case CollisionDirection.CollisionDirLeft:
-                    case CollisionDirection.CollisionDirRight:
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType = GameEventType.MovementEvent, 
-                            StringArg1 = "BlockCollision", Message = "LeftRight", To = ball
-                        });
-                        break;
+                //only send to ball if not priorly hit this iteration
+                if (!priorHit) {
+                    priorHit = true;
+
+                    ball.DirectionBlockSetter(check.CollisionDir);
                 }
             }
         }
@@ -136,7 +128,7 @@ namespace Breakout.States {
                         });
                         break;
                     case PowerUpTypes.ExtraBall:
-                        ballOrganizer.AddBall();
+                        ballOrganizer.AddEntity(ballOrganizer.GenerateBallRandomDir());
                         break;
                     case PowerUpTypes.ExtraPoints:
                         BreakoutBus.GetBus().RegisterEvent ( new GameEvent {
@@ -144,26 +136,28 @@ namespace Breakout.States {
                         });
                         break;
                     case PowerUpTypes.HalfSpeed:
-                        ballOrganizer.Balls.Iterate(ball => {
+                        ballOrganizer.Entities.Iterate(ball => {
                             BreakoutBus.GetBus().RegisterEvent ( new GameEvent {
                                 EventType = GameEventType.ControlEvent, StringArg1 = "HalfSpeed",
-                                Message = "Activate", To = ball                            
+                                Message = "Activate", To = ballOrganizer, ObjectArg1 = ball                          
                                 });
                             BreakoutBus.GetBus().RegisterTimedEvent(
                                 new GameEvent{ EventType = GameEventType.ControlEvent,
-                                    StringArg1 = "HalfSpeed", Message = "Deactivate", To = ball },
+                                    StringArg1 = "HalfSpeed", Message = "Deactivate", 
+                                    To = ballOrganizer, ObjectArg1 = ball },  
                                 TimePeriod.NewMilliseconds(PUorganizer.PowerUpDuration));
                         });
                         break;
                     case PowerUpTypes.DoubleSpeed:
-                        ballOrganizer.Balls.Iterate(ball => {
+                        ballOrganizer.Entities.Iterate(ball => {
                             BreakoutBus.GetBus().RegisterEvent ( new GameEvent {
                                 EventType = GameEventType.ControlEvent, StringArg1 = "DoubleSpeed",
-                                Message = "Activate", To = ball                            
+                                Message = "Activate", To = ballOrganizer, ObjectArg1 = ball                          
                                 });
                             BreakoutBus.GetBus().RegisterTimedEvent(
                                 new GameEvent{ EventType = GameEventType.ControlEvent,
-                                    StringArg1 = "DoubleSpeed", Message = "Deactivate", To = ball },
+                                    StringArg1 = "DoubleSpeed", Message = "Deactivate", 
+                                    To = ballOrganizer, ObjectArg1 = ball  },
                                 TimePeriod.NewMilliseconds(PUorganizer.PowerUpDuration));
                         });
                         break;
@@ -190,9 +184,6 @@ namespace Breakout.States {
                 return hitPosition;
             }
         }
-        public void ResetState() {
-            Init();
-        }
 
         /// <summary>
         /// Load next level if legal, else go to main menu
@@ -217,18 +208,41 @@ namespace Breakout.States {
         }
         //Name is up for debate
         public void CheckLifeLost() {
-            if (ballOrganizer.Balls.CountEntities() == 0 ) {
+            if (ballOrganizer.Entities.CountEntities() == 0 ) {
                 /* BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                         EventType = GameEventType.ControlEvent,
                         StringArg1 = "HealthLost" }); */
                 player.Hpbar.HealthLost();
                 //damage via event will never happen instantaneously
                 if (player.Hpbar.Lives > 0) {
-                    ballOrganizer.AddBall();
+                    ballOrganizer.AddEntity(ballOrganizer.GenerateBallRandomDir());
                 } else {
                     BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                         EventType = GameEventType.GameStateEvent,
                         Message = "CHANGE_STATE",
+                        StringArg1 = "GAME_LOST"
+                    });
+                }
+            }
+        }
+
+        private void BallBlockCollisionIterate() {
+            bool hit = false;
+
+            LevelLoader.BlockOrganizer.Entities.Iterate(block => {
+                ballOrganizer.Entities.Iterate(ball => {
+                    BallBlockCollision(block, ball, ref hit);
+                });
+            });
+        }
+
+        public void TimerUpdate() {
+            if (LevelLoader.Meta.Time != 0) {
+                gameTimer.UpdateTimer();
+
+                if (gameTimer.TimeRunOut()) {
+                    BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                        EventType = GameEventType.GameStateEvent, Message = "CHANGE_STATE",
                         StringArg1 = "GAME_LOST"
                     });
                 }
@@ -241,36 +255,24 @@ namespace Breakout.States {
                 EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
             
             //ball move
-            ballOrganizer.Balls.Iterate(ball => {
-                BallPlayerCollision(ball);
-            });
-            ballOrganizer.MoveBalls();
+            ballOrganizer.MoveEntities();
 
             //PowerUpOrb move
-            PUorganizer.MoveOrbs();
+            PUorganizer.MoveEntities();
 
-            PUorganizer.Orbs.Iterate(orb => {
+            PUorganizer.Entities.Iterate(orb => {
                 OrbPlayerCollision(orb);
             });
 
-            LevelLoader.Blocks.Iterate(block => {
-                ballOrganizer.Balls.Iterate(ball => {
-                    BallBlockCollision(block, ball);
-                });
+            ballOrganizer.Entities.Iterate(ball => {
+                BallPlayerCollision(ball);
             });
+
+            BallBlockCollisionIterate();
             
             CheckLifeLost();
 
-            if (LevelLoader.Meta.Time != 0) {
-                gameTimer.UpdateTimer();
-
-                if (gameTimer.TimeRunOut()) {
-                    BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                        EventType = GameEventType.GameStateEvent, Message = "CHANGE_STATE",
-                        StringArg1 = "GAME_LOST"
-                    });
-                }
-            }
+            TimerUpdate();
 
             if(LevelLoader.LevelEnded()) {
                 NextLevel();
@@ -281,11 +283,9 @@ namespace Breakout.States {
             backGroundImage.RenderEntity();
             player.Render();
             player.Hpbar.Render();
-            ballOrganizer.RenderBalls();
-            LevelLoader.Blocks.Iterate(block => {
-                block.RenderEntity();
-            });
-            PUorganizer.RenderOrbs();
+            ballOrganizer.RenderEntities();
+            LevelLoader.BlockOrganizer.RenderEntities();
+            PUorganizer.RenderEntities();
             score.Render();
 
             // if time is not 0 render Timer else do not render

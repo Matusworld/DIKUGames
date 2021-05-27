@@ -12,12 +12,13 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Timers;
 
 using Breakout.GamePlay.BallEntity;
-using Breakout.GamePlay.BlockEntity.PowerUpOrbEntity;
+using Breakout.GamePlay.PowerUpOrbEntity;
 
 namespace BreakoutTest
 {
     public class BallTest {
         Ball ball;
+        BallOrganizer ballOrganizer;
         GameEventBus eventBus;
         float tolerance;
 
@@ -33,10 +34,13 @@ namespace BreakoutTest
                 "Assets", "Images", "ball.png")),
                 (float) Math.PI /4f);
 
+            ballOrganizer = new BallOrganizer();
+            ballOrganizer.AddEntity(ball);
+
             eventBus = new GameEventBus();
-            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.MovementEvent, GameEventType.ControlEvent});
-            eventBus.Subscribe(GameEventType.MovementEvent, ball);
-            eventBus.Subscribe(GameEventType.ControlEvent, ball);
+            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.ControlEvent });
+            eventBus.Subscribe(GameEventType.ControlEvent, ballOrganizer);
+
 
             tolerance = 0.0001f;
         }
@@ -171,14 +175,15 @@ namespace BreakoutTest
 
             PowerUpOrbOrganizer PUorganizer = new PowerUpOrbOrganizer();
 
-            eventBus.RegisterEvent ( new GameEvent {
+            ball.ReceiveEvent( new GameEvent {
                 EventType = GameEventType.ControlEvent, StringArg1 = "DoubleSpeed",
-                Message = "Activate", To = ball                            
+                Message = "Activate"                          
             });
 
             eventBus.RegisterTimedEvent (
                 new GameEvent{ EventType = GameEventType.ControlEvent,
-                    StringArg1 = "DoubleSpeed", Message = "Deactivate", To = ball},
+                    StringArg1 = "DoubleSpeed", Message = "Deactivate", To = ballOrganizer,
+                        ObjectArg1 = ball},
                     TimePeriod.NewMilliseconds(PUorganizer.PowerUpDuration));
 
             eventBus.ProcessEvents();
@@ -189,7 +194,8 @@ namespace BreakoutTest
 
             Assert.IsTrue(ball.DoubleSpeedActive);
 
-            Thread.Sleep(PUorganizer.PowerUpDuration);
+            //Extra sleep time added to be sure timed event is completed
+            Thread.Sleep(PUorganizer.PowerUpDuration + 500);
 
             eventBus.ProcessEvents();
 
@@ -203,14 +209,15 @@ namespace BreakoutTest
 
             PowerUpOrbOrganizer PUorganizer = new PowerUpOrbOrganizer();
 
-            eventBus.RegisterEvent ( new GameEvent {
+            ball.ReceiveEvent ( new GameEvent {
                 EventType = GameEventType.ControlEvent, StringArg1 = "HalfSpeed",
-                Message = "Activate", To = ball                            
+                Message = "Activate"                         
             });
 
             eventBus.RegisterTimedEvent (
                 new GameEvent{ EventType = GameEventType.ControlEvent,
-                    StringArg1 = "HalfSpeed", Message = "Deactivate", To = ball},
+                    StringArg1 = "HalfSpeed", Message = "Deactivate", To = ballOrganizer,
+                        ObjectArg1 = ball},
                     TimePeriod.NewMilliseconds(PUorganizer.PowerUpDuration));
 
             eventBus.ProcessEvents();
@@ -221,7 +228,8 @@ namespace BreakoutTest
 
             Assert.IsTrue(ball.HalfSpeedActive);
 
-            Thread.Sleep(PUorganizer.PowerUpDuration);
+            //Extra sleep time added to be sure timed event is completed
+            Thread.Sleep(PUorganizer.PowerUpDuration + 500);
 
             eventBus.ProcessEvents();
 

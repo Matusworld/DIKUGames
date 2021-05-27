@@ -16,9 +16,11 @@ namespace Breakout.LevelLoading {
         public MetaLoader Meta { get; private set; }
         public LegendLoader Legend { get; private set; }
         public SectionsValidator Validator { get; private set; }
-        public EntityContainer<Block> Blocks { get; private set; } = new EntityContainer<Block>();
+        //public EntityContainer<Block> Blocks { get; private set; } = new EntityContainer<Block>();
+        public BlockOrganizer BlockOrganizer { get; private set; } 
 
         public LevelLoader() {
+            BlockOrganizer = new BlockOrganizer();
             reader = new SectionStreamReader();
             map = new MapLoader(reader);
             Meta = new MetaLoader(reader);
@@ -58,7 +60,7 @@ namespace Breakout.LevelLoading {
             map.ClearLoader();
             Meta.ClearLoader();
             Legend.ClearLoader();
-            Blocks.ClearContainer();
+            BlockOrganizer.Entities.ClearContainer();
         }
 
         /// <summary>
@@ -66,7 +68,7 @@ namespace Breakout.LevelLoading {
         /// when only unbreakable blocks are left
         /// </summary>
         public bool LevelEnded() {
-            if(Blocks.CountEntities() == numberOfUnbreakables) {
+            if(BlockOrganizer.Entities.CountEntities() == numberOfUnbreakables) {
                 return true;
             }
             return false;
@@ -133,9 +135,7 @@ namespace Breakout.LevelLoading {
                                         block = new Block(new DynamicShape(position, blockExtent), 
                                             new Image(imagePath));
                                     }
-                                    Blocks.AddEntity(block);
-                                    BreakoutBus.GetBus().Subscribe(
-                                        GameEventType.ControlEvent, block);
+                                    BlockOrganizer.Entities.AddEntity(block);
                                 }
                             }
                         }

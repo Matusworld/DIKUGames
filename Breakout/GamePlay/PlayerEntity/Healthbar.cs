@@ -12,7 +12,7 @@ namespace Breakout.GamePlay.PlayerEntity {
     public class Healthbar : IGameEventProcessor {
 
         public uint Lives { get; private set; }
-        private uint maxLives;
+        public uint MaxLives { get; private set; }
         private float dimension = 0.05f;
 
         private IBaseImage heartFilled = new Image (Path.Combine(ProjectPath.getPath(),  
@@ -21,12 +21,13 @@ namespace Breakout.GamePlay.PlayerEntity {
         private IBaseImage heartEmpty = new Image (Path.Combine(ProjectPath.getPath(),  
                 "Breakout", "Assets", "Images", "heart_empty.png"));
 
-        private List<Entity> healthList = new List<Entity>();
+        public List<Entity> HealthList { get; private set; } = new List<Entity>();
+
         public Healthbar(uint lives, uint maxLives) {
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this);
 
-            this.Lives = lives;
-            this.maxLives = maxLives;
+            Lives = lives;
+            MaxLives = maxLives;
 
             Vec2F healthExtent = new Vec2F(dimension, dimension);
 
@@ -40,12 +41,12 @@ namespace Breakout.GamePlay.PlayerEntity {
                     health = new Entity(
                         new StationaryShape(healthpos, healthExtent), heartEmpty);
                 }
-                healthList.Add(health);
+                HealthList.Add(health);
             }
         }
 
         public void Render() {
-            foreach (Entity health in healthList) {
+            foreach (Entity health in HealthList) {
                 health.RenderEntity();
             }
         }
@@ -53,14 +54,14 @@ namespace Breakout.GamePlay.PlayerEntity {
         // Made public to fix, problem with eventbus delayed actions, made the program crash sometimes.
         public void HealthLost() {
             if (Lives > 0) {
-                healthList[(int) Lives - 1].Image = heartEmpty;
+                HealthList[(int) Lives - 1].Image = heartEmpty;
                 Lives--;
             }
         }
 
         private void HealthGained() {
-            if (!(Lives > maxLives - 1)) {
-                healthList[(int) Lives].Image = heartFilled;
+            if (!(Lives > MaxLives - 1)) {
+                HealthList[(int) Lives].Image = heartFilled;
                 Lives++;
             }
         }

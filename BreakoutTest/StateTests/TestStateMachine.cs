@@ -1,14 +1,10 @@
 using System.Collections.Generic;
-using System.IO;
-using System;
+
 using NUnit.Framework;
-using Breakout;
+
 using Breakout.States;
 using DIKUArcade.GUI;
 using DIKUArcade.Events;
-using DIKUArcade.Entities;
-using DIKUArcade.Math;
-using DIKUArcade.Graphics;
 
 namespace BreakoutTest {
     public class StateMachineTest {
