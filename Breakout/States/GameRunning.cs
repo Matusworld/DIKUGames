@@ -227,10 +227,9 @@ namespace Breakout.States {
         }
 
         private void BallBlockCollisionIterate() {
-            bool hit = false;
-
-            LevelLoader.BlockOrganizer.Entities.Iterate(block => {
-                ballOrganizer.Entities.Iterate(ball => {
+            ballOrganizer.Entities.Iterate(ball => {
+                bool hit = false;
+                LevelLoader.BlockOrganizer.Entities.Iterate(block => {
                     BallBlockCollision(block, ball, ref hit);
                 });
             });
