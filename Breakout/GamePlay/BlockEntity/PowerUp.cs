@@ -15,7 +15,7 @@ namespace Breakout.GamePlay.BlockEntity {
         /// <summary>
         /// Randomly choose power up and and spawn it as an entity
         /// </summary>
-        private void SpawnPowerUp() {
+        private void SpawnOrb() {
             PowerUpTypes draw = PowerUpRandom.RandomType();
             
             IBaseImage image;
@@ -61,7 +61,7 @@ namespace Breakout.GamePlay.BlockEntity {
             if (!IsAlive()) {
                 DeleteEntity();
                 ScoreEvent();
-                SpawnPowerUp();
+                SpawnOrb();
             }
         }
     }

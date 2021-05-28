@@ -5,7 +5,6 @@ using DIKUArcade.Math;
 
 using System;
 using System.IO;
-using System.Collections.Generic;
 
 namespace Breakout.GamePlay.BallEntity {
     public class BallOrganizer : EntityOrganizer<Ball> {
@@ -36,7 +35,7 @@ namespace Breakout.GamePlay.BallEntity {
 
         public override void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.To == this) {
-                ProcessEventValidator(gameEvent);
+                EventValidator(gameEvent);
 
                 Ball ball = (Ball) gameEvent.ObjectArg1;
                 ball.ReceiveEvent(gameEvent);

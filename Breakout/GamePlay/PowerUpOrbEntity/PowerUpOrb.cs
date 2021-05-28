@@ -8,6 +8,11 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
         const float speed = 0.005f;
         public PowerUpTypes Type { get; private set;}
 
+        public PowerUpOrb(
+            DynamicShape shape, IBaseImage image, PowerUpTypes type) : base(shape, image) {
+                Type = type;
+                this.Shape.AsDynamicShape().Direction = new Vec2F(0f, -speed);
+        }
 
         public bool LowerBoundaryCheck() {
             if (this.Shape.Position.Y+this.Shape.Extent.Y <= 0.0f) {
@@ -16,12 +21,6 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
                 return false;
             }
         }
-
-        public PowerUpOrb(
-            DynamicShape shape, IBaseImage image, PowerUpTypes type) : base(shape, image) {
-                Type = type;
-                this.Shape.AsDynamicShape().Direction = new Vec2F(0f, -speed);
-            }
 
         public void Move() {
             if (LowerBoundaryCheck()) {

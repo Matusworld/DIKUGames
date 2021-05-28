@@ -32,7 +32,7 @@ namespace Breakout.GamePlay {
         /// Validates  that ObjectArg1 is a generic list of type T.
         /// </summary>
         /// <param name="gameEvent"></param>
-        protected void ProcessEventValidator(GameEvent gameEvent) {
+        protected void EventValidator(GameEvent gameEvent) {
             if (gameEvent.ObjectArg1 is T) {
                 return;
             }

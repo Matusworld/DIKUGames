@@ -12,7 +12,6 @@ namespace Breakout.GamePlay.PlayerEntity {
         private const float MOVEMENT_SPEED = 0.02f;
         public float LeftBound { get; private set; }
         public float RightBound { get; private set; }
-
         public Healthbar Hpbar { get; private set; }
         public Player(DynamicShape shape, IBaseImage image) : base(shape, image) {
             BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, this); 

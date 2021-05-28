@@ -16,10 +16,8 @@ namespace Breakout.GamePlay.BallEntity {
         const float baseSpeed = 0.02f;
         public float speed { get; private set; }
         public float Theta { get; private set; }
-        public bool Active { get; private set; } = true;
         public bool HalfSpeedActive { get; private set; }
         public bool DoubleSpeedActive { get; private set; }
-        const int bounceDelay = 1;
 
         public Ball(DynamicShape shape, IBaseImage image, float theta): base (shape, image) {
             speed = baseSpeed;

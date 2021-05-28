@@ -24,7 +24,7 @@ namespace Breakout.States {
         private Entity backGroundImage;
         private Player player;
         private BallOrganizer ballOrganizer;
-        private PowerUpOrbOrganizer PUorganizer;
+        private PowerUpOrbOrganizer PUOrganizer;
         public LevelLoader LevelLoader { get; private set; }
         private List<string> levelSequence;
         public int LevelIndex { get; private set; }
@@ -53,7 +53,7 @@ namespace Breakout.States {
                 "Breakout", "Assets", "Levels", 
                 levelSequence[LevelIndex]));
 
-            PUorganizer = new PowerUpOrbOrganizer();
+            PUOrganizer = new PowerUpOrbOrganizer();
 
             ballOrganizer = new BallOrganizer();
             ballOrganizer.AddEntity(ballOrganizer.GenerateBallRandomDir());
@@ -82,7 +82,7 @@ namespace Breakout.States {
         /// </summary>
         public void UnsubscribeAll() {
             BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
-            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, PUorganizer);
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, PUOrganizer);
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, LevelLoader.BlockOrganizer);
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, player.Hpbar);
             BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player); 
@@ -145,7 +145,7 @@ namespace Breakout.States {
                                 new GameEvent{ EventType = GameEventType.ControlEvent,
                                     StringArg1 = "HalfSpeed", Message = "Deactivate", 
                                     To = ballOrganizer, ObjectArg1 = ball },  
-                                TimePeriod.NewMilliseconds(PUorganizer.PowerUpDuration));
+                                TimePeriod.NewMilliseconds(PUOrganizer.PowerUpDuration));
                         });
                         break;
                     case PowerUpTypes.DoubleSpeed:
@@ -158,7 +158,7 @@ namespace Breakout.States {
                                 new GameEvent{ EventType = GameEventType.ControlEvent,
                                     StringArg1 = "DoubleSpeed", Message = "Deactivate", 
                                     To = ballOrganizer, ObjectArg1 = ball  },
-                                TimePeriod.NewMilliseconds(PUorganizer.PowerUpDuration));
+                                TimePeriod.NewMilliseconds(PUOrganizer.PowerUpDuration));
                         });
                         break;
                 }
@@ -257,9 +257,9 @@ namespace Breakout.States {
             ballOrganizer.MoveEntities();
 
             //PowerUpOrb move
-            PUorganizer.MoveEntities();
+            PUOrganizer.MoveEntities();
 
-            PUorganizer.Entities.Iterate(orb => {
+            PUOrganizer.Entities.Iterate(orb => {
                 OrbPlayerCollision(orb);
             });
 
@@ -284,7 +284,7 @@ namespace Breakout.States {
             player.Hpbar.Render();
             ballOrganizer.RenderEntities();
             LevelLoader.BlockOrganizer.RenderEntities();
-            PUorganizer.RenderEntities();
+            PUOrganizer.RenderEntities();
             score.Render();
 
             // if time is not 0 render Timer else do not render

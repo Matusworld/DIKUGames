@@ -18,7 +18,7 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
             if (gameEvent.EventType == GameEventType.ControlEvent) {
                 switch(gameEvent.StringArg1) {
                     case "ADD_ORB":
-                        ProcessEventValidator(gameEvent);
+                        EventValidator(gameEvent);
                         AddEntity((PowerUpOrb) gameEvent.ObjectArg1);
                         break;
                 }

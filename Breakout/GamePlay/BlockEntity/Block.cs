@@ -6,9 +6,7 @@ using DIKUArcade.Math;
 namespace Breakout.GamePlay.BlockEntity {
     public class Block : Entity {
         public bool Alive { get; protected set; } = true;
-
         public int HP { get; protected set; } = 1;
-        public string Value { get; protected set; }
 
         public Block(DynamicShape shape, IBaseImage image): base(shape, image) {}
         public Vec2F GetPosition() {

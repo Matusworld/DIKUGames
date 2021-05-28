@@ -9,7 +9,7 @@ namespace Breakout.GamePlay.BlockEntity {
         }
         public override void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.To == this) {
-                ProcessEventValidator(gameEvent);
+                EventValidator(gameEvent);
 
                 Block block = (Block) gameEvent.ObjectArg1;
                 block.ReceiveEvent(gameEvent);
