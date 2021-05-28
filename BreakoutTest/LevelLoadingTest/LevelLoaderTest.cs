@@ -14,7 +14,7 @@ namespace BreakoutTest {
 
         [SetUp]
         public void Setup() {
-            validFile = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", "level1.txt");
+            validFile = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", "level4.txt");
 
             inValidFile = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", 
                 "wrongsectionorder.txt");

@@ -10,6 +10,7 @@ using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
 using DIKUArcade.Timers;
+using DIKUArcade.Physics;
 
 using Breakout.GamePlay.BallEntity;
 using Breakout.GamePlay.PowerUpOrbEntity;
@@ -145,28 +146,66 @@ namespace BreakoutTest
                 tolerance >= Math.Abs(expPosY - ball.Shape.Position.Y));
         }
 
-        // Testing when the ball "hits" a block from the bottom or top
-        // and get the correct angle (theta)
-        // also testing that the ball deactives for a period of time
-        /*
+        // Testing when the ball hits a block from the direction up
         [Test]
-        public void TestBallBlockCollisionUPDown() {
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.MovementEvent, 
-                StringArg1 = "BlockCollision", Message = "UpDown", To = ball
-            });
+        public void TestBallBlockCollisionUP() {
+            float Dy = -ball.Shape.AsDynamicShape().Direction.Y;
+            float Dx = ball.Shape.AsDynamicShape().Direction.X;
 
-            float dx = ball.Shape.AsDynamicShape().Direction.X;
-            float dy = ball.Shape.AsDynamicShape().Direction.Y;
-            float theta = (float) Math.Atan2(dy, dx);
+            float theta = (float) Math.Atan2(Dy,Dx);
 
-            eventBus.ProcessEvents();
+            ball.DirectionBlockSetter(CollisionDirection.CollisionDirUp);
 
             float diff = (ball.Theta - theta);
 
             Assert.LessOrEqual(diff, tolerance);
 
-        } */
+        }
+
+        // Testing when the ball hits a block from the direction down
+        [Test]
+        public void TestBallBlockCollisionDown() {
+            float Dy = -ball.Shape.AsDynamicShape().Direction.Y;
+            float Dx = ball.Shape.AsDynamicShape().Direction.X;
+
+            float theta = (float) Math.Atan2(Dy,Dx);
+
+            ball.DirectionBlockSetter(CollisionDirection.CollisionDirDown);
+
+            float diff = (ball.Theta - theta);
+
+            Assert.LessOrEqual(diff, tolerance);
+        }
+
+        // Testing when the ball hits a block from the direction left
+        [Test]
+        public void TestBallBlockCollisionLeft() {
+            float Dy = ball.Shape.AsDynamicShape().Direction.Y;
+            float Dx = -ball.Shape.AsDynamicShape().Direction.X;
+
+            float theta = (float) Math.Atan2(Dy,Dx);
+
+            ball.DirectionBlockSetter(CollisionDirection.CollisionDirLeft);
+
+            float diff = (ball.Theta - theta);
+
+            Assert.LessOrEqual(diff, tolerance);
+        }
+
+        // Testing when the ball hits a block from the direction right
+        [Test]
+        public void TestBallBlockCollisionRight() {
+            float Dy = ball.Shape.AsDynamicShape().Direction.Y;
+            float Dx = -ball.Shape.AsDynamicShape().Direction.X;
+
+            float theta = (float) Math.Atan2(Dy,Dx);
+
+            ball.DirectionBlockSetter(CollisionDirection.CollisionDirRight);
+
+            float diff = (ball.Theta - theta);
+
+            Assert.LessOrEqual(diff, tolerance);
+        }
 
         // Testing When player picks up powerorb double speed, that the ball gains double speed
         [Test]
