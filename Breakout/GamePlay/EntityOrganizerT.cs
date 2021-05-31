@@ -29,7 +29,7 @@ namespace Breakout.GamePlay {
         }
 
         /// <summary>
-        /// Validates  that ObjectArg1 is a generic list of type T.
+        /// Validates  that ObjectArg1 is of type T.
         /// </summary>
         /// <param name="gameEvent"></param>
         protected void EventValidator(GameEvent gameEvent) {

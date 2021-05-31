@@ -19,10 +19,20 @@ namespace Breakout.GamePlay.BallEntity {
         public bool HalfSpeedActive { get; private set; }
         public bool DoubleSpeedActive { get; private set; }
 
-        public Ball(DynamicShape shape, IBaseImage image, float theta): base (shape, image) {
+        public Ball(DynamicShape shape, IBaseImage image, float theta, bool halfSpeedActive, 
+            bool doubleSpeedActive): base (shape, image) {
+            
+            HalfSpeedActive = halfSpeedActive;
+            DoubleSpeedActive = doubleSpeedActive;
             speed = baseSpeed;
-            Theta = theta;
+            if (HalfSpeedActive) {
+                speed *= 0.5f;
+            }
+            if (DoubleSpeedActive) {
+                speed *= 2f;
+            }
 
+            Theta = theta;
             SetDirection(theta);
         }
 

@@ -1,6 +1,7 @@
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Timers;
+using DIKUArcade.Events;
 
 namespace Breakout.GamePlay {
     public class BreakoutTimer : StaticTimer {
@@ -21,7 +22,7 @@ namespace Breakout.GamePlay {
             display.SetColor(System.Drawing.Color.Gold);
         }
 
-        public void LevelSwitch(int levelTime) {
+        public void SetNewLevelTime(int levelTime) {
             timer = levelTime;
             this.levelTime = levelTime;
             staticStartTime = (int) GetElapsedSeconds();
@@ -31,6 +32,13 @@ namespace Breakout.GamePlay {
         public void UpdateTimer() {
             timer = (levelTime + staticStartTime) - (int) GetElapsedSeconds();
             display.SetText("Time left: " + timer.ToString());
+
+            if (TimeRunOut()) {
+                BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                    EventType = GameEventType.GameStateEvent, Message = "CHANGE_STATE",
+                    StringArg1 = "GAME_LOST"
+                });
+            }
         }
 
         public bool TimeRunOut() {

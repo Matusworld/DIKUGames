@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Collections.Generic;
 
@@ -89,14 +88,13 @@ namespace Breakout.States {
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, score);
         }
 
-        private void BallPlayerCollision(Ball ball) {
-            CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(),
-                player.Shape.AsDynamicShape());
-            if (check.Collision) {
-                float hitPosition = PlayerHitPositionTruncator(PlayerHitPosition(ball));
-                
-                ball.DirectionPlayerSetter(hitPosition);
-            }
+        private void BallBlockCollisionIterate() {
+            ballOrganizer.Entities.Iterate(ball => {
+                bool hit = false;
+                LevelLoader.BlockOrganizer.Entities.Iterate(block => {
+                    BallBlockCollision(block, ball, ref hit);
+                });
+            });
         }
 
         private void BallBlockCollision(Block block, Ball ball, ref bool priorHit) {
@@ -121,48 +119,18 @@ namespace Breakout.States {
             CollisionData check = CollisionDetection.Aabb(orb.Shape.AsDynamicShape(), player.Shape);
 
             if(check.Collision) {
-                switch(orb.Type) {
-                    case PowerUpTypes.ExtraLife:
-                        BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                            EventType = GameEventType.ControlEvent, StringArg1 = "HealthGained"
-                        });
-                        break;
-                    case PowerUpTypes.ExtraBall:
-                        ballOrganizer.AddEntity(ballOrganizer.GenerateBallRandomDir());
-                        break;
-                    case PowerUpTypes.ExtraPoints:
-                        BreakoutBus.GetBus().RegisterEvent ( new GameEvent {
-                            EventType = GameEventType.ControlEvent, StringArg1 = "PowerUpScore"
-                        });
-                        break;
-                    case PowerUpTypes.HalfSpeed:
-                        ballOrganizer.Entities.Iterate(ball => {
-                            BreakoutBus.GetBus().RegisterEvent ( new GameEvent {
-                                EventType = GameEventType.ControlEvent, StringArg1 = "HalfSpeed",
-                                Message = "Activate", To = ballOrganizer, ObjectArg1 = ball                          
-                                });
-                            BreakoutBus.GetBus().RegisterTimedEvent(
-                                new GameEvent{ EventType = GameEventType.ControlEvent,
-                                    StringArg1 = "HalfSpeed", Message = "Deactivate", 
-                                    To = ballOrganizer, ObjectArg1 = ball },  
-                                TimePeriod.NewMilliseconds(PUOrganizer.PowerUpDuration));
-                        });
-                        break;
-                    case PowerUpTypes.DoubleSpeed:
-                        ballOrganizer.Entities.Iterate(ball => {
-                            BreakoutBus.GetBus().RegisterEvent ( new GameEvent {
-                                EventType = GameEventType.ControlEvent, StringArg1 = "DoubleSpeed",
-                                Message = "Activate", To = ballOrganizer, ObjectArg1 = ball                          
-                                });
-                            BreakoutBus.GetBus().RegisterTimedEvent(
-                                new GameEvent{ EventType = GameEventType.ControlEvent,
-                                    StringArg1 = "DoubleSpeed", Message = "Deactivate", 
-                                    To = ballOrganizer, ObjectArg1 = ball  },
-                                TimePeriod.NewMilliseconds(PUOrganizer.PowerUpDuration));
-                        });
-                        break;
-                }
+                orb.ApplyEffect();
                 orb.DeleteEntity();
+            }
+        }
+
+        private void BallPlayerCollision(Ball ball) {
+            CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(),
+                player.Shape.AsDynamicShape());
+
+            if (check.Collision) {
+                float hitPosition = PlayerHitPositionTruncator(PlayerHitPosition(ball));
+                ball.DirectionPlayerSetter(hitPosition);
             }
         }
 
@@ -196,7 +164,7 @@ namespace Breakout.States {
                 
                 //StaticTimer.RestartTimer();
                 if (LevelLoader.Meta.Time != 0) {
-                    gameTimer.LevelSwitch(LevelLoader.Meta.Time);
+                    gameTimer.SetNewLevelTime(LevelLoader.Meta.Time);
                 }
             }
             else {
@@ -226,28 +194,6 @@ namespace Breakout.States {
             }
         }
 
-        private void BallBlockCollisionIterate() {
-            ballOrganizer.Entities.Iterate(ball => {
-                bool hit = false;
-                LevelLoader.BlockOrganizer.Entities.Iterate(block => {
-                    BallBlockCollision(block, ball, ref hit);
-                });
-            });
-        }
-
-        public void TimerUpdate() {
-            if (LevelLoader.Meta.Time != 0) {
-                gameTimer.UpdateTimer();
-
-                if (gameTimer.TimeRunOut()) {
-                    BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                        EventType = GameEventType.GameStateEvent, Message = "CHANGE_STATE",
-                        StringArg1 = "GAME_LOST"
-                    });
-                }
-            }
-        }
-
         public void UpdateState() {
             //player move
             BreakoutBus.GetBus().RegisterEvent( new GameEvent {
@@ -271,7 +217,9 @@ namespace Breakout.States {
             
             CheckLifeLost();
 
-            TimerUpdate();
+            if (LevelLoader.Meta.Time != 0) {
+                gameTimer.UpdateTimer();
+            }
 
             if(LevelLoader.LevelEnded()) {
                 NextLevel();
@@ -287,7 +235,7 @@ namespace Breakout.States {
             PUOrganizer.RenderEntities();
             score.Render();
 
-            // if time is not 0 render Timer else do not render
+            // if time is not 0 render Timer, else do not render
             if (LevelLoader.Meta.Time != 0) {
                 gameTimer.Render();
             }

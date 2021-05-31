@@ -4,13 +4,11 @@ using DIKUArcade.Entities;
 using DIKUArcade.Math;
 
 namespace Breakout.GamePlay.PowerUpOrbEntity {
-    public class PowerUpOrb : Entity {
+    public abstract class PowerUpOrb : Entity {
         const float speed = 0.005f;
-        public PowerUpTypes Type { get; private set;}
 
-        public PowerUpOrb(
-            DynamicShape shape, IBaseImage image, PowerUpTypes type) : base(shape, image) {
-                Type = type;
+        public PowerUpOrb(DynamicShape shape, IBaseImage image) 
+            : base(shape, image) {
                 this.Shape.AsDynamicShape().Direction = new Vec2F(0f, -speed);
         }
 
@@ -29,5 +27,7 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
                 this.Shape.Move();
             }
         }
+
+        public abstract void ApplyEffect();
     }
 }
