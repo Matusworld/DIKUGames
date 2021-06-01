@@ -40,7 +40,7 @@ namespace Breakout {
         public override void Update() {
             stateMachine.ActiveState.UpdateState();
 
-            BreakoutBus.GetBus().ProcessEvents();
+            BreakoutBus.GetBus().ProcessEventsSequentially();
         }
 
         public void ProcessEvent(GameEvent gameEvent) {
