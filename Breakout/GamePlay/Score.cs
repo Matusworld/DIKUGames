@@ -9,6 +9,10 @@ using Breakout.GamePlay.BlockEntity;
 namespace Breakout.GamePlay {
     public class Score : IGameEventProcessor {
         Random rand;
+        private const int normalBlockScore = 1;
+        private const int hardenedBlockScore = 2;
+        private const int unbreakableBlockScore = 5;
+        private const int powerupBlockScore = 1;
         public const int MinPowerUpPoints = 1;
         public const int MaxPowerUpPoints = 30;
         public uint ScoreCount { get; private set; }
@@ -26,6 +30,12 @@ namespace Breakout.GamePlay {
             display.SetColor(System.Drawing.Color.Gold);
         }
 
+        public void Reset() {
+            ScoreCount = 0;
+
+            display.SetText("Score: " + ScoreCount.ToString());
+        }
+
         private void AddPowerUpScore() {
             ScoreCount += (uint) rand.Next(MinPowerUpPoints, MaxPowerUpPoints+1);
 
@@ -36,15 +46,16 @@ namespace Breakout.GamePlay {
         private void AddToScore(BlockTypes blocktype) {
             switch (blocktype) {
                 case BlockTypes.Normal:
-                    ScoreCount++;
+                    ScoreCount += normalBlockScore;
                     break;
                 case BlockTypes.Hardened:
-                    ScoreCount += 2;
+                    ScoreCount += hardenedBlockScore;
                     break;
                 case BlockTypes.Unbreakable:
+                    ScoreCount += unbreakableBlockScore;
                     break;
                 case BlockTypes.PowerUp:
-                    ScoreCount++;
+                    ScoreCount += powerupBlockScore;
                     break;
             }
             display.SetText("Score: " + ScoreCount.ToString());

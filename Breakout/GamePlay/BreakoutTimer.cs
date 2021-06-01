@@ -4,6 +4,9 @@ using DIKUArcade.Timers;
 using DIKUArcade.Events;
 
 namespace Breakout.GamePlay {
+    /// <summary>
+    /// Integer division
+    /// </summary>
     public class BreakoutTimer : StaticTimer {
         private Text display;
         //internal level time counter, from levelTime down to 0
@@ -16,7 +19,7 @@ namespace Breakout.GamePlay {
         public BreakoutTimer(int levelTime, Vec2F pos, Vec2F extent) {
             timer = levelTime;
             this.levelTime = levelTime;
-            staticStartTime = (int) GetElapsedSeconds();
+            staticStartTime = (int) GetElapsedMilliseconds() / 1000;
 
             display = new Text("Time left: " + timer.ToString(), pos, extent);
             display.SetColor(System.Drawing.Color.Gold);
@@ -25,12 +28,12 @@ namespace Breakout.GamePlay {
         public void SetNewLevelTime(int levelTime) {
             timer = levelTime;
             this.levelTime = levelTime;
-            staticStartTime = (int) GetElapsedSeconds();
+            staticStartTime = (int) GetElapsedMilliseconds() / 1000;
         }
         
 
         public void UpdateTimer() {
-            timer = (levelTime + staticStartTime) - (int) GetElapsedSeconds();
+            timer = (levelTime + staticStartTime) - (int) GetElapsedMilliseconds() / 1000;
             display.SetText("Time left: " + timer.ToString());
 
             if (TimeRunOut()) {

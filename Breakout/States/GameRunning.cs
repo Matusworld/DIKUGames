@@ -31,10 +31,6 @@ namespace Breakout.States {
         private BreakoutTimer gameTimer;
         
         public GameRunning() {
-            Init();
-        }
-
-        private void Init() {
             //Initialize backGroundImage
             Vec2F imagePos = new Vec2F(0f,0f);
             Vec2F imageExtent = new Vec2F(1f, 1f);
@@ -55,7 +51,7 @@ namespace Breakout.States {
             PUOrganizer = new PowerUpOrbOrganizer();
 
             ballOrganizer = new BallOrganizer();
-            ballOrganizer.AddEntity(ballOrganizer.GenerateBallRandomDir());
+            ballOrganizer.ResetOrganizer();
 
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.02f)),
@@ -64,7 +60,8 @@ namespace Breakout.States {
 
             score = new Score(new Vec2F(0.00f, -0.26f), new Vec2F(0.3f, 0.3f));
 
-            gameTimer = new BreakoutTimer(LevelLoader.Meta.Time, new Vec2F(0.33f, -0.26f), new Vec2F(0.3f, 0.3f));
+            gameTimer = new BreakoutTimer(LevelLoader.Meta.Time, new Vec2F(0.33f, -0.26f), 
+                new Vec2F(0.3f, 0.3f));
         }
 
         public static GameRunning GetInstance() {
@@ -72,20 +69,23 @@ namespace Breakout.States {
         }
 
         public void ResetState() {
-            UnsubscribeAll();
-            Init();
-        }
+            LevelIndex = 0;
 
-        /// <summary>
-        /// Unsubscribe all IGameEventProcessors in GamePlay Scope
-        /// </summary>
-        public void UnsubscribeAll() {
-            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
-            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, PUOrganizer);
-            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, LevelLoader.BlockOrganizer);
-            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, player.Hpbar);
-            BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player); 
-            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, score);
+            LevelLoader.LoadLevel(Path.Combine(ProjectPath.getPath(),
+                "Breakout", "Assets", "Levels", 
+                levelSequence[LevelIndex]));
+
+            PUOrganizer.ResetOrganizer();
+
+            ballOrganizer.ResetOrganizer();
+
+            player.Reset();
+
+            player.Healthbar.Reset();
+
+            score.Reset();  
+
+            gameTimer.SetNewLevelTime(LevelLoader.Meta.Time);
         }
 
         private void BallBlockCollisionIterate() {
@@ -162,6 +162,9 @@ namespace Breakout.States {
                 LevelLoader.LoadLevel(Path.Combine( new string[] { ProjectPath.getPath(),
                     "Breakout", "Assets", "Levels", levelSequence[LevelIndex] }));
                 
+                ballOrganizer.ResetOrganizer();
+                player.Reset();
+
                 //StaticTimer.RestartTimer();
                 if (LevelLoader.Meta.Time != 0) {
                     gameTimer.SetNewLevelTime(LevelLoader.Meta.Time);
@@ -172,25 +175,6 @@ namespace Breakout.States {
                     EventType = GameEventType.GameStateEvent,
                     Message = "CHANGE_STATE",
                     StringArg1 = "GAME_WON" });
-            }
-        }
-        //Name is up for debate
-        public void CheckLifeLost() {
-            if (ballOrganizer.Entities.CountEntities() == 0 ) {
-                /* BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                        EventType = GameEventType.ControlEvent,
-                        StringArg1 = "HealthLost" }); */
-                player.Hpbar.HealthLost();
-                //damage via event will never happen instantaneously
-                if (player.Hpbar.Lives > 0) {
-                    ballOrganizer.AddEntity(ballOrganizer.GenerateBallRandomDir());
-                } else {
-                    BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                        EventType = GameEventType.GameStateEvent,
-                        Message = "CHANGE_STATE",
-                        StringArg1 = "GAME_LOST"
-                    });
-                }
             }
         }
 
@@ -214,8 +198,6 @@ namespace Breakout.States {
             });
 
             BallBlockCollisionIterate();
-            
-            CheckLifeLost();
 
             if (LevelLoader.Meta.Time != 0) {
                 gameTimer.UpdateTimer();
@@ -229,7 +211,7 @@ namespace Breakout.States {
         public void RenderState() {
             backGroundImage.RenderEntity();
             player.Render();
-            player.Hpbar.Render();
+            player.Healthbar.Render();
             ballOrganizer.RenderEntities();
             LevelLoader.BlockOrganizer.RenderEntities();
             PUOrganizer.RenderEntities();

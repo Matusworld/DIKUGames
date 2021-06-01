@@ -16,6 +16,10 @@ namespace Breakout.GamePlay {
             Entities.AddEntity(entity);
         } 
 
+        public virtual void ResetOrganizer() {
+            Entities.ClearContainer();
+        }
+
         public virtual void MoveEntities() {
             Entities.Iterate(entity => {
                 entity.Shape.AsDynamicShape().Move();

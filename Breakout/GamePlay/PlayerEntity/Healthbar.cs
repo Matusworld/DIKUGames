@@ -6,11 +6,9 @@ using DIKUArcade.Events;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 
-using Breakout;
-
 namespace Breakout.GamePlay.PlayerEntity {
     public class Healthbar : IGameEventProcessor {
-
+        public uint startLives;
         public uint Lives { get; private set; }
         public uint MaxLives { get; private set; }
         private float dimension = 0.05f;
@@ -26,6 +24,7 @@ namespace Breakout.GamePlay.PlayerEntity {
         public Healthbar(uint lives, uint maxLives) {
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this);
 
+            startLives = lives;
             Lives = lives;
             MaxLives = maxLives;
 
@@ -45,6 +44,19 @@ namespace Breakout.GamePlay.PlayerEntity {
             }
         }
 
+        public void Reset() {
+            Lives = startLives;
+
+            for (int i = 0; i < MaxLives; i++) {
+                if (i < startLives) {
+                    HealthList[i].Image = heartFilled;
+                }
+                else {
+                    HealthList[i].Image = heartEmpty;
+                }
+            }
+        }
+
         public void Render() {
             foreach (Entity health in HealthList) {
                 health.RenderEntity();
@@ -53,9 +65,16 @@ namespace Breakout.GamePlay.PlayerEntity {
 
         // Made public to fix, problem with eventbus delayed actions, made the program crash sometimes.
         public void HealthLost() {
-            if (Lives > 0) {
+            if (Lives > 1) {
                 HealthList[(int) Lives - 1].Image = heartEmpty;
                 Lives--;
+            } 
+            //next life lost will result in loss
+            else {
+                BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                    EventType = GameEventType.GameStateEvent,
+                    Message = "CHANGE_STATE",
+                    StringArg1 = "GAME_LOST"});
             }
         }
 

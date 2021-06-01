@@ -5,21 +5,25 @@ using DIKUArcade.Math;
 
 namespace Breakout.GamePlay.PlayerEntity {
     public class Player : Entity, IGameEventProcessor {
+        private readonly Vec2F startPos;
         private float moveLeft = 0.0f;
-        private uint startLives = 3;
-        private uint maxLives = 5;
         private float moveRight = 0.0f;
         private const float MOVEMENT_SPEED = 0.02f;
         public float LeftBound { get; private set; }
         public float RightBound { get; private set; }
-        public Healthbar Hpbar { get; private set; }
+
+        public Healthbar Healthbar { get; private set; }
+        private uint startLives = 3;
+        private uint maxLives = 5;
         public Player(DynamicShape shape, IBaseImage image) : base(shape, image) {
             BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, this); 
 
             LeftBound = 0f;
             RightBound = 1.0f - shape.Extent.X;
 
-            Hpbar = new Healthbar(startLives, maxLives);
+            startPos = Shape.Position;
+
+            Healthbar = new Healthbar(startLives, maxLives);
         }
 
         public Vec2F GetPosition() {
@@ -40,6 +44,13 @@ namespace Breakout.GamePlay.PlayerEntity {
 
         public void UpdateDirection() {
             Shape.AsDynamicShape().Direction.X = moveLeft + moveRight;
+        }
+
+        public void Reset() {
+            SetMoveLeft(false);
+            SetMoveRight(false);
+
+            Shape.Position = startPos;
         }
 
         //Move if position after move will not be out of bounds

@@ -97,47 +97,30 @@ namespace Breakout.LevelLoading {
                         //define character
                         char cell = map.RowList[i][j];
                         if (cell != '-') {
-                            for(int l = 0; l < Legend.LegendList.Count; l++) {
-                                if (cell == Legend.LegendList[l].Item1) {
+                            Block block;
+                            Vec2F position = ComputeBlockPosition(i, j, blockExtent);
+                            
+                            IBaseImage image = Legend.LegendDict[cell].Item1;
+                            IBaseImage damageImage = Legend.LegendDict[cell].Item2;
 
-                                    Vec2F position = ComputeBlockPosition(i, j, blockExtent);
-                                    Block block;
-                                    string[] imagePathArr = new string[] { 
-                                        ProjectPath.getPath(), "Breakout", 
-                                            "Assets","Images", Legend.LegendList[l].Item2 };
-                                    string imagePath = Path.Combine(imagePathArr); 
-                                    
-                                    if (cell == Meta.Hardened) {
-                                        //extract image name and add "-damaged"
-                                        string damageImgName = 
-                                            Legend.LegendList[l].Item2.Split(".png")[0]
-                                                + "-damaged.png";
-                                        string[] damageImgPathArr = new string[] { 
-                                            ProjectPath.getPath(), "Breakout", 
-                                                "Assets","Images", damageImgName};
-                                        string damageImgPath = Path.Combine(damageImgPathArr); 
-                                        block = new Hardened (
-                                            new DynamicShape(position, blockExtent), 
-                                            new Image(imagePath), 
-                                            new Image(damageImgPath));
-                                    } 
-                                    else if (cell == Meta.Unbreakable) {
-                                        numberOfUnbreakables++;
-                                        block = new Unbreakable (
-                                            new DynamicShape(position, blockExtent), 
-                                            new Image(imagePath));
-                                    } 
-                                    else if (cell == Meta.Powerup) {
-                                        block = new PowerUp(new DynamicShape(position, blockExtent), 
-                                            new Image(imagePath));
-                                    }
-                                    else {
-                                        block = new Block(new DynamicShape(position, blockExtent), 
-                                            new Image(imagePath));
-                                    }
-                                    BlockOrganizer.Entities.AddEntity(block);
-                                }
+                            if (cell == Meta.Hardened) {
+                                block = new Hardened(
+                                    new DynamicShape(position, blockExtent), image, damageImage);
                             }
+                            else if (cell == Meta.Unbreakable) {
+                                numberOfUnbreakables++;
+                                block = new Unbreakable(
+                                    new DynamicShape(position, blockExtent), image, damageImage);
+                            }
+                            else if (cell == Meta.Powerup) {
+                                block = new PowerUp(
+                                    new DynamicShape(position, blockExtent), image, damageImage);
+                            }
+                            else {
+                                block = new Block(
+                                    new DynamicShape(position, blockExtent), image, damageImage);
+                            }
+                            BlockOrganizer.Entities.AddEntity(block);
                         }
                     }
                 }

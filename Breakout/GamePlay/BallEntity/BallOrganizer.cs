@@ -41,7 +41,7 @@ namespace Breakout.GamePlay.BallEntity {
         /// <summary>
         /// Reset to initial state with one single disempowered ball at spawn position
         /// </summary>
-        public void ResetBalls() {
+        public override void ResetOrganizer() {
             Entities.ClearContainer();
 
             HalfSpeedActive = false;
@@ -86,8 +86,14 @@ namespace Breakout.GamePlay.BallEntity {
                     }
                     break;
                 case "AddBall":
-                    Ball ball = GenerateBallRandomDir();
-                    Entities.AddEntity(ball);
+                    Entities.AddEntity(GenerateBallRandomDir());
+                    break;
+                case "BallRemoved":
+                    if (Entities.CountEntities() == 0) {
+                        ResetOrganizer();
+                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                            EventType = GameEventType.ControlEvent, StringArg1 = "HealthLost"});
+                    }
                     break;
             }
 

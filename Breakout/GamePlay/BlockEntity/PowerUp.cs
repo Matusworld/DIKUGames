@@ -10,7 +10,8 @@ using Breakout.GamePlay.PowerUpOrbEntity;
 namespace Breakout.GamePlay.BlockEntity {
     public class PowerUp : Block {
 
-        public PowerUp (DynamicShape shape, IBaseImage image) : base(shape, image) {}
+        public PowerUp (DynamicShape shape, IBaseImage image, IBaseImage damageImage) 
+            : base(shape, image, damageImage) {}
 
         /// <summary>
         /// Randomly choose power up and and spawn it as an entity
@@ -26,6 +27,9 @@ namespace Breakout.GamePlay.BlockEntity {
 
         protected override void BlockHit() {
             Damage();
+            if (HalfHpCheck()) {
+                this.Image = damageImage;
+            }
             if (!IsAlive()) {
                 DeleteEntity();
                 ScoreEvent();

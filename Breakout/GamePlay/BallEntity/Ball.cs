@@ -116,9 +116,18 @@ namespace Breakout.GamePlay.BallEntity {
             }
         }
 
+        private void Delete() {
+            if (!IsDeleted()) {
+                this.DeleteEntity();
+
+                BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                    EventType = GameEventType.ControlEvent, StringArg1 = "BallRemoved"});
+            }
+        }
+
         public void Move() {
             if (LowerBoundaryCheck()) {
-                this.DeleteEntity();
+                Delete();
                 
             } else {
                 DirectionBoundarySetter(); 
