@@ -7,7 +7,7 @@ namespace Breakout.GamePlay {
     /// <summary>
     /// Integer division
     /// </summary>
-    public class BreakoutTimer : StaticTimer {
+    public class LevelTimer : StaticTimer {
         private Text display;
         //internal level time counter, from levelTime down to 0
         private int timer;
@@ -16,7 +16,7 @@ namespace Breakout.GamePlay {
         //The static/global time at point of level start
         private int staticStartTime;
 
-        public BreakoutTimer(int levelTime, Vec2F pos, Vec2F extent) {
+        public LevelTimer(int levelTime, Vec2F pos, Vec2F extent) {
             timer = levelTime;
             this.levelTime = levelTime;
             staticStartTime = (int) GetElapsedMilliseconds() / 1000;

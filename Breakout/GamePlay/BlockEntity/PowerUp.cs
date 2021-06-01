@@ -31,8 +31,7 @@ namespace Breakout.GamePlay.BlockEntity {
                 this.Image = damageImage;
             }
             if (!IsAlive()) {
-                DeleteEntity();
-                ScoreEvent();
+                Delete();
                 SpawnOrbShape();
             }
         }

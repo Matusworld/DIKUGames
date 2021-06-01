@@ -53,9 +53,18 @@ namespace Breakout.GamePlay.BlockEntity {
                 this.Image = damageImage;
             }
             if (!IsAlive()) {
-                DeleteEntity();
-                ScoreEvent();
+                Delete();
             }
+        }
+
+        protected void Delete() {
+            DeleteEntity();
+
+            ScoreEvent();
+
+            BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                EventType = GameEventType.ControlEvent,
+                StringArg1 = "BLOCK_DELETED"});
         }
 
         public void ReceiveEvent(GameEvent gameEvent) {

@@ -11,7 +11,7 @@ using Breakout.GamePlay.BlockEntity;
 namespace Breakout.LevelLoading {
     public class LevelLoader {
         private SectionStreamReader reader;
-        public int numberOfUnbreakables = 0;
+        public int NumberOfUnbreakables { get; private set; } = 0;
         private MapLoader map;
         public MetaLoader Meta { get; private set; }
         public LegendLoader Legend { get; private set; }
@@ -56,23 +56,24 @@ namespace Breakout.LevelLoading {
         /// Clear fields prior to new level read
         /// </summary>
         private void ClearLoader() {
-            numberOfUnbreakables = 0;
+            NumberOfUnbreakables = 0;
             map.ClearLoader();
             Meta.ClearLoader();
             Legend.ClearLoader();
             BlockOrganizer.Entities.ClearContainer();
         }
 
+        /*
         /// <summary>
         /// Returns true if the current level has ended, i.e.
         /// when only unbreakable blocks are left
         /// </summary>
         public bool LevelEnded() {
-            if(BlockOrganizer.Entities.CountEntities() == numberOfUnbreakables) {
+            if(BlockOrganizer.Entities.CountEntities() == NumberOfUnbreakables) {
                 return true;
             }
             return false;
-        }
+        } */
 
         /// <summary>
         /// Perform the loading of all data
@@ -99,7 +100,6 @@ namespace Breakout.LevelLoading {
                         if (cell != '-') {
                             Block block;
                             Vec2F position = ComputeBlockPosition(i, j, blockExtent);
-                            
                             IBaseImage image = Legend.LegendDict[cell].Item1;
                             IBaseImage damageImage = Legend.LegendDict[cell].Item2;
 
@@ -108,7 +108,7 @@ namespace Breakout.LevelLoading {
                                     new DynamicShape(position, blockExtent), image, damageImage);
                             }
                             else if (cell == Meta.Unbreakable) {
-                                numberOfUnbreakables++;
+                                NumberOfUnbreakables++;
                                 block = new Unbreakable(
                                     new DynamicShape(position, blockExtent), image, damageImage);
                             }

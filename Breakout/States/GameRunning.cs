@@ -23,12 +23,13 @@ namespace Breakout.States {
         private Entity backGroundImage;
         private Player player;
         private BallOrganizer ballOrganizer;
-        private PowerUpOrbOrganizer PUOrganizer;
-        public LevelLoader LevelLoader { get; private set; }
-        private List<string> levelSequence;
-        public int LevelIndex { get; private set; }
+        private PowerUpOrbOrganizer PUOOrganizer;
+        //public LevelLoader LevelLoader { get; private set; }
+        //private List<string> levelSequence;
+        //public int LevelIndex { get; private set; }
+        public LevelManager LevelManager { get; private set; }
         private Score score;
-        private BreakoutTimer gameTimer;
+        //private BreakoutTimer gameTimer;
         
         public GameRunning() {
             //Initialize backGroundImage
@@ -38,17 +39,18 @@ namespace Breakout.States {
             IBaseImage image = new Image(Path.Combine( ProjectPath.getPath(),
                 "Breakout", "Assets", "Images", "SpaceBackground.png"));
             backGroundImage = new Entity(shape, image);
-                        
-            levelSequence = new List<string> { "level1.txt", "level2.txt", "level3.txt",
-                "central-mass.txt", "columns.txt", "wall.txt" };
-            LevelIndex = 0;
+              
+            LinkedList<string> levelSequence = new LinkedList<string> (new List<string> { "level1.txt", "level2.txt", "level3.txt",
+                "central-mass.txt", "columns.txt", "wall.txt" });
+            LevelManager = new LevelManager(levelSequence);
+            //LevelIndex = 0;
 
-            LevelLoader = new LevelLoader();
-            LevelLoader.LoadLevel(Path.Combine(ProjectPath.getPath(),
-                "Breakout", "Assets", "Levels", 
-                levelSequence[LevelIndex]));
+            //LevelLoader = new LevelLoader();
+            //LevelLoader.LoadLevel(Path.Combine(ProjectPath.getPath(),
+            //    "Breakout", "Assets", "Levels", 
+            //    levelSequence[LevelIndex]));
 
-            PUOrganizer = new PowerUpOrbOrganizer();
+            PUOOrganizer = new PowerUpOrbOrganizer();
 
             ballOrganizer = new BallOrganizer();
             ballOrganizer.ResetOrganizer();
@@ -60,8 +62,9 @@ namespace Breakout.States {
 
             score = new Score(new Vec2F(0.00f, -0.26f), new Vec2F(0.3f, 0.3f));
 
-            gameTimer = new BreakoutTimer(LevelLoader.Meta.Time, new Vec2F(0.33f, -0.26f), 
-                new Vec2F(0.3f, 0.3f));
+            //gameTimer = new BreakoutTimer(
+            //    LevelManager.LevelLoader.Meta.Time, new Vec2F(0.33f, -0.26f), 
+            //    new Vec2F(0.3f, 0.3f));
         }
 
         public static GameRunning GetInstance() {
@@ -69,13 +72,14 @@ namespace Breakout.States {
         }
 
         public void ResetState() {
-            LevelIndex = 0;
+            //LevelIndex = 0;
 
-            LevelLoader.LoadLevel(Path.Combine(ProjectPath.getPath(),
-                "Breakout", "Assets", "Levels", 
-                levelSequence[LevelIndex]));
+            //LevelLoader.LoadLevel(Path.Combine(ProjectPath.getPath(),
+            //    "Breakout", "Assets", "Levels", 
+            //    levelSequence[LevelIndex]));
+            LevelManager.ResetToFirst();
 
-            PUOrganizer.ResetOrganizer();
+            PUOOrganizer.ResetOrganizer();
 
             ballOrganizer.ResetOrganizer();
 
@@ -85,13 +89,13 @@ namespace Breakout.States {
 
             score.Reset();  
 
-            gameTimer.SetNewLevelTime(LevelLoader.Meta.Time);
+            //gameTimer.SetNewLevelTime(LevelManager.LevelLoader.Meta.Time);
         }
 
         private void BallBlockCollisionIterate() {
             ballOrganizer.Entities.Iterate(ball => {
                 bool hit = false;
-                LevelLoader.BlockOrganizer.Entities.Iterate(block => {
+                LevelManager.LevelLoader.BlockOrganizer.Entities.Iterate(block => {
                     BallBlockCollision(block, ball, ref hit);
                 });
             });
@@ -103,7 +107,7 @@ namespace Breakout.States {
                 //to block
                 BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                     EventType = GameEventType.ControlEvent, 
-                    StringArg1 = "BlockCollision", To = LevelLoader.BlockOrganizer, 
+                    StringArg1 = "BlockCollision", To = LevelManager.LevelLoader.BlockOrganizer, 
                     ObjectArg1 = block
                 });
                 //only send to ball if not priorly hit this iteration
@@ -153,6 +157,7 @@ namespace Breakout.States {
             }
         }
 
+        /*
         /// <summary>
         /// Load next level if legal, else go to main menu
         /// </summary>
@@ -176,7 +181,7 @@ namespace Breakout.States {
                     Message = "CHANGE_STATE",
                     StringArg1 = "GAME_WON" });
             }
-        }
+        } */
 
         public void UpdateState() {
             //player move
@@ -187,9 +192,9 @@ namespace Breakout.States {
             ballOrganizer.MoveEntities();
 
             //PowerUpOrb move
-            PUOrganizer.MoveEntities();
+            PUOOrganizer.MoveEntities();
 
-            PUOrganizer.Entities.Iterate(orb => {
+            PUOOrganizer.Entities.Iterate(orb => {
                 OrbPlayerCollision(orb);
             });
 
@@ -199,28 +204,30 @@ namespace Breakout.States {
 
             BallBlockCollisionIterate();
 
-            if (LevelLoader.Meta.Time != 0) {
-                gameTimer.UpdateTimer();
-            }
+            LevelManager.UpdateLevelTimer();
 
-            if(LevelLoader.LevelEnded()) {
-                NextLevel();
-            }
+            //if(LevelLoader.LevelEnded()) {
+            //    NextLevel();
+            //}
         }
 
         public void RenderState() {
             backGroundImage.RenderEntity();
+            
             player.Render();
             player.Healthbar.Render();
+
             ballOrganizer.RenderEntities();
-            LevelLoader.BlockOrganizer.RenderEntities();
-            PUOrganizer.RenderEntities();
+            //LevelLoader.BlockOrganizer.RenderEntities();
+            PUOOrganizer.RenderEntities();
+
             score.Render();
 
+            LevelManager.RenderLevel();
             // if time is not 0 render Timer, else do not render
-            if (LevelLoader.Meta.Time != 0) {
-                gameTimer.Render();
-            }
+            //if (LevelManager.LevelLoader.Meta.Time != 0) {
+            //    LevelManager.LevelTimer.Render();
+            //}
         }
 
         public void HandleKeyEvent(KeyboardAction action, KeyboardKey key) {
@@ -237,8 +244,6 @@ namespace Breakout.States {
                         BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                             EventType = GameEventType.PlayerEvent, Message = "true",
                             StringArg1 = "SetMoveRight" });
-                        break;
-                    default:
                         break;
                 }
             }
@@ -263,9 +268,20 @@ namespace Breakout.States {
                             StringArg1 = "GAME_PAUSED" });
                             break;
                     case KeyboardKey.Plus:
-                        NextLevel();
+                        BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                            EventType = GameEventType.ControlEvent,
+                            StringArg1 = "LEVEL_ENDED"});
                         break;
-                    default:
+                    case KeyboardKey.Minus:
+                        BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                            EventType = GameEventType.ControlEvent,
+                            StringArg1 = "LEVEL_BACK"});
+                        break;
+                    case KeyboardKey.Comma:
+                        BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                            EventType = GameEventType.GameStateEvent,
+                            Message = "CHANGE_STATE",
+                            StringArg1 = "GAME_WON" });
                         break;
                 }
             }

@@ -52,51 +52,56 @@ namespace Breakout.GamePlay.BallEntity {
         }
 
         public override void ProcessEvent(GameEvent gameEvent) {
-            switch(gameEvent.StringArg1) {
-                case "HalfSpeed":
-                    switch(gameEvent.Message) {
-                        case "Activate":
-                            HalfSpeedActive = true;
-                            Entities.Iterate(ball => {
-                                ball.ReceiveEvent(gameEvent);
-                            });
-                            break;
-                        case "Deactivate":
-                            HalfSpeedActive = false;
-                            Entities.Iterate(ball => {
-                                ball.ReceiveEvent(gameEvent);
-                            });
-                            break;
-                    }
-                    break;
-                case "DoubleSpeed":
-                    switch(gameEvent.Message) {
-                        case "Activate":
-                            DoubleSpeedActive = true;
-                            Entities.Iterate(ball => {
-                                ball.ReceiveEvent(gameEvent);
-                            });
-                            break;
-                        case "Deactivate":
-                            DoubleSpeedActive = false;
-                            Entities.Iterate(ball => {
-                                ball.ReceiveEvent(gameEvent);
-                            });
-                            break;
-                    }
-                    break;
-                case "AddBall":
-                    Entities.AddEntity(GenerateBallRandomDir());
-                    break;
-                case "BallRemoved":
-                    if (Entities.CountEntities() == 0) {
+            if (gameEvent.EventType == GameEventType.ControlEvent) {
+                switch(gameEvent.StringArg1) {
+                    case "HalfSpeed":
+                        switch(gameEvent.Message) {
+                            case "Activate":
+                                HalfSpeedActive = true;
+                                Entities.Iterate(ball => {
+                                    ball.ReceiveEvent(gameEvent);
+                                });
+                                break;
+                            case "Deactivate":
+                                HalfSpeedActive = false;
+                                Entities.Iterate(ball => {
+                                    ball.ReceiveEvent(gameEvent);
+                                });
+                                break;
+                        }
+                        break;
+                    case "DoubleSpeed":
+                        switch(gameEvent.Message) {
+                            case "Activate":
+                                DoubleSpeedActive = true;
+                                Entities.Iterate(ball => {
+                                    ball.ReceiveEvent(gameEvent);
+                                });
+                                break;
+                            case "Deactivate":
+                                DoubleSpeedActive = false;
+                                Entities.Iterate(ball => {
+                                    ball.ReceiveEvent(gameEvent);
+                                });
+                                break;
+                        }
+                        break;
+                    case "AddBall":
+                        Entities.AddEntity(GenerateBallRandomDir());
+                        break;
+                    case "BallRemoved":
+                        if (Entities.CountEntities() == 0) {
+                            ResetOrganizer();
+                            BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                                EventType = GameEventType.ControlEvent, StringArg1 = "HealthLost"});
+                        }
+                        break;
+                    case "LEVEL_ENDED":
+                    case "LEVEL_BACK":
                         ResetOrganizer();
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType = GameEventType.ControlEvent, StringArg1 = "HealthLost"});
-                    }
-                    break;
+                        break;
+                }
             }
-
         }
     }
 }

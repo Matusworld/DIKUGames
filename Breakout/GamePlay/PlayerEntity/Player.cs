@@ -112,6 +112,14 @@ namespace Breakout.GamePlay.PlayerEntity {
                         break;
                 }
             }
+            else if (gameEvent.EventType == GameEventType.ControlEvent) {
+                switch (gameEvent.StringArg1) {
+                    case "LEVEL_ENDED":
+                    case "LEVEL_BACK":
+                        Reset();
+                        break;
+                }
+            }
         }
     }
 }
