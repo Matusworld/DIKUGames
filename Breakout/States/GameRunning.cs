@@ -21,7 +21,7 @@ namespace Breakout.States {
         private Entity backGroundImage;
         private Player player;
         private BallOrganizer ballOrganizer;
-        private PowerUpOrbOrganizer PUOOrganizer;
+        private PowerUpOrbOrganizer PowerUpOrbOrganizer;
         public LevelManager LevelManager { get; private set; }
         private Score score;
         
@@ -38,7 +38,7 @@ namespace Breakout.States {
                 "central-mass.txt", "columns.txt", "wall.txt" });
             LevelManager = new LevelManager(levelSequence);
 
-            PUOOrganizer = new PowerUpOrbOrganizer();
+            PowerUpOrbOrganizer = new PowerUpOrbOrganizer();
 
             ballOrganizer = new BallOrganizer();
             ballOrganizer.ResetOrganizer();
@@ -118,7 +118,7 @@ namespace Breakout.States {
         public void ResetState() {
             LevelManager.ResetToFirst();
 
-            PUOOrganizer.ResetOrganizer();
+            PowerUpOrbOrganizer.ResetOrganizer();
 
             ballOrganizer.ResetOrganizer();
 
@@ -136,9 +136,9 @@ namespace Breakout.States {
             ballOrganizer.MoveEntities();
 
             //PowerUpOrb move
-            PUOOrganizer.MoveEntities();
+            PowerUpOrbOrganizer.MoveEntities();
 
-            PUOOrganizer.Entities.Iterate(orb => {
+            PowerUpOrbOrganizer.Entities.Iterate(orb => {
                 OrbPlayerCollision(orb);
             });
 
@@ -159,7 +159,7 @@ namespace Breakout.States {
 
             ballOrganizer.RenderEntities();
 
-            PUOOrganizer.RenderEntities();
+            PowerUpOrbOrganizer.RenderEntities();
 
             score.Render();
 

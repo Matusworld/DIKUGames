@@ -1,10 +1,12 @@
+using System;
+using System.IO;
+
+
 using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
-
-using System;
-using System.IO;
+using DIKUArcade.Timers;
 
 namespace Breakout.GamePlay.BallEntity {
     public class BallOrganizer : EntityOrganizer<Ball> {
@@ -21,6 +23,10 @@ namespace Breakout.GamePlay.BallEntity {
             });
         }
         
+        private bool CheckNoBalls() {
+            return Entities.CountEntities() == 0;
+        }
+
         /// <summary>
         /// Generate a random ball in mid of map with dir from 45 to 135 degree.
         /// PowerUp states correspond to existing balls
@@ -89,8 +95,16 @@ namespace Breakout.GamePlay.BallEntity {
                     case "ADD_BALL":
                         Entities.AddEntity(GenerateBallRandomDir());
                         break;
-                    case "BALL_REMOVED":
-                        if (Entities.CountEntities() == 0) {
+                    case "BALL_DELETED":
+                        //Add small delay so that EntityContainer will have cleaned up
+                        //the block marked for deletion by the time of block counting
+                        BreakoutBus.GetBus().RegisterTimedEvent(
+                            new GameEvent { EventType = GameEventType.ControlEvent,
+                                StringArg1 = "BALL_DELETED_DELAY"},
+                            TimePeriod.NewMilliseconds(5));
+                        break;
+                    case "BALL_DELETED_DELAY":
+                        if (CheckNoBalls()) {
                             ResetOrganizer();
                             BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                                 EventType = GameEventType.ControlEvent, 

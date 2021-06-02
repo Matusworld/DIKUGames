@@ -11,7 +11,7 @@ using Breakout.GamePlay.BlockEntity;
 namespace Breakout.LevelLoading {
     public class LevelLoader {
         private SectionStreamReader reader;
-        public int NumberOfUnbreakables { get; private set; } = 0;
+        //public int NumberOfUnbreakables { get; private set; } = 0;
         private MapLoader map;
         public MetaLoader Meta { get; private set; }
         public LegendLoader Legend { get; private set; }
@@ -56,11 +56,10 @@ namespace Breakout.LevelLoading {
         /// Clear fields prior to new level read
         /// </summary>
         private void ClearLoader() {
-            NumberOfUnbreakables = 0;
             map.ClearLoader();
             Meta.ClearLoader();
             Legend.ClearLoader();
-            BlockOrganizer.Entities.ClearContainer();
+            BlockOrganizer.ResetOrganizer();
         }
 
         /*
@@ -108,7 +107,7 @@ namespace Breakout.LevelLoading {
                                     new DynamicShape(position, blockExtent), image, damageImage);
                             }
                             else if (cell == Meta.Unbreakable) {
-                                NumberOfUnbreakables++;
+                                BlockOrganizer.NumberOfUnbreakables++;
                                 block = new Unbreakable(
                                     new DynamicShape(position, blockExtent), image, damageImage);
                             }
