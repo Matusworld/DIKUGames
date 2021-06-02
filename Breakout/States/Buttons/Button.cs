@@ -2,29 +2,29 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 
 namespace Breakout.States.Buttons {
-    public abstract class Button : Text {
+    public abstract class Button {
+        protected Text text;
         protected Vec3I activeColor;
         protected Vec3I passiveColor;
         public bool Active { get; protected set; }
 
-        public Button (string text, Vec2F pos, Vec2F extent, Vec3I actCol, 
-            Vec3I pasCol) : base(text, pos, extent) {
+        public Button (Vec2F pos, Vec2F extent, Vec3I actCol, Vec3I pasCol) {
                 activeColor = actCol;
                 passiveColor = pasCol;
             }
 
         public void SetActive() {
-            this.SetColor(activeColor);
+            text.SetColor(activeColor);
             this.Active = true;
 
         }
         public void SetPassive() {
-            this.SetColor(passiveColor);
+            text.SetColor(passiveColor);
             this.Active = false;
         }
 
         public void Render() {
-            this.RenderText();
+            text.RenderText();
         }
 
         /// <summary>

@@ -79,7 +79,8 @@ namespace Breakout.States {
                             SwitchState(GameStateType.GameWon);
                             ActiveState.ResetState();
                             break;
-                    } break;
+                    } 
+                    break;
             }
         }
     }

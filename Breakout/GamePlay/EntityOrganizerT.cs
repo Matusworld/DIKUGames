@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-
 using DIKUArcade.Entities;
 using DIKUArcade.Events;
 
 namespace Breakout.GamePlay {
-    public abstract class EntityOrganizer<T> : IGameEventProcessor where T: Entity {
+    public abstract class EntityOrganizer<T> : IGameEventProcessor where T : Entity {
         public EntityContainer<T> Entities { get; protected set; }
 
         public EntityOrganizer() {
