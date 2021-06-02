@@ -13,13 +13,13 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
 
         public override void ApplyEffect() {
             BreakoutBus.GetBus().RegisterEvent ( new GameEvent {
-                EventType = GameEventType.ControlEvent, StringArg1 = "DoubleSpeed",
-                Message = "Activate"                       
+                EventType = GameEventType.ControlEvent, StringArg1 = "DOUBLE_SPEED",
+                Message = "ACTIVATE"
                 });
 
             BreakoutBus.GetBus().RegisterTimedEvent(
                 new GameEvent{ EventType = GameEventType.ControlEvent,
-                    StringArg1 = "DoubleSpeed", Message = "Deactivate"},
+                    StringArg1 = "DOUBLE_SPEED", Message = "DEACTIVE"},
                 TimePeriod.NewMilliseconds(powerUpDuration));
         }
     }

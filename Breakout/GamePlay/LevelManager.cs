@@ -104,6 +104,8 @@ namespace Breakout.GamePlay {
                         PreviousLevel();
                         break;
                     case "BLOCK_DELETED":
+                        //Add small delay so that EntityContainer will have cleaned up
+                        //the block marked for deletion by the time of block counting
                         BreakoutBus.GetBus().RegisterTimedEvent(
                             new GameEvent { EventType = GameEventType.ControlEvent,
                                 StringArg1 = "BLOCK_DELETED_DELAY"},
@@ -111,7 +113,9 @@ namespace Breakout.GamePlay {
                         break;
                     case "BLOCK_DELETED_DELAY":
                         if (CheckLevelEnded()) {
-                            NextLevel();
+                            BreakoutBus.GetBus().RegisterEvent( new GameEvent {
+                                EventType = GameEventType.ControlEvent,
+                                StringArg1 = "LEVEL_ENDED"});
                         }
                         break;
                 }

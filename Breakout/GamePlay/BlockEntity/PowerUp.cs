@@ -25,7 +25,7 @@ namespace Breakout.GamePlay.BlockEntity {
                 ObjectArg1 = shape});
         }
 
-        protected override void BlockHit() {
+        public override void BlockHit() {
             Damage();
             if (HalfHpCheck()) {
                 this.Image = damageImage;

@@ -32,20 +32,6 @@ namespace Breakout.GamePlay {
             });
         }
 
-        /// <summary>
-        /// Validates  that ObjectArg1 is of type T.
-        /// </summary>
-        /// <param name="gameEvent"></param>
-        protected void EventValidator(GameEvent gameEvent) {
-            if (gameEvent.ObjectArg1 is T) {
-                return;
-            }
-            else {
-                throw new ArgumentException(
-                    "Event to EntityOrganizer must have ObjectArg1 as generic type of Organizer");
-            }
-        }
-
         public abstract void ProcessEvent(GameEvent gameEvent);
     }
 }

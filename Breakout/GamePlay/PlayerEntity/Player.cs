@@ -8,15 +8,17 @@ namespace Breakout.GamePlay.PlayerEntity {
         private readonly Vec2F startPos;
         private float moveLeft = 0.0f;
         private float moveRight = 0.0f;
-        private const float MOVEMENT_SPEED = 0.02f;
+        public const float MOVEMENT_SPEED = 0.02f;
         public float LeftBound { get; private set; }
         public float RightBound { get; private set; }
 
         public Healthbar Healthbar { get; private set; }
         private uint startLives = 3;
         private uint maxLives = 5;
+
         public Player(DynamicShape shape, IBaseImage image) : base(shape, image) {
             BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, this); 
+            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this); 
 
             LeftBound = 0f;
             RightBound = 1.0f - shape.Extent.X;
@@ -24,18 +26,6 @@ namespace Breakout.GamePlay.PlayerEntity {
             startPos = Shape.Position;
 
             Healthbar = new Healthbar(startLives, maxLives);
-        }
-
-        public Vec2F GetPosition() {
-            return Shape.Position; 
-        }
-
-        public Vec2F GetExtent() {
-            return Shape.Extent;
-        }
-
-        public float GetMoveSpeed() {
-            return MOVEMENT_SPEED;
         }
 
         public void Render() {
@@ -87,27 +77,27 @@ namespace Breakout.GamePlay.PlayerEntity {
         public void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.EventType == GameEventType.PlayerEvent) {  
                 switch (gameEvent.StringArg1) {
-                    case "SetMoveLeft":
+                    case "SET_MOVE_LEFT":
                         switch (gameEvent.Message) {
-                            case "true":
+                            case "TRUE":
                                 SetMoveLeft(true);
                                 break;
-                            case "false":
+                            case "FALSE":
                                 SetMoveLeft(false);
                                 break;
                         }
                         break;
-                    case "SetMoveRight":
+                    case "SET_MOVE_RIGHT":
                         switch (gameEvent.Message) {
-                            case "true":
+                            case "TRUE":
                                 SetMoveRight(true);
                                 break;
-                            case "false":
+                            case "FALSE":
                                 SetMoveRight(false);
                                 break;
                         }
                         break;
-                    case "Move":
+                    case "MOVE":
                         Move();
                         break;
                 }

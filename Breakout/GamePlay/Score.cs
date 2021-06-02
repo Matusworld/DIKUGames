@@ -78,7 +78,7 @@ namespace Breakout.GamePlay {
                             AddToScore(BlockTypes.Normal);
                         }
                         break;
-                    case "PowerUpScore":
+                    case "POWERUP_SCORE":
                         AddPowerUpScore();
                         break;
                 }

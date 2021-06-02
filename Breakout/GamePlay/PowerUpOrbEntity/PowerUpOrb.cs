@@ -29,5 +29,10 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
         }
 
         public abstract void ApplyEffect();
+
+        public void PlayerCollision() {
+            ApplyEffect();
+            DeleteEntity();
+        }
     }
 }

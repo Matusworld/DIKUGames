@@ -99,21 +99,21 @@ namespace BreakoutTest
             float playerHitPos = 0.0f;
             ball.DirectionPlayerSetter(playerHitPos);
 
-            Assert.IsTrue(tolerance >= Math.Abs(ball.Theta - (0.75f*(float)Math.PI)));
+            Assert.IsTrue(tolerance >= Math.Abs(ball.GetTheta() - (0.75f*(float)Math.PI)));
         }
         [Test]
         public void testDirectionPlayerSetterMiddleBounce() {
             float playerHitPos = 0.5f;
             ball.DirectionPlayerSetter(playerHitPos);
 
-            Assert.IsTrue(tolerance >= Math.Abs(ball.Theta - (0.5f*(float)Math.PI)));
+            Assert.IsTrue(tolerance >= Math.Abs(ball.GetTheta() - (0.5f*(float)Math.PI)));
         }
         [Test]
         public void testDirectionPlayerSetterRightBounce() {
             float playerHitPos = 1.0f;
             ball.DirectionPlayerSetter(playerHitPos);
 
-            Assert.IsTrue(tolerance >= Math.Abs(ball.Theta - (0.25*(float)Math.PI)));
+            Assert.IsTrue(tolerance >= Math.Abs(ball.GetTheta() - (0.25*(float)Math.PI)));
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace BreakoutTest
             //math to compute rebounce dir
             float expTheta = 0.75f * (float) Math.PI - (playerHitPos*(float)Math.PI / 2f);
 
-            Assert.IsTrue(tolerance >= Math.Abs(ball.Theta - expTheta));           
+            Assert.IsTrue(tolerance >= Math.Abs(ball.GetTheta() - expTheta));           
         }
 
         [Test]
@@ -156,7 +156,7 @@ namespace BreakoutTest
 
             ball.DirectionBlockSetter(CollisionDirection.CollisionDirUp);
 
-            float diff = (ball.Theta - theta);
+            float diff = (ball.GetTheta() - theta);
 
             Assert.LessOrEqual(diff, tolerance);
 
@@ -172,7 +172,7 @@ namespace BreakoutTest
 
             ball.DirectionBlockSetter(CollisionDirection.CollisionDirDown);
 
-            float diff = (ball.Theta - theta);
+            float diff = (ball.GetTheta() - theta);
 
             Assert.LessOrEqual(diff, tolerance);
         }
@@ -187,7 +187,7 @@ namespace BreakoutTest
 
             ball.DirectionBlockSetter(CollisionDirection.CollisionDirLeft);
 
-            float diff = (ball.Theta - theta);
+            float diff = (ball.GetTheta() - theta);
 
             Assert.LessOrEqual(diff, tolerance);
         }
@@ -202,7 +202,7 @@ namespace BreakoutTest
 
             ball.DirectionBlockSetter(CollisionDirection.CollisionDirRight);
 
-            float diff = (ball.Theta - theta);
+            float diff = (ball.GetTheta() - theta);
 
             Assert.LessOrEqual(diff, tolerance);
         }

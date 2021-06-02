@@ -54,46 +54,47 @@ namespace Breakout.GamePlay.BallEntity {
         public override void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.EventType == GameEventType.ControlEvent) {
                 switch(gameEvent.StringArg1) {
-                    case "HalfSpeed":
+                    case "HALF_SPEED":
                         switch(gameEvent.Message) {
-                            case "Activate":
+                            case "ACTIVATE":
                                 HalfSpeedActive = true;
                                 Entities.Iterate(ball => {
-                                    ball.ReceiveEvent(gameEvent);
+                                    ball.HalfSpeedActivate();
                                 });
                                 break;
-                            case "Deactivate":
+                            case "DEACTIVATE":
                                 HalfSpeedActive = false;
                                 Entities.Iterate(ball => {
-                                    ball.ReceiveEvent(gameEvent);
+                                    ball.HalfSpeedDeactivate();
                                 });
                                 break;
                         }
                         break;
-                    case "DoubleSpeed":
+                    case "DOUBLE_SPEED":
                         switch(gameEvent.Message) {
-                            case "Activate":
+                            case "ACTIVATE":
                                 DoubleSpeedActive = true;
                                 Entities.Iterate(ball => {
-                                    ball.ReceiveEvent(gameEvent);
+                                    ball.DoubleSpeedActivate();
                                 });
                                 break;
-                            case "Deactivate":
+                            case "DEACTIVATE":
                                 DoubleSpeedActive = false;
                                 Entities.Iterate(ball => {
-                                    ball.ReceiveEvent(gameEvent);
+                                    ball.DoubleSpeedDeactivate();
                                 });
                                 break;
                         }
                         break;
-                    case "AddBall":
+                    case "ADD_BALL":
                         Entities.AddEntity(GenerateBallRandomDir());
                         break;
-                    case "BallRemoved":
+                    case "BALL_REMOVED":
                         if (Entities.CountEntities() == 0) {
                             ResetOrganizer();
                             BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                                EventType = GameEventType.ControlEvent, StringArg1 = "HealthLost"});
+                                EventType = GameEventType.ControlEvent, 
+                                StringArg1 = "HEALTH_LOST"});
                         }
                         break;
                     case "LEVEL_ENDED":

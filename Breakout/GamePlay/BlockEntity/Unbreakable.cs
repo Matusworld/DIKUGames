@@ -7,6 +7,6 @@ namespace Breakout.GamePlay.BlockEntity {
         public Unbreakable(DynamicShape shape, IBaseImage image, IBaseImage damageImage) 
             : base (shape, image, damageImage) {}
 
-        protected override void BlockHit() {}
+        public override void BlockHit() {}
     }
 }

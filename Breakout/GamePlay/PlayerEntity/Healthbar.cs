@@ -88,10 +88,10 @@ namespace Breakout.GamePlay.PlayerEntity {
         public void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.EventType == GameEventType.ControlEvent) {
                 switch (gameEvent.StringArg1) {
-                    case "HealthLost":
+                    case "HEALTH_LOST":
                         HealthLost();
                         break;
-                    case "HealthGained":
+                    case "HEALTH_GAINED":
                         HealthGained();
                         break;
                 }

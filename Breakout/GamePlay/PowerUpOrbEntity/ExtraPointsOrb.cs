@@ -8,7 +8,7 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
 
         public override void ApplyEffect() {
             BreakoutBus.GetBus().RegisterEvent ( new GameEvent {
-                EventType = GameEventType.ControlEvent, StringArg1 = "PowerUpScore"});
+                EventType = GameEventType.ControlEvent, StringArg1 = "POWERUP_SCORE"});
         }
     }
 }

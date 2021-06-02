@@ -47,7 +47,7 @@ namespace Breakout.GamePlay.BlockEntity {
                     From = this});
         }
 
-        protected virtual void BlockHit() {
+        public virtual void BlockHit() {
             Damage();
             if (HalfHpCheck()) {
                 this.Image = damageImage;
@@ -69,7 +69,7 @@ namespace Breakout.GamePlay.BlockEntity {
 
         public void ReceiveEvent(GameEvent gameEvent) {
             if(gameEvent.EventType == GameEventType.ControlEvent ) {
-                if(gameEvent.StringArg1 == "BlockCollision") {
+                if(gameEvent.StringArg1 == "BLOCK_COLLISION") {
                     BlockHit();
                 }
             }
