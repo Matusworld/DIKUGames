@@ -3,10 +3,17 @@ using System.IO;
 using DIKUArcade.Entities;
 using DIKUArcade.Events;
 using DIKUArcade.Graphics;
+using DIKUArcade.Math;
 
 namespace Breakout.GamePlay.PowerUpOrbEntity {
+    /// <summary>
+    /// Organizing class for containing and giving mass functionality to PowerUpOrbs.
+    /// Processes Events on behalf of contained PowerUpOrbs.
+    /// </summary>
     public class PowerUpOrbOrganizer : EntityOrganizer<PowerUpOrb> {
         public int PowerUpDuration { get; private set; } = 5000; //ms
+        public Vec2F PowerUpExtent { get; private set; } = new Vec2F(0.05f, 0.05f);
+
         public PowerUpOrbOrganizer() : base() {
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this);
         }
@@ -17,7 +24,8 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
            });
         }
 
-        public PowerUpOrb GenerateRandomOrb(DynamicShape shape) {
+        public PowerUpOrb GenerateRandomOrb(Vec2F position) {
+            DynamicShape shape = new DynamicShape(position, PowerUpExtent);
             PowerUpTypes draw = PowerUpRandom.RandomType();
             IBaseImage image;
             PowerUpOrb orb;
@@ -59,9 +67,9 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
 
         public override void ProcessEvent(GameEvent gameEvent) {
             switch(gameEvent.StringArg1) {
-                case "ADD_ORB":
-                    DynamicShape shape = (DynamicShape) gameEvent.ObjectArg1;
-                    PowerUpOrb orb = GenerateRandomOrb(shape);
+                case "SPAWN_ORB":
+                    Vec2F position = (Vec2F) gameEvent.ObjectArg1;
+                    PowerUpOrb orb = GenerateRandomOrb(position);
                     Entities.AddEntity(orb);
                     break;
             }

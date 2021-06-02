@@ -3,18 +3,19 @@ using System;
 using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Physics;
+using DIKUArcade.Timers;
 
 using DIKUArcade.Graphics;
 
-/// <summary>
-/// Ball that moves around the window and interacts with other entities.
-/// Detects and computes new direction in case of boundary collision.
-/// Computes new direction in case of block and player collision (but does not detect collisions).
-/// Applies effect of power ups.
-/// </summary>
 namespace Breakout.GamePlay.BallEntity {
+    /// <summary>
+    /// Ball that moves around the window and interacts with other Entities.
+    /// Detects and computes new Direction in case of boundary collision.
+    /// Computes new Direction in case of Block and Player collision (but does not detect collisions).
+    /// Applies effect of PowerUpOrbs.
+    /// </summary>
     public class Ball : Entity {   
-        const float baseSpeed = 0.02f;
+        private const float baseSpeed = 0.02f;
         public float speed { get; private set; }
         public bool HalfSpeedActive { get; private set; }
         public bool DoubleSpeedActive { get; private set; }
@@ -36,16 +37,16 @@ namespace Breakout.GamePlay.BallEntity {
         }
 
         /// <summary>
-        /// Set direction vector given by canonical angle theta.
+        /// Set Direction vector of this Ball given by the canonical angle theta.
         /// </summary>
         /// <param name="theta"></param>
         private void SetAngularDirection(float theta) {
-            this.Shape.AsDynamicShape().Direction.X = (float)Math.Cos((double)theta)*speed;
-            this.Shape.AsDynamicShape().Direction.Y = (float)Math.Sin((double)theta)*speed;
+            Shape.AsDynamicShape().Direction.X = (float)Math.Cos((double)theta)*speed;
+            Shape.AsDynamicShape().Direction.Y = (float)Math.Sin((double)theta)*speed;
         }
 
         /// <summary>
-        /// Return canonical angle of direction vector.
+        /// Return canonical angle of the Direction vector of this Ball.
         /// </summary>
         /// <returns></returns>
         public float GetTheta() {
@@ -63,7 +64,7 @@ namespace Breakout.GamePlay.BallEntity {
         }
 
         /// <summary>
-        /// Detects whether the ball has exceeded the left window border.
+        /// Detect whether this Ball has exceeded the left window border.
         /// </summary>
         /// <returns></returns>
         public bool LeftBoundaryCheck() {
@@ -75,7 +76,7 @@ namespace Breakout.GamePlay.BallEntity {
         }
 
         /// <summary>
-        /// Detects whether the ball has exceeded the right window border.
+        /// Detect whether this Ball has exceeded the right window border.
         /// </summary>
         /// <returns></returns>
         public bool RightBoundaryCheck() {
@@ -87,7 +88,7 @@ namespace Breakout.GamePlay.BallEntity {
         }
 
         /// <summary>
-        /// Detects whether the ball has exceeded the top window border.
+        /// Detect whether this Ball has exceeded the top window border.
         /// </summary>
         /// <returns></returns>
         public bool UpperBoundaryCheck() {
@@ -99,7 +100,7 @@ namespace Breakout.GamePlay.BallEntity {
         }
 
         /// <summary>
-        /// Detects whether the ball has exceeded the bottom window border.
+        /// Detect whether this Ball has exceeded the bottom window border.
         /// </summary>
         /// <returns></returns>
         public bool LowerBoundaryCheck() {
@@ -111,21 +112,24 @@ namespace Breakout.GamePlay.BallEntity {
         }
 
         /// <summary>
-        /// Reacts to left-, right-, and top boundary detection by reflecting the direction vector 
-        /// accordingly.
+        /// React to boundary conditions by reflection of this Ball's Direction vector or 
+        /// by deletion of this Ball. 
         /// </summary>
-        public void DirectionBoundarySetter() {
+        public void BoundaryCollision() {
             if (LeftBoundaryCheck() || RightBoundaryCheck()) {
                 InverseDirectionX();
             }
             if (UpperBoundaryCheck()) {
                 InverseDirectionY();
             }
+            if (LowerBoundaryCheck()) {
+                Delete();
+            }
         }
 
         /// <summary>
-        /// Reacts to block collision by reflecting the direction vector according to the 
-        /// collision direction, i.e. from which side the ball was hit.
+        /// React to Block collision by reflecting this Ball's direction vector according to the 
+        /// CollisionDirection, i.e. from which side the Block was hit by this Ball.
         /// </summary>
         /// <param name="dir"></param>
         public void DirectionBlockSetter(CollisionDirection dir) {
@@ -142,9 +146,10 @@ namespace Breakout.GamePlay.BallEntity {
         }
 
         /// <summary>
-        /// Reacts to player collision by computing the direction based on the PlayerPosition.
+        /// React to Player collision by computing the new Direction of this Ball based 
+        /// on the PlayerPosition.
         /// PlayerPosition is a ratio in the range [0.0,1.0]
-        /// Computed direction has a canonical angle in the range of [45.0, 135.0] degrees
+        /// Computed Direction has a canonical angle in the range of [45.0, 135.0] degrees
         /// </summary>
         /// <param name="PlayerPosition"></param>
         public void DirectionPlayerSetter(float PlayerPosition) {
@@ -154,27 +159,33 @@ namespace Breakout.GamePlay.BallEntity {
         }
 
         /// <summary>
-        /// Mark for deletion if not already marked, then broadcast it.
+        /// Mark this Ball for deletion if not already marked, then broadcast that 
+        /// the deletion is happening.
         /// </summary>
         private void Delete() {
             if (!IsDeleted()) {
-                this.DeleteEntity();
+                DeleteEntity();
 
-                BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                    EventType = GameEventType.ControlEvent, StringArg1 = "BALL_DELETED"});
+                //Add small delay so that EntityContainer will have cleaned up
+                //this Ball marked for deletion by the time of Ball counting
+                BreakoutBus.GetBus().RegisterTimedEvent(
+                    new GameEvent { 
+                        EventType = GameEventType.ControlEvent,
+                        StringArg1 = "BALL_DELETED"},
+                    TimePeriod.NewMilliseconds(BreakoutBus.CountDelay));
             }
         }
 
+        /// <summary>
+        /// Move this Ball by its direction vector.
+        /// </summary>
         public void Move() {
-            if (LowerBoundaryCheck()) {
-                Delete();
-                
-            } else {
-                DirectionBoundarySetter(); 
-                this.Shape.Move();
-            }
+            Shape.Move();
         }
 
+        /// <summary>
+        /// Activate HalfSpeedOrb PowerUp effect.
+        /// </summary>
         public void HalfSpeedActivate() {
             if (!HalfSpeedActive) {
                 HalfSpeedActive = true;
@@ -184,6 +195,9 @@ namespace Breakout.GamePlay.BallEntity {
             }
         }
 
+        /// <summary>
+        /// Deactivate HalfSpeedOrb PowerUp effect.
+        /// </summary>
         public void HalfSpeedDeactivate() {
             if (HalfSpeedActive) {
                 HalfSpeedActive = false;
@@ -193,6 +207,9 @@ namespace Breakout.GamePlay.BallEntity {
             }
         }
 
+        /// <summary>
+        /// Activate DoubleSpeedOrb PowerUp effect.
+        /// </summary>
         public void DoubleSpeedActivate() {
             if (!DoubleSpeedActive) {
                 DoubleSpeedActive = true;
@@ -202,6 +219,9 @@ namespace Breakout.GamePlay.BallEntity {
             }
         }
 
+        /// <summary>
+        /// Deactivate DoubleSpeedOrb PowerUp effect.
+        /// </summary>
         public void DoubleSpeedDeactivate() {
             if (DoubleSpeedActive) {
                 DoubleSpeedActive = false;

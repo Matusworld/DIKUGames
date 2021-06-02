@@ -144,6 +144,7 @@ namespace Breakout.States {
 
             ballOrganizer.Entities.Iterate(ball => {
                 BallPlayerCollision(ball);
+                ball.BoundaryCollision();
             });
 
             BallBlockCollisionIterate();

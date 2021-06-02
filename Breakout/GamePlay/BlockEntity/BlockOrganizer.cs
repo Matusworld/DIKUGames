@@ -1,12 +1,29 @@
 using DIKUArcade.Events;
 using DIKUArcade.Timers;
 
+
 namespace Breakout.GamePlay.BlockEntity {
+    /// <summary>
+    /// Organizing class for containing and giving mass functionality to Blocks.
+    /// Processes Events on behalf of contained Blocks.
+    /// </summary>
     public class BlockOrganizer : EntityOrganizer<Block> {
+        //Number of Unbreakable Blocks contained in this BlockOrganizer
         public int NumberOfUnbreakables = 0;
 
         public BlockOrganizer() : base() {
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this);
+        }
+
+        /// <summary>
+        /// Returns true if the current level has ended, i.e.
+        /// when only Unbreakable Blocks remain in this BlockOrganizer.
+        /// </summary>
+        private bool CheckLevelEnded() {
+            if (Entities.CountEntities() == NumberOfUnbreakables) {
+                return true;
+            }
+            return false;
         }
 
         public override void ResetOrganizer()
@@ -16,28 +33,12 @@ namespace Breakout.GamePlay.BlockEntity {
         }
 
         /// <summary>
-        /// Returns true if the current level has ended, i.e.
-        /// when only unbreakable blocks are left
+        /// Process Events related to Blocks.
         /// </summary>
-        private bool CheckLevelEnded() {
-            if (Entities.CountEntities() == NumberOfUnbreakables) {
-                return true;
-            }
-            return false;
-        }
-
+        /// <param name="gameEvent"></param>
         public override void ProcessEvent(GameEvent gameEvent) {
             switch (gameEvent.StringArg1) {
                 case "BLOCK_DELETED":
-                    //Add small delay so that EntityContainer will have cleaned up
-                    //the block marked for deletion by the time of block counting
-                    BreakoutBus.GetBus().RegisterTimedEvent(
-                        new GameEvent { EventType = GameEventType.ControlEvent,
-                            StringArg1 = "BLOCK_DELETED_DELAY"},
-                        TimePeriod.NewMilliseconds(5));
-                    break;
-
-                case "BLOCK_DELETED_DELAY":
                     if (CheckLevelEnded()) {
                         BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                             EventType = GameEventType.ControlEvent,

@@ -67,7 +67,7 @@ namespace Breakout.GamePlay {
 
         public void ProcessEvent(GameEvent gameEvent) {
             switch(gameEvent.StringArg1) {
-                case "ADD_SCORE":
+                case "BLOCK_DELETED":
                     if (gameEvent.From is Hardened) {
                         AddToScore(BlockTypes.Hardened);
                     } else if (gameEvent.From is PowerUp) {
