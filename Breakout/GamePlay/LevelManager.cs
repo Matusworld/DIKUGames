@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 using DIKUArcade.Events;
 using DIKUArcade.Math;
-using DIKUArcade.Timers;
 
 using Breakout.LevelLoading;
 
@@ -83,15 +82,13 @@ namespace Breakout.GamePlay {
         }
 
         public void ProcessEvent(GameEvent gameEvent) {
-            if (gameEvent.EventType == GameEventType.ControlEvent) {
-                switch(gameEvent.StringArg1) {
-                    case "LEVEL_ENDED":
-                        NextLevel();
-                        break;
-                    case "LEVEL_BACK":
-                        PreviousLevel();
-                        break;
-                }
+            switch(gameEvent.StringArg1) {
+                case "LEVEL_ENDED":
+                    NextLevel();
+                    break;
+                case "LEVEL_BACK":
+                    PreviousLevel();
+                    break;
             }
         }
         

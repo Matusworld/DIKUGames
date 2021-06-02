@@ -66,22 +66,20 @@ namespace Breakout.GamePlay {
         }
 
         public void ProcessEvent(GameEvent gameEvent) {
-            if (gameEvent.EventType == GameEventType.ControlEvent) {
-                switch(gameEvent.StringArg1) {
-                    case "ADD_SCORE":
-                        if (gameEvent.From is Hardened) {
-                            AddToScore(BlockTypes.Hardened);
-                        } else if (gameEvent.From is PowerUp) {
-                            AddToScore(BlockTypes.PowerUp);
-                        } 
-                        else if (gameEvent.From is Block) {
-                            AddToScore(BlockTypes.Normal);
-                        }
-                        break;
-                    case "POWERUP_SCORE":
-                        AddPowerUpScore();
-                        break;
-                }
+            switch(gameEvent.StringArg1) {
+                case "ADD_SCORE":
+                    if (gameEvent.From is Hardened) {
+                        AddToScore(BlockTypes.Hardened);
+                    } else if (gameEvent.From is PowerUp) {
+                        AddToScore(BlockTypes.PowerUp);
+                    } 
+                    else if (gameEvent.From is Block) {
+                        AddToScore(BlockTypes.Normal);
+                    }
+                    break;
+                case "POWERUP_SCORE":
+                    AddPowerUpScore();
+                    break;
             }
         }
     }

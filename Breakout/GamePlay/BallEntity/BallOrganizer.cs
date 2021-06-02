@@ -58,64 +58,67 @@ namespace Breakout.GamePlay.BallEntity {
         }
 
         public override void ProcessEvent(GameEvent gameEvent) {
-            if (gameEvent.EventType == GameEventType.ControlEvent) {
-                switch(gameEvent.StringArg1) {
-                    case "HALF_SPEED":
-                        switch(gameEvent.Message) {
-                            case "ACTIVATE":
-                                HalfSpeedActive = true;
-                                Entities.Iterate(ball => {
-                                    ball.HalfSpeedActivate();
-                                });
-                                break;
-                            case "DEACTIVATE":
-                                HalfSpeedActive = false;
-                                Entities.Iterate(ball => {
-                                    ball.HalfSpeedDeactivate();
-                                });
-                                break;
-                        }
-                        break;
-                    case "DOUBLE_SPEED":
-                        switch(gameEvent.Message) {
-                            case "ACTIVATE":
-                                DoubleSpeedActive = true;
-                                Entities.Iterate(ball => {
-                                    ball.DoubleSpeedActivate();
-                                });
-                                break;
-                            case "DEACTIVATE":
-                                DoubleSpeedActive = false;
-                                Entities.Iterate(ball => {
-                                    ball.DoubleSpeedDeactivate();
-                                });
-                                break;
-                        }
-                        break;
-                    case "ADD_BALL":
-                        Entities.AddEntity(GenerateBallRandomDir());
-                        break;
-                    case "BALL_DELETED":
-                        //Add small delay so that EntityContainer will have cleaned up
-                        //the block marked for deletion by the time of block counting
-                        BreakoutBus.GetBus().RegisterTimedEvent(
-                            new GameEvent { EventType = GameEventType.ControlEvent,
-                                StringArg1 = "BALL_DELETED_DELAY"},
-                            TimePeriod.NewMilliseconds(5));
-                        break;
-                    case "BALL_DELETED_DELAY":
-                        if (CheckNoBalls()) {
-                            ResetOrganizer();
-                            BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                                EventType = GameEventType.ControlEvent, 
-                                StringArg1 = "HEALTH_LOST"});
-                        }
-                        break;
-                    case "LEVEL_ENDED":
-                    case "LEVEL_BACK":
+            switch(gameEvent.StringArg1) {
+                case "HALF_SPEED":
+                    switch(gameEvent.Message) {
+                        case "ACTIVATE":
+                            HalfSpeedActive = true;
+                            Entities.Iterate(ball => {
+                                ball.HalfSpeedActivate();
+                            });
+                            break;
+                        case "DEACTIVATE":
+                            HalfSpeedActive = false;
+                            Entities.Iterate(ball => {
+                                ball.HalfSpeedDeactivate();
+                            });
+                            break;
+                    }
+                    break;
+                
+                case "DOUBLE_SPEED":
+                    switch(gameEvent.Message) {
+                        case "ACTIVATE":
+                            DoubleSpeedActive = true;
+                            Entities.Iterate(ball => {
+                                ball.DoubleSpeedActivate();
+                            });
+                            break;
+                        case "DEACTIVATE":
+                            DoubleSpeedActive = false;
+                            Entities.Iterate(ball => {
+                                ball.DoubleSpeedDeactivate();
+                            });
+                            break;
+                    }
+                    break;
+                
+                case "ADD_BALL":
+                    Entities.AddEntity(GenerateBallRandomDir());
+                    break;
+                
+                case "BALL_DELETED":
+                    //Add small delay so that EntityContainer will have cleaned up
+                    //the block marked for deletion by the time of block counting
+                    BreakoutBus.GetBus().RegisterTimedEvent(
+                        new GameEvent { EventType = GameEventType.ControlEvent,
+                            StringArg1 = "BALL_DELETED_DELAY"},
+                        TimePeriod.NewMilliseconds(5));
+                    break;
+                
+                case "BALL_DELETED_DELAY":
+                    if (CheckNoBalls()) {
                         ResetOrganizer();
-                        break;
-                }
+                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                            EventType = GameEventType.ControlEvent, 
+                            StringArg1 = "HEALTH_LOST"});
+                    }
+                    break;
+                
+                case "LEVEL_ENDED":
+                case "LEVEL_BACK":
+                    ResetOrganizer();
+                    break;
             }
         }
     }

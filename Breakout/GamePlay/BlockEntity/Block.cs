@@ -66,13 +66,5 @@ namespace Breakout.GamePlay.BlockEntity {
                 EventType = GameEventType.ControlEvent,
                 StringArg1 = "BLOCK_DELETED"});
         }
-
-        public void ReceiveEvent(GameEvent gameEvent) {
-            if(gameEvent.EventType == GameEventType.ControlEvent ) {
-                if(gameEvent.StringArg1 == "BLOCK_COLLISION") {
-                    BlockHit();
-                }
-            }
-        }
     }
 }

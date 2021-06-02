@@ -178,8 +178,7 @@ namespace Breakout.States {
                         player.SetMoveRight(true);
                         break;
                 }
-            }
-            else if (action == KeyboardAction.KeyRelease) {
+            } else if (action == KeyboardAction.KeyRelease) {
                 switch (key) {
                     case KeyboardKey.A:
                     case KeyboardKey.Left:

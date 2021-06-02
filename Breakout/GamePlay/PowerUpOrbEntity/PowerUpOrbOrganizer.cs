@@ -58,14 +58,12 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
         } 
 
         public override void ProcessEvent(GameEvent gameEvent) {
-            if (gameEvent.EventType == GameEventType.ControlEvent) {
-                switch(gameEvent.StringArg1) {
-                    case "ADD_ORB":
-                        DynamicShape shape = (DynamicShape) gameEvent.ObjectArg1;
-                        PowerUpOrb orb = GenerateRandomOrb(shape);
-                        Entities.AddEntity(orb);
-                        break;
-                }
+            switch(gameEvent.StringArg1) {
+                case "ADD_ORB":
+                    DynamicShape shape = (DynamicShape) gameEvent.ObjectArg1;
+                    PowerUpOrb orb = GenerateRandomOrb(shape);
+                    Entities.AddEntity(orb);
+                    break;
             }
         }
     }
