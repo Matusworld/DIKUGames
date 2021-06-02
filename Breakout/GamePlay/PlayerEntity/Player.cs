@@ -17,7 +17,6 @@ namespace Breakout.GamePlay.PlayerEntity {
         private uint maxLives = 5;
 
         public Player(DynamicShape shape, IBaseImage image) : base(shape, image) {
-            BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, this); 
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this); 
 
             LeftBound = 0f;
@@ -44,7 +43,7 @@ namespace Breakout.GamePlay.PlayerEntity {
         }
 
         //Move if position after move will not be out of bounds
-        private void Move() {
+        public void Move() {
             if (Shape.Position.X + Shape.AsDynamicShape().Direction.X < LeftBound) {
                 Shape.Position.X = LeftBound;
             } //pos is from bottom left corner
@@ -55,7 +54,7 @@ namespace Breakout.GamePlay.PlayerEntity {
             }
         }
         
-        private void SetMoveLeft(bool val) {
+        public void SetMoveLeft(bool val) {
             if (val) {
                 moveLeft = -MOVEMENT_SPEED;
             }
@@ -64,7 +63,7 @@ namespace Breakout.GamePlay.PlayerEntity {
             }
             UpdateDirection();
         }
-        private void SetMoveRight(bool val) {
+        public void SetMoveRight(bool val) {
             if (val){
                 moveRight = MOVEMENT_SPEED;
             } 
@@ -75,34 +74,7 @@ namespace Breakout.GamePlay.PlayerEntity {
         }
 
         public void ProcessEvent(GameEvent gameEvent) {
-            if (gameEvent.EventType == GameEventType.PlayerEvent) {  
-                switch (gameEvent.StringArg1) {
-                    case "SET_MOVE_LEFT":
-                        switch (gameEvent.Message) {
-                            case "TRUE":
-                                SetMoveLeft(true);
-                                break;
-                            case "FALSE":
-                                SetMoveLeft(false);
-                                break;
-                        }
-                        break;
-                    case "SET_MOVE_RIGHT":
-                        switch (gameEvent.Message) {
-                            case "TRUE":
-                                SetMoveRight(true);
-                                break;
-                            case "FALSE":
-                                SetMoveRight(false);
-                                break;
-                        }
-                        break;
-                    case "MOVE":
-                        Move();
-                        break;
-                }
-            }
-            else if (gameEvent.EventType == GameEventType.ControlEvent) {
+            if (gameEvent.EventType == GameEventType.ControlEvent) {
                 switch (gameEvent.StringArg1) {
                     case "LEVEL_ENDED":
                     case "LEVEL_BACK":

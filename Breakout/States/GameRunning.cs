@@ -130,11 +130,9 @@ namespace Breakout.States {
         }
 
         public void UpdateState() {
-            //player move
-            BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent, StringArg1 = "MOVE" });
-            
-            //ball move
+            player.Move();
+
+            //balls move
             ballOrganizer.MoveEntities();
 
             //PowerUpOrb move
@@ -173,15 +171,11 @@ namespace Breakout.States {
                 switch (key) {
                     case KeyboardKey.A:
                     case KeyboardKey.Left:
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType = GameEventType.PlayerEvent, Message = "TRUE",
-                            StringArg1 = "SET_MOVE_LEFT" });
+                        player.SetMoveLeft(true);
                         break;
                     case KeyboardKey.D:
                     case KeyboardKey.Right:
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType = GameEventType.PlayerEvent, Message = "TRUE",
-                            StringArg1 = "SET_MOVE_RIGHT" });
+                        player.SetMoveRight(true);
                         break;
                 }
             }
@@ -189,15 +183,11 @@ namespace Breakout.States {
                 switch (key) {
                     case KeyboardKey.A:
                     case KeyboardKey.Left:
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType = GameEventType.PlayerEvent, Message = "FALSE",
-                            StringArg1 = "SET_MOVE_LEFT" });
+                        player.SetMoveLeft(false);
                         break;
                     case KeyboardKey.D:
                     case KeyboardKey.Right:
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType = GameEventType.PlayerEvent, Message = "FALSE",
-                            StringArg1 = "SET_MOVE_RIGHT" });
+                        player.SetMoveRight(false);
                         break;
                     case KeyboardKey.P:
                         BreakoutBus.GetBus().RegisterEvent( new GameEvent {
