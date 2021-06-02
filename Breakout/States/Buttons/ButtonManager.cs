@@ -79,6 +79,9 @@ namespace Breakout.States.Buttons {
         }
 
         public void SetFirstButtonActive() {
+            if (ActiveButton != null) {
+                ActiveButton.Value.SetPassive();
+            }
             ActiveButton = Buttons.First;
             ActiveButton.Value.SetActive();
         }

@@ -8,6 +8,7 @@ namespace Breakout.States.Buttons {
         public ContinueButton(Vec2F pos, Vec2F extent, Vec3I actCol, Vec3I pasCol) 
             : base(pos, extent, actCol, pasCol){
                 text = new Text("Continue", pos, extent);
+                SetPassive();
             }
 
         public override void Action() {
