@@ -39,7 +39,7 @@ namespace Breakout.GamePlay.BallEntity {
         /// <summary>
         /// Set Direction vector of this Ball given by the canonical angle theta.
         /// </summary>
-        /// <param name="theta"></param>
+        /// <param name="theta">The input canonical angle.</param>
         private void SetAngularDirection(float theta) {
             Shape.AsDynamicShape().Direction.X = (float)Math.Cos((double)theta)*speed;
             Shape.AsDynamicShape().Direction.Y = (float)Math.Sin((double)theta)*speed;
@@ -48,7 +48,7 @@ namespace Breakout.GamePlay.BallEntity {
         /// <summary>
         /// Return canonical angle of the Direction vector of this Ball.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The canonical angle.</returns>
         public float GetTheta() {
             float Dx = Shape.AsDynamicShape().Direction.X;
             float Dy = Shape.AsDynamicShape().Direction.Y;
@@ -66,7 +66,7 @@ namespace Breakout.GamePlay.BallEntity {
         /// <summary>
         /// Detect whether this Ball has exceeded the left window border.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The boolean result.</returns>
         public bool LeftBoundaryCheck() {
             if (Shape.Position.X < 0.0f) {
                 return true;
@@ -78,7 +78,7 @@ namespace Breakout.GamePlay.BallEntity {
         /// <summary>
         /// Detect whether this Ball has exceeded the right window border.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The boolean result.</returns>
         public bool RightBoundaryCheck() {
             if (Shape.Position.X + Shape.Extent.X > 1.0f) {
                 return true;
@@ -90,7 +90,7 @@ namespace Breakout.GamePlay.BallEntity {
         /// <summary>
         /// Detect whether this Ball has exceeded the top window border.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The boolean result.</returns>
         public bool UpperBoundaryCheck() {
             if (Shape.Position.Y + Shape.Extent.Y > 1.0f) {
                 return true;
@@ -102,7 +102,7 @@ namespace Breakout.GamePlay.BallEntity {
         /// <summary>
         /// Detect whether this Ball has exceeded the bottom window border.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The boolean result.</returns>
         public bool LowerBoundaryCheck() {
             if (Shape.Position.Y < 0.0f) {
                 return true;
@@ -131,7 +131,7 @@ namespace Breakout.GamePlay.BallEntity {
         /// React to Block collision by reflecting this Ball's direction vector according to the 
         /// CollisionDirection, i.e. from which side the Block was hit by this Ball.
         /// </summary>
-        /// <param name="dir"></param>
+        /// <param name="dir">The side from which the Block was hit by this Ball.</param>
         public void DirectionBlockSetter(CollisionDirection dir) {
             switch (dir) {
                 case CollisionDirection.CollisionDirUp:
@@ -148,10 +148,9 @@ namespace Breakout.GamePlay.BallEntity {
         /// <summary>
         /// React to Player collision by computing the new Direction of this Ball based 
         /// on the PlayerPosition.
-        /// PlayerPosition is a ratio in the range [0.0,1.0]
         /// Computed Direction has a canonical angle in the range of [45.0, 135.0] degrees
         /// </summary>
-        /// <param name="PlayerPosition"></param>
+        /// <param name="PlayerPosition">PlayerPosition is a ratio in the range [0.0,1.0].</param>
         public void DirectionPlayerSetter(float PlayerPosition) {
             //rebound angle depending on hit position
             float theta = 0.75f * (float) Math.PI - (PlayerPosition * (float) Math.PI / 2f);
@@ -177,7 +176,7 @@ namespace Breakout.GamePlay.BallEntity {
         }
 
         /// <summary>
-        /// Move this Ball by its direction vector.
+        /// Move this Ball by its Direction vector.
         /// </summary>
         public void Move() {
             Shape.Move();
@@ -190,7 +189,7 @@ namespace Breakout.GamePlay.BallEntity {
             if (!HalfSpeedActive) {
                 HalfSpeedActive = true;
                 speed = speed * 0.5f;
-                //update direction vector length
+                //update Direction vector length
                 SetAngularDirection(GetTheta());
             }
         }

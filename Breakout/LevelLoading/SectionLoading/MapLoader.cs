@@ -1,34 +1,36 @@
-using System.IO;
 using System.Collections.Generic;
 
 namespace Breakout.LevelLoading.SectionLoading {
+    /// <summary>
+    /// Facilitates the loading, i.e. processing and storage, of the Map section 
+    /// into a List of strings that represent rows.
+    /// </summary>
     public class MapLoader : SectionLoader {
-        //private SectionStreamReader reader;
-        private string section = "Map"; 
-
         public List<string> RowList { get; private set; } = new List<string>();
-
+        //Dimensions of map (counted in number of Blocks)
         public int Height { get; private set; }
-
         public int Width { get; private set; }
         
-        public MapLoader(SectionStreamReader reader) : base(reader) {}
+        public MapLoader(SectionStreamReader reader) : base(reader) {
+            section = "Map";
+        }
 
         protected override void ProcessSectionLine(string line) {
-            //find height og width
             RowList.Add(line);
         }
 
 
         /// <summary>
-        /// Load text from section into internal fields
+        /// Load text from section into internal fields. 
+        /// Compute Width and Height of map.
+        /// Assume reader is reset prior to loading.
         /// </summary>
         public override void LoadSection() {
             reader.SetSection(section);
 
             string line;
             
-            while((line = reader.ReadSectionLine()) != null) {
+            while ((line = reader.ReadSectionLine()) != null) {
                 ProcessSectionLine(line);
             }
 
@@ -36,7 +38,6 @@ namespace Breakout.LevelLoading.SectionLoading {
             Height = RowList.Count;
 
             reader.Reset();
-            //reader.File.Close();
         }
 
         public override void ClearLoader()

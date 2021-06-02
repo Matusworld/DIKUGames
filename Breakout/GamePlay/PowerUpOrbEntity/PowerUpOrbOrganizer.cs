@@ -21,16 +21,21 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
         public override void MoveEntities() {
             Entities.Iterate(orb => {
                orb.Move();
-           });
+            });
         }
 
+        /// <summary>
+        /// Generate a random PowerUpOrb at the given "position".
+        /// </summary>
+        /// <param name="position">Position of the Block that spawn this PowerUpOrb.</param>
+        /// <returns>The generated PowerUpOrb.</returns>
         public PowerUpOrb GenerateRandomOrb(Vec2F position) {
             DynamicShape shape = new DynamicShape(position, PowerUpExtent);
-            PowerUpTypes draw = PowerUpRandom.RandomType();
             IBaseImage image;
             PowerUpOrb orb;
 
-            switch(draw) {
+            PowerUpTypes draw = PowerUpRandom.RandomType();
+            switch (draw) {
                 case PowerUpTypes.ExtraLife:
                     image = new Image(Path.Combine(ProjectPath.getPath(), 
                         "Breakout", "Assets", "Images", "LifePickUp.png"));
@@ -65,8 +70,12 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
             return orb;
         } 
 
+        /// <summary>
+        /// Process Events related to PowerUpOrbs
+        /// </summary>
+        /// <param name="gameEvent"></param>
         public override void ProcessEvent(GameEvent gameEvent) {
-            switch(gameEvent.StringArg1) {
+            switch (gameEvent.StringArg1) {
                 case "SPAWN_ORB":
                     Vec2F position = (Vec2F) gameEvent.ObjectArg1;
                     PowerUpOrb orb = GenerateRandomOrb(position);

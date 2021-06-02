@@ -51,7 +51,7 @@ namespace Breakout.GamePlay.PlayerEntity {
         }
 
         /// <summary>
-        /// Reset to initial state with (StartLives/MaxLives) lives.
+        /// Reset this Healthbar to initial state with (StartLives/MaxLives) lives.
         /// </summary>
         public void Reset() {
             Lives = StartLives;
@@ -75,7 +75,7 @@ namespace Breakout.GamePlay.PlayerEntity {
         }
 
         /// <summary>
-        /// Detract one life from Healthbar. 
+        /// Detract one life from this Healthbar. 
         /// If 0 lives is reached, broadcast that the game is lost.
         /// </summary>
         public void HealthLost() {
@@ -92,7 +92,7 @@ namespace Breakout.GamePlay.PlayerEntity {
         }
 
         /// <summary>
-        /// Increment the amount of lives by one. Lives cannot exceed MaxLives.
+        /// Increment the amount of lives of this Healthbar by one. Lives cannot exceed MaxLives.
         /// </summary>
         private void HealthGained() {
             if (!(Lives > MaxLives - 1)) {

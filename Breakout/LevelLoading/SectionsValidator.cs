@@ -3,7 +3,7 @@ using System.IO;
 namespace Breakout.LevelLoading {
 
     /// <summary>
-    /// Validates the given ASCII map
+    /// Validates the ordering of the section of the given ASCII map.
     /// </summary>
     public class SectionsValidator {
         private string line;
@@ -18,6 +18,7 @@ namespace Breakout.LevelLoading {
         public bool ValidateSections(string path) {
             //init new reader
             StreamReader reader = BreakoutStreamReader.GetReader(path);
+            //to keep track of progress
             int sectionState = 0;
 
             while((line = reader.ReadLine()) != null) {

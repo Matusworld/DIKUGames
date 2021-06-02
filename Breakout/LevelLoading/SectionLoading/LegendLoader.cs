@@ -4,44 +4,44 @@ using System.Collections.Generic;
 using DIKUArcade.Graphics;
 
 namespace Breakout.LevelLoading.SectionLoading {
+    /// <summary>
+    /// Facilitates the loading, i.e. processing and storage, of the Legend section 
+    /// into a Dictionary.
+    /// </summary>
     public class LegendLoader : SectionLoader {
-        private string section = "Legend"; 
-        //public List<(char,string)> LegendList { get; private set; } = new List<(char, string)>();
+        /// <summary>
+        /// Key is the character on the ASCII map.
+        /// Value is a pair non-damaged and damaged Images of Block.
+        /// </summary>
         public Dictionary<char, (IBaseImage, IBaseImage)> LegendDict;
 
         public LegendLoader(SectionStreamReader reader) : base(reader) {
+            section = "Legend";
+
             LegendDict = new Dictionary<char, (IBaseImage, IBaseImage)>();
         }
 
+        /// <summary>
+        /// Process one line of LegendData and store the data as an entry in LegendDict.
+        /// </summary>
+        /// <param name="line">Processed line</param>
         protected override void ProcessSectionLine(string line) {
             string[] splitArray = line.Split(") ");
             if (splitArray.Length == 2){
                 char symb = splitArray[0][0];
 
-                string filename = splitArray[1];
-                string dmgFilename = filename.Split(".png")[0] + "-damaged.png";
+                string fileName = splitArray[1];
+                string dmgFileName = fileName.Split(".png")[0] + "-damaged.png";
                 //filepaths
-                string filepath = Path.Combine(new string[] {
-                    ProjectPath.getPath(), "Breakout", "Assets","Images", filename});
-                string dmgFilepath = Path.Combine(new string[] {
-                    ProjectPath.getPath(), "Breakout", "Assets","Images", dmgFilename});
+                string filePath = Path.Combine(new string[] {
+                    ProjectPath.getPath(), "Breakout", "Assets","Images", fileName});
+                string dmgFilePath = Path.Combine(new string[] {
+                    ProjectPath.getPath(), "Breakout", "Assets","Images", dmgFileName});
 
-                LegendDict.Add(symb, (new Image(filepath), new Image(dmgFilepath)));
+                LegendDict.Add(symb, (new Image(filePath), new Image(dmgFilePath)));
             } else {
                 throw new InvalidDataException("Invalid legend data in the level file");
             }
-        }
-
-        public override void LoadSection() {
-            reader.SetSection(section);
-
-            string line;
-            
-            while((line = reader.ReadSectionLine()) != null) {
-                ProcessSectionLine(line);
-            }
-
-            reader.Reset();
         }
 
         public override void ClearLoader()

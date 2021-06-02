@@ -31,7 +31,7 @@ namespace Breakout.GamePlay.PlayerEntity {
         /// <summary>
         /// Detect whether this Player will exceed the left window border if one more movement.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The boolean result.</returns>
         public bool LeftBoundaryCheck() {
             if (Shape.Position.X + Shape.AsDynamicShape().Direction.X < 0.0f) {
                 return true;
@@ -43,7 +43,7 @@ namespace Breakout.GamePlay.PlayerEntity {
         /// <summary>
         /// Detect whether this Player will exceed the right window border if one more movement.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The boolean result.</returns>
         public bool RightBoundaryCheck() {
             if (Shape.Position.X + Shape.Extent.X + Shape.AsDynamicShape().Direction.X > 1.0f) {
                 return true;
@@ -78,7 +78,7 @@ namespace Breakout.GamePlay.PlayerEntity {
         /// <summary>
         /// Set or nullify left-pointing constant contribution to the Player's movement.
         /// </summary>
-        /// <param name="move"></param>
+        /// <param name="move">true if it should move</param>
         public void SetMoveLeft(bool move) {
             if (move) {
                 moveLeft = -MOVEMENT_SPEED;
@@ -92,8 +92,7 @@ namespace Breakout.GamePlay.PlayerEntity {
         /// <summary>
         /// Set or nullify right-pointing constant contribution to the Player's movement.
         /// </summary>
-        /// <param name="move"></param>
-
+        /// <param name="move">true if it should move</param>
         public void SetMoveRight(bool move) {
             if (move){
                 moveRight = MOVEMENT_SPEED;
@@ -106,7 +105,7 @@ namespace Breakout.GamePlay.PlayerEntity {
 
         /// <summary>
         /// Move this Player by its Direction vector.
-        /// Does not move if it would exceed a boundary.
+        /// Do not move if it would exceed a boundary.
         /// </summary>
         public void Move() {
             if (!BoundaryCollision()) {

@@ -16,7 +16,7 @@ namespace Breakout.GamePlay {
         /// <summary>
         /// Add Entity to this EntityOrganizer.
         /// </summary>
-        /// <param name="entity"></param>
+        /// <param name="entity">Entity added to this EntityOrganizer.</param>
         public void AddEntity(T entity) {
             Entities.AddEntity(entity);
         } 
