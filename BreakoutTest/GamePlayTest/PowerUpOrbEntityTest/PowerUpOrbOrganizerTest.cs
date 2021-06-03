@@ -8,6 +8,7 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 
+using Breakout;
 using Breakout.GamePlay.PowerUpOrbEntity;
 using Breakout.GamePlay.BlockEntity;
 
@@ -16,8 +17,6 @@ namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
         PowerUpOrbOrganizer PUOrganizer;
 
         PowerUp Powerup;
-
-        GameEventBus eventBus;
 
         public PowerUpOrbOrganizerTest() {
             Window.CreateOpenGLContext();
@@ -35,10 +34,6 @@ namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
                     TestProjectPath.getPath(),"Assets", "Images", "blue-block.png")),
                 new Image(Path.Combine(TestProjectPath.getPath(),
                     "Assets", "Images", "blue-block-damaged.png")));
-
-            eventBus = new GameEventBus();
-            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.ControlEvent});
-            eventBus.Subscribe(GameEventType.ControlEvent, PUOrganizer);
         }
 
         // Testing that the PowerUpOrbOrganizer start with 0 orbs in the entitycontainer
@@ -50,12 +45,12 @@ namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
         // Testing adding a orb to the PowerUpOrbOrganizer's entitycontainer
         [Test]
         public void TestAddOrb() {
-            eventBus.RegisterEvent( new GameEvent {
+            BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                 EventType = GameEventType.ControlEvent, StringArg1 = "SPAWN_ORB",
                 ObjectArg1 = Powerup.Shape.Position
             });
 
-            eventBus.ProcessEvents();
+            BreakoutBus.GetBus().ProcessEventsSequentially();
 
             Assert.AreEqual(PUOrganizer.Entities.CountEntities(), 1);
         }

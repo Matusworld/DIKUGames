@@ -1,15 +1,13 @@
-using System.Collections.Generic;
-
 using NUnit.Framework;
 
 using DIKUArcade.Events;
 using DIKUArcade.GUI;
 
+using Breakout;
 using Breakout.GamePlay.PlayerEntity;
 
 namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
     public class HealthbarTest {
-        GameEventBus eventBus;
         Healthbar healthbar;
 
         uint maxLives = 5;
@@ -23,10 +21,6 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
         [SetUp]
         public void SetUp() {
             healthbar = new Healthbar(startLives, maxLives);
-
-            eventBus = new GameEventBus();
-            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.ControlEvent });
-            eventBus.Subscribe(GameEventType.ControlEvent, healthbar);
         }
 
 
@@ -43,12 +37,12 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
         public void SingeLifeGainTest() {
             uint formerLife = healthbar.Lives;
 
-            eventBus.RegisterEvent(new GameEvent {
+            BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                 EventType = GameEventType.ControlEvent, 
                 StringArg1 = "HEALTH_GAINED"
             });
 
-            eventBus.ProcessEvents();
+            BreakoutBus.GetBus().ProcessEventsSequentially();
 
             Assert.AreEqual(formerLife + 1, healthbar.Lives);
         }
@@ -58,44 +52,44 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
         public void SingeLifeLossTest() {
             uint formerLife = healthbar.Lives;
 
-            eventBus.RegisterEvent(new GameEvent {
+            BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                 EventType = GameEventType.ControlEvent, 
                 StringArg1 = "HEALTH_LOST"
             });
 
-            eventBus.ProcessEvents();
+            BreakoutBus.GetBus().ProcessEventsSequentially();
 
             Assert.AreEqual(formerLife - 1, healthbar.Lives);
         }
 
-        //Test that life cannot be more than 5
+        //Test that life cannot be more than maxLives
         [Test]
         public void AllLifeGainTest() {
 
-            for (int i = 0; i < 5; i++) {
-                eventBus.RegisterEvent(new GameEvent {
+            for (int i = 0; i < maxLives; i++) {
+                BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                     EventType = GameEventType.ControlEvent, 
                     StringArg1 = "HEALTH_GAINED"
                 });
             }
             
-            eventBus.ProcessEvents();
+            BreakoutBus.GetBus().ProcessEventsSequentially();
 
-            Assert.AreEqual(5, healthbar.Lives);
+            Assert.AreEqual(maxLives, healthbar.Lives);
         }
 
         //Test that life cannot be less than 1
         [Test]
         public void AllLifeLossTest() {
 
-            for (int i = 0; i < 6; i++) {
-                eventBus.RegisterEvent(new GameEvent {
+            for (int i = 0; i < maxLives+1; i++) {
+                BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                     EventType = GameEventType.ControlEvent, 
                     StringArg1 = "HEALTH_LOST"
                 });
             }
             
-            eventBus.ProcessEvents();
+            BreakoutBus.GetBus().ProcessEventsSequentially();
 
             Assert.AreEqual(1, healthbar.Lives);
         }
@@ -103,16 +97,16 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
         // Testing resetting the health back to the players start lives. 
         [Test]
         public void ResetHealthTest() {
-            for (int i = 0; i < 5; i++) {
-                eventBus.RegisterEvent(new GameEvent {
+            for (int i = 0; i < maxLives; i++) {
+                BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                     EventType = GameEventType.ControlEvent, 
                     StringArg1 = "HEALTH_GAINED"
                 });
             }
             
-            eventBus.ProcessEvents();
+            BreakoutBus.GetBus().ProcessEventsSequentially();
 
-            Assert.AreEqual(5, healthbar.Lives);
+            Assert.AreEqual(maxLives, healthbar.Lives);
 
             healthbar.Reset();
 

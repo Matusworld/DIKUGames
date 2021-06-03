@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
@@ -9,13 +8,13 @@ using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
 
+using Breakout;
 using Breakout.GamePlay;
 using Breakout.GamePlay.BlockEntity;
 
 namespace BreakoutTest.GamePlayTest {
     public class ScoreTest {
         Score score;
-        GameEventBus eventBus;
 
         Block block;
         Hardened hblock;
@@ -48,10 +47,6 @@ namespace BreakoutTest.GamePlayTest {
                     "Assets", "Images", "blue-block.png")),
                     new Image(Path.Combine(TestProjectPath.getPath(),
                     "Assets", "Images", "blue-block-damaged.png")));
-
-            eventBus = new GameEventBus();
-            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.ControlEvent });
-            eventBus.Subscribe(GameEventType.ControlEvent, score);
         }
 
         //Precondition
@@ -64,10 +59,10 @@ namespace BreakoutTest.GamePlayTest {
         [Test]
         public void TestNormalBlockIncreaseScore() {
 
-            eventBus.RegisterEvent( new GameEvent { 
+            BreakoutBus.GetBus().RegisterEvent( new GameEvent { 
                 EventType = GameEventType.ControlEvent, StringArg1 = "BLOCK_DELETED", From = block});
 
-            eventBus.ProcessEvents();
+            BreakoutBus.GetBus().ProcessEvents();
             
             Assert.AreEqual(score.ScoreCount, 1);
         }
@@ -75,10 +70,10 @@ namespace BreakoutTest.GamePlayTest {
         //Test that a hardended block increases the score correctly
         [Test]
         public void TestHardenedBlockIncreaseScore() {
-            eventBus.RegisterEvent( new GameEvent { 
+            BreakoutBus.GetBus().RegisterEvent( new GameEvent { 
                 EventType = GameEventType.ControlEvent, StringArg1 = "BLOCK_DELETED", From = hblock});
 
-            eventBus.ProcessEvents();
+            BreakoutBus.GetBus().ProcessEventsSequentially();
             
             Assert.AreEqual(score.ScoreCount, 2);
         }
@@ -86,10 +81,10 @@ namespace BreakoutTest.GamePlayTest {
         //Test that a normal block increases the score correctly
         [Test]
         public void TestPowerUpBlockIncreaseScore() {
-            eventBus.RegisterEvent( new GameEvent { 
+            BreakoutBus.GetBus().RegisterEvent( new GameEvent { 
                 EventType = GameEventType.ControlEvent, StringArg1 = "BLOCK_DELETED", From = publock});
 
-            eventBus.ProcessEvents();
+            BreakoutBus.GetBus().ProcessEventsSequentially();
             
             Assert.AreEqual(score.ScoreCount, 1);
         }
@@ -103,12 +98,12 @@ namespace BreakoutTest.GamePlayTest {
             uint formerScore = score.ScoreCount;
 
             for (int i = 0; i < 50; i++) {
-                eventBus.RegisterEvent( new GameEvent { 
+                BreakoutBus.GetBus().RegisterEvent( new GameEvent { 
                     EventType = GameEventType.ControlEvent, 
                     StringArg1 = "POWERUP_SCORE"});
 
                 Thread.Sleep(10);
-                eventBus.ProcessEvents();
+                BreakoutBus.GetBus().ProcessEventsSequentially();
 
                 Assert.GreaterOrEqual(score.ScoreCount, formerScore + min);
                 Assert.LessOrEqual(score.ScoreCount, formerScore + max);
@@ -120,10 +115,10 @@ namespace BreakoutTest.GamePlayTest {
         // Testing reseting the score. 
         [Test]
         public void TestResetScore() {
-            eventBus.RegisterEvent( new GameEvent { 
+            BreakoutBus.GetBus().RegisterEvent( new GameEvent { 
                 EventType = GameEventType.ControlEvent, StringArg1 = "BLOCK_DELETED", From = block});
 
-            eventBus.ProcessEvents();
+            BreakoutBus.GetBus().ProcessEventsSequentially();
             
             Assert.AreEqual(score.ScoreCount, 1);
 
