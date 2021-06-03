@@ -1,27 +1,28 @@
 using System.IO;
-using System.Collections.Generic;
+
 using DIKUArcade.State;
-using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Input;
+
 using Breakout.States.Buttons;
 
 namespace Breakout.States {
+    /// <summary>
+    /// Singleton GameLost state with background Image and custom Text.
+    /// Has Buttons via the ButtonManager.
+    /// </summary>
     public class GameLost : IGameState {
         private static GameLost instance;
         private Entity backGroundImage;
-        private LinkedList<Button> buttons;
-        public LinkedListNode<Button> activeButton { get; private set; }
+        private ButtonManager buttonManager;
 
         private Text display;
 
         public GameLost() { 
-            Init();
-        }
+            buttonManager = new ButtonManager();
 
-        private void Init() {
             //Initialize backGroundImage
             Vec2F imagePos = new Vec2F(0f,0f);
             Vec2F imageExtent = new Vec2F(1f, 1f);
@@ -30,23 +31,15 @@ namespace Breakout.States {
                 "Breakout","Assets", "Images", "shipit_titlescreen.png"));
             backGroundImage = new Entity(shape, image);
 
-            //Initialize Buttons
-            Vec3I passiveColor = new Vec3I(192,192,192);
-            Vec3I activeColor = new Vec3I(255,160,0);
-            //New Game
-            MainMenuButton MainMenuButton = new MainMenuButton("Main Menu", new Vec2F(0.2f, 0.4f),
-                new Vec2F(0.3f, 0.3f), activeColor, passiveColor);
+            //Add buttons
+            //Main Menu
+            buttonManager.AddButtonLast(ButtonTypes.MainMenu, new Vec2F(0.2f, 0.4f),
+                new Vec2F(0.3f, 0.3f));
             //Quit Game
-            QuitGameButton quitGameButton = new QuitGameButton("Quit", new Vec2F(0.2f, 0.3f),
-                new Vec2F(0.3f, 0.3f), activeColor, passiveColor);
+            buttonManager.AddButtonLast(ButtonTypes.QuitGame, new Vec2F(0.2f, 0.3f),
+                new Vec2F(0.3f, 0.3f));
 
-            MainMenuButton.SetActive();
-            quitGameButton.SetPassive();
-
-            buttons = new LinkedList<Button>();
-            buttons.AddLast(MainMenuButton);
-            buttons.AddLast(quitGameButton);
-            activeButton = buttons.First;
+            buttonManager.SetFirstButtonActive();
 
             display = new Text("GAME LOST!", new Vec2F (0.38f, 0.2f), new Vec2F(0.3f, 0.3f));
             display.SetColor(System.Drawing.Color.Gold);
@@ -57,7 +50,7 @@ namespace Breakout.States {
         }
 
         public void ResetState() { 
-            Init();
+            buttonManager.Reset();
          }
 
         public void UpdateState() {}
@@ -65,30 +58,9 @@ namespace Breakout.States {
         public void RenderState() {
             backGroundImage.RenderEntity();
 
-            foreach (Button button in buttons) {
-                button.Render();
-            }
+            buttonManager.RenderButtons();
 
             display.RenderText();
-        }
-
-        private void ButtonMover(KeyboardKey key) {
-            activeButton.Value.SetPassive();
-
-            if (key == KeyboardKey.Up && activeButton == buttons.First) {
-                activeButton = buttons.Last;
-            }
-            else if (key == KeyboardKey.Down && activeButton == buttons.Last) {
-                activeButton = buttons.First;
-            }
-            else if (key == KeyboardKey.Up) {
-                activeButton = activeButton.Previous;
-            }
-            else if (key == KeyboardKey.Down) {
-                activeButton = activeButton.Next;
-            }
-
-            activeButton.Value.SetActive();
         }
         
         public void HandleKeyEvent(KeyboardAction action, KeyboardKey key) {
@@ -97,10 +69,10 @@ namespace Breakout.States {
                     switch (key) {
                         case KeyboardKey.Down:
                         case KeyboardKey.Up:
-                            ButtonMover(key);
+                            buttonManager.ButtonMover(key);
                             break;
                         case KeyboardKey.Enter:
-                            activeButton.Value.Action();
+                            buttonManager.ActiveButtonAction();
                             break;
                         default:
                             break;

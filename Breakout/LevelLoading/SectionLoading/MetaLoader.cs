@@ -1,8 +1,10 @@
 using System.IO;
 
 namespace Breakout.LevelLoading.SectionLoading {
+    /// <summary>
+    /// Facilitates the loading, i.e. processing and storage, of the Meta section into fields.
+    /// </summary>
     public class MetaLoader : SectionLoader {
-        private string section = "Meta";
         public string Name { get; private set; }
         public int Time { get; private set; }
         public char Hardened { get; private set; }
@@ -10,12 +12,15 @@ namespace Breakout.LevelLoading.SectionLoading {
         public char Unbreakable { get; private set; }
 
 
-        public MetaLoader(SectionStreamReader reader) : base(reader) {}
+        public MetaLoader(SectionStreamReader reader) : base(reader) {
+            section = "Meta";
+        }
 
+        
         protected override void ProcessSectionLine(string line) {
             string[] splitArray = line.Split(": ");
             if (splitArray.Length == 2){
-                switch(splitArray[0]) {
+                switch (splitArray[0]) {
                     case "Name":
                         Name = splitArray[1];
                         break;
@@ -35,19 +40,6 @@ namespace Breakout.LevelLoading.SectionLoading {
             } else {
                 throw new InvalidDataException("Invalid meta data in the level file");
             }
-        }
-
-
-        public override void LoadSection() {
-            reader.SetSection(section);
-
-            string line;
-            
-            while((line = reader.ReadSectionLine()) != null) {
-                ProcessSectionLine(line);
-            }
-
-            reader.Reset();
         }
 
         public override void ClearLoader()

@@ -3,10 +3,17 @@ using System.IO;
 using DIKUArcade.Entities;
 using DIKUArcade.Events;
 using DIKUArcade.Graphics;
+using DIKUArcade.Math;
 
 namespace Breakout.GamePlay.PowerUpOrbEntity {
+    /// <summary>
+    /// Organizing class for containing and giving mass functionality to PowerUpOrbs.
+    /// Processes Events on behalf of contained PowerUpOrbs.
+    /// </summary>
     public class PowerUpOrbOrganizer : EntityOrganizer<PowerUpOrb> {
         public int PowerUpDuration { get; private set; } = 5000; //ms
+        public Vec2F PowerUpExtent { get; private set; } = new Vec2F(0.05f, 0.05f);
+
         public PowerUpOrbOrganizer() : base() {
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this);
         }
@@ -14,15 +21,21 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
         public override void MoveEntities() {
             Entities.Iterate(orb => {
                orb.Move();
-           });
+            });
         }
 
-        public PowerUpOrb GenerateRandomOrb(DynamicShape shape) {
-            PowerUpTypes draw = PowerUpRandom.RandomType();
+        /// <summary>
+        /// Generate a random PowerUpOrb at the given "position".
+        /// </summary>
+        /// <param name="position">Position of the Block that spawn this PowerUpOrb.</param>
+        /// <returns>The generated PowerUpOrb.</returns>
+        public PowerUpOrb GenerateRandomOrb(Vec2F position) {
+            DynamicShape shape = new DynamicShape(position, PowerUpExtent);
             IBaseImage image;
             PowerUpOrb orb;
 
-            switch(draw) {
+            PowerUpTypes draw = PowerUpRandom.RandomType();
+            switch (draw) {
                 case PowerUpTypes.ExtraLife:
                     image = new Image(Path.Combine(ProjectPath.getPath(), 
                         "Breakout", "Assets", "Images", "LifePickUp.png"));
@@ -57,15 +70,17 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
             return orb;
         } 
 
+        /// <summary>
+        /// Process Events related to PowerUpOrbs
+        /// </summary>
+        /// <param name="gameEvent"></param>
         public override void ProcessEvent(GameEvent gameEvent) {
-            if (gameEvent.EventType == GameEventType.ControlEvent) {
-                switch(gameEvent.StringArg1) {
-                    case "ADD_ORB":
-                        DynamicShape shape = (DynamicShape) gameEvent.ObjectArg1;
-                        PowerUpOrb orb = GenerateRandomOrb(shape);
-                        Entities.AddEntity(orb);
-                        break;
-                }
+            switch (gameEvent.StringArg1) {
+                case "SPAWN_ORB":
+                    Vec2F position = (Vec2F) gameEvent.ObjectArg1;
+                    PowerUpOrb orb = GenerateRandomOrb(position);
+                    Entities.AddEntity(orb);
+                    break;
             }
         }
     }

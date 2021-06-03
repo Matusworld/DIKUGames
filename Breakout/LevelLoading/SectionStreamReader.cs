@@ -2,14 +2,15 @@ using System.IO;
 
 namespace Breakout.LevelLoading {
     /// <summary>
-    /// Given path and specified section
-    /// Responsibility of closing Stream passes to user
+    /// Given a path and a section this SectionStreamReader will read from 
+    /// the given section of the file acting as a basic StreamReader, but only
+    /// on the section.
     /// </summary>
     public class SectionStreamReader {
         private string path;
         private string section;
         private string line;
-        private int state = 0;
+        private bool sectionReached = false;
 
 
         public SectionStreamReader() {}
@@ -17,13 +18,13 @@ namespace Breakout.LevelLoading {
         /// <summary>
         /// Set section to prepare reading
         /// </summary>
-        /// <param name="section"></param>
+        /// <param name="section">Section of ASCII file</param>
         public void SetSection(string section) {
             this.section = section; 
         }
 
         /// <summary>
-        /// Reset reader position
+        /// Reset reader position.
         /// </summary>
         public void Reset() {
             BreakoutStreamReader.ResetReader();
@@ -42,23 +43,23 @@ namespace Breakout.LevelLoading {
         /// - First line returned will be the the first line of the given section.
         /// - When the section end is reached, null is returned 
         /// </summary>
-        /// <returns> the read line </returns>
+        /// <returns> the read section line </returns>
         public string ReadSectionLine() {
             StreamReader reader = BreakoutStreamReader.GetReader(path);
             while ((line = reader.ReadLine()) != null) {
                 //skip if section is not reached
-                if (state != 0 || (state == 0 && line == section + ":")) {
+                if (sectionReached || (!sectionReached && line == section + ":")) {
                     //increase state if section start is reached
-                    if (state == 0 && line == section + ":") {
-                        state++;
+                    if (!sectionReached && line == section + ":") {
+                        sectionReached = true;
                     }
                     //return null if section end is reached and reset state
-                    if (state == 1 && line == section + "/") {
-                        state = 0;
+                    if (sectionReached && line == section + "/") {
+                        sectionReached = false;
                         return null;
                     }
                     //return line if within section
-                    if (state == 1 && line != section + ":" && line != section + "/") {
+                    if (sectionReached && line != section + ":" && line != section + "/") {
                         return line;
                     }
                 } 

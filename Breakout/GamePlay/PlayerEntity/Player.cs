@@ -4,69 +4,83 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 
 namespace Breakout.GamePlay.PlayerEntity {
+    /// <summary>
+    /// Player moves horizontally in the lower part of the window based on user input.
+    /// Cannot move past window boundaries.
+    /// Interacts with Balls and PowerUpOrbs.
+    /// </summary>
     public class Player : Entity, IGameEventProcessor {
         private readonly Vec2F startPos;
+
         private float moveLeft = 0.0f;
         private float moveRight = 0.0f;
-        private const float MOVEMENT_SPEED = 0.02f;
-        public float LeftBound { get; private set; }
-        public float RightBound { get; private set; }
+        public const float MOVEMENT_SPEED = 0.02f;
 
         public Healthbar Healthbar { get; private set; }
         private uint startLives = 3;
         private uint maxLives = 5;
-        public Player(DynamicShape shape, IBaseImage image) : base(shape, image) {
-            BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, this); 
 
-            LeftBound = 0f;
-            RightBound = 1.0f - shape.Extent.X;
+        public Player(DynamicShape shape, IBaseImage image) : base(shape, image) {
+            BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this); 
 
             startPos = Shape.Position;
 
             Healthbar = new Healthbar(startLives, maxLives);
         }
 
-        public Vec2F GetPosition() {
-            return Shape.Position; 
+        /// <summary>
+        /// Detect whether this Player will exceed the left window border if one more movement.
+        /// </summary>
+        /// <returns>The boolean result.</returns>
+        public bool LeftBoundaryCheck() {
+            if (Shape.Position.X + Shape.AsDynamicShape().Direction.X < 0.0f) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
-        public Vec2F GetExtent() {
-            return Shape.Extent;
+        /// <summary>
+        /// Detect whether this Player will exceed the right window border if one more movement.
+        /// </summary>
+        /// <returns>The boolean result.</returns>
+        public bool RightBoundaryCheck() {
+            if (Shape.Position.X + Shape.Extent.X + Shape.AsDynamicShape().Direction.X > 1.0f) {
+                return true;
+            } else {
+                return false;
+            }           
         }
 
-        public float GetMoveSpeed() {
-            return MOVEMENT_SPEED;
+        /// <summary>
+        /// React to upcoming boundary exceedance by setting Position to boundary.
+        /// </summary>
+        /// <returns>A boolean value depending on whether the Position was set or not.</returns>
+        public bool BoundaryCollision() {
+            if (LeftBoundaryCheck()) {
+                Shape.Position.X = 0.0f;
+                return true;
+            } else if (RightBoundaryCheck()) {
+                Shape.Position.X = 1.0f - Shape.Extent.X;
+                return true;
+            }
+            return false;
         }
 
-        public void Render() {
-            this.RenderEntity();
-        }
-
+        /// <summary>
+        /// Update the Direction vector of this Player according to the sum 
+        /// of moveLeft and moveRight
+        /// </summary>
         public void UpdateDirection() {
             Shape.AsDynamicShape().Direction.X = moveLeft + moveRight;
         }
 
-        public void Reset() {
-            SetMoveLeft(false);
-            SetMoveRight(false);
-
-            Shape.Position = startPos;
-        }
-
-        //Move if position after move will not be out of bounds
-        private void Move() {
-            if (Shape.Position.X + Shape.AsDynamicShape().Direction.X < LeftBound) {
-                Shape.Position.X = LeftBound;
-            } //pos is from bottom left corner
-            else if (Shape.Position.X + Shape.AsDynamicShape().Direction.X > RightBound) { 
-                Shape.Position.X = RightBound;
-            } else {
-                Shape.Move();
-            }
-        }
-        
-        private void SetMoveLeft(bool val) {
-            if (val) {
+        /// <summary>
+        /// Set or nullify left-pointing constant contribution to the Player's movement.
+        /// </summary>
+        /// <param name="move">true if it should move</param>
+        public void SetMoveLeft(bool move) {
+            if (move) {
                 moveLeft = -MOVEMENT_SPEED;
             }
             else {
@@ -74,8 +88,13 @@ namespace Breakout.GamePlay.PlayerEntity {
             }
             UpdateDirection();
         }
-        private void SetMoveRight(bool val) {
-            if (val){
+
+        /// <summary>
+        /// Set or nullify right-pointing constant contribution to the Player's movement.
+        /// </summary>
+        /// <param name="move">true if it should move</param>
+        public void SetMoveRight(bool move) {
+            if (move){
                 moveRight = MOVEMENT_SPEED;
             } 
             else {
@@ -84,41 +103,40 @@ namespace Breakout.GamePlay.PlayerEntity {
             UpdateDirection();
         }
 
-        public void ProcessEvent(GameEvent gameEvent) {
-            if (gameEvent.EventType == GameEventType.PlayerEvent) {  
-                switch (gameEvent.StringArg1) {
-                    case "SetMoveLeft":
-                        switch (gameEvent.Message) {
-                            case "true":
-                                SetMoveLeft(true);
-                                break;
-                            case "false":
-                                SetMoveLeft(false);
-                                break;
-                        }
-                        break;
-                    case "SetMoveRight":
-                        switch (gameEvent.Message) {
-                            case "true":
-                                SetMoveRight(true);
-                                break;
-                            case "false":
-                                SetMoveRight(false);
-                                break;
-                        }
-                        break;
-                    case "Move":
-                        Move();
-                        break;
-                }
+        /// <summary>
+        /// Move this Player by its Direction vector.
+        /// Do not move if it would exceed a boundary.
+        /// </summary>
+        public void Move() {
+            if (!BoundaryCollision()) {
+                Shape.Move();
             }
-            else if (gameEvent.EventType == GameEventType.ControlEvent) {
-                switch (gameEvent.StringArg1) {
-                    case "LEVEL_ENDED":
-                    case "LEVEL_BACK":
-                        Reset();
-                        break;
-                }
+        }
+
+        public void Render() {
+            this.RenderEntity();
+        }
+        
+        /// <summary>
+        /// Reset this Player to its initial state.
+        /// </summary>
+        public void Reset() {
+            SetMoveLeft(false);
+            SetMoveRight(false);
+
+            Shape.Position = startPos;
+        }
+
+        /// <summary>
+        /// Process Events related to Player.
+        /// </summary>
+        /// <param name="gameEvent"></param>
+        public void ProcessEvent(GameEvent gameEvent) {
+            switch (gameEvent.StringArg1) {
+                case "LEVEL_ENDED":
+                case "LEVEL_BACK":
+                    Reset();
+                    break;
             }
         }
     }

@@ -8,28 +8,28 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Input;
 using DIKUArcade.Physics;
-using DIKUArcade.Timers;
 
 using Breakout.GamePlay;
 using Breakout.GamePlay.PlayerEntity;
 using Breakout.GamePlay.BallEntity;
 using Breakout.GamePlay.BlockEntity;
 using Breakout.GamePlay.PowerUpOrbEntity;
-using Breakout.LevelLoading;
 
 namespace Breakout.States {
+    /// <summary>
+    /// GameRunning is the GameState where the actual game mechanis are running.
+    /// Holds all gamerelated objects though not necessarily directly.
+    /// Responsible for Move- and Time Updates plus CollisionChecks between Entities.
+    /// </summary>
     public class GameRunning : IGameState {
         private static GameRunning instance;
+
         private Entity backGroundImage;
         private Player player;
         private BallOrganizer ballOrganizer;
-        private PowerUpOrbOrganizer PUOOrganizer;
-        //public LevelLoader LevelLoader { get; private set; }
-        //private List<string> levelSequence;
-        //public int LevelIndex { get; private set; }
+        private PowerUpOrbOrganizer PowerUpOrbOrganizer;
         public LevelManager LevelManager { get; private set; }
         private Score score;
-        //private BreakoutTimer gameTimer;
         
         public GameRunning() {
             //Initialize backGroundImage
@@ -39,18 +39,13 @@ namespace Breakout.States {
             IBaseImage image = new Image(Path.Combine( ProjectPath.getPath(),
                 "Breakout", "Assets", "Images", "SpaceBackground.png"));
             backGroundImage = new Entity(shape, image);
-              
+
+            //Initialize LevelManager
             LinkedList<string> levelSequence = new LinkedList<string> (new List<string> { "level1.txt", "level2.txt", "level3.txt",
                 "central-mass.txt", "columns.txt", "wall.txt" });
             LevelManager = new LevelManager(levelSequence);
-            //LevelIndex = 0;
 
-            //LevelLoader = new LevelLoader();
-            //LevelLoader.LoadLevel(Path.Combine(ProjectPath.getPath(),
-            //    "Breakout", "Assets", "Levels", 
-            //    levelSequence[LevelIndex]));
-
-            PUOOrganizer = new PowerUpOrbOrganizer();
+            PowerUpOrbOrganizer = new PowerUpOrbOrganizer();
 
             ballOrganizer = new BallOrganizer();
             ballOrganizer.ResetOrganizer();
@@ -61,37 +56,16 @@ namespace Breakout.States {
                 "Breakout", "Assets", "Images", "player.png")));
 
             score = new Score(new Vec2F(0.00f, -0.26f), new Vec2F(0.3f, 0.3f));
-
-            //gameTimer = new BreakoutTimer(
-            //    LevelManager.LevelLoader.Meta.Time, new Vec2F(0.33f, -0.26f), 
-            //    new Vec2F(0.3f, 0.3f));
         }
 
         public static GameRunning GetInstance() {
             return GameRunning.instance ?? (GameRunning.instance = new GameRunning());
         }
 
-        public void ResetState() {
-            //LevelIndex = 0;
-
-            //LevelLoader.LoadLevel(Path.Combine(ProjectPath.getPath(),
-            //    "Breakout", "Assets", "Levels", 
-            //    levelSequence[LevelIndex]));
-            LevelManager.ResetToFirst();
-
-            PUOOrganizer.ResetOrganizer();
-
-            ballOrganizer.ResetOrganizer();
-
-            player.Reset();
-
-            player.Healthbar.Reset();
-
-            score.Reset();  
-
-            //gameTimer.SetNewLevelTime(LevelManager.LevelLoader.Meta.Time);
-        }
-
+        /// <summary>
+        /// Run CollisionCheck on all Blocks for one ball at a time.
+        /// An internal variable records a ball has hit one Block.
+        /// </summary>
         private void BallBlockCollisionIterate() {
             ballOrganizer.Entities.Iterate(ball => {
                 bool hit = false;
@@ -101,15 +75,22 @@ namespace Breakout.States {
             });
         }
 
+        /// <summary>
+        /// Collision check between single ball and block.
+        /// Blockhit is always recorded.
+        /// Ballhit is only recorded if another hit has not already been recorded 
+        /// this iteration. This is done to prevent the ball from "double-reflecting" when 
+        /// "double-hitting" Blocks and thus not changing its Direction.
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="ball"></param>
+        /// <param name="priorHit">Whether the ball hit another Block this iteration.</param>
         private void BallBlockCollision(Block block, Ball ball, ref bool priorHit) {
             CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(), block.Shape);
             if (check.Collision) {
                 //to block
-                BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                    EventType = GameEventType.ControlEvent, 
-                    StringArg1 = "BlockCollision", To = LevelManager.LevelLoader.BlockOrganizer, 
-                    ObjectArg1 = block
-                });
+                block.BlockHit();
+                
                 //only send to ball if not priorly hit this iteration
                 if (!priorHit) {
                     priorHit = true;
@@ -119,15 +100,11 @@ namespace Breakout.States {
             }
         }
 
-        private void OrbPlayerCollision(PowerUpOrb orb) {
-            CollisionData check = CollisionDetection.Aabb(orb.Shape.AsDynamicShape(), player.Shape);
-
-            if(check.Collision) {
-                orb.ApplyEffect();
-                orb.DeleteEntity();
-            }
-        }
-
+        /// <summary>
+        /// Collision check between a single Ball and the Player.
+        /// The relative hitposition on the player is computed and passed on the Ball.
+        /// </summary>
+        /// <param name="ball">Ball is checked for collision with the Player</param>
         private void BallPlayerCollision(Ball ball) {
             CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(),
                 player.Shape.AsDynamicShape());
@@ -138,6 +115,13 @@ namespace Breakout.States {
             }
         }
 
+        /// <summary>
+        /// Compute the relative hitPosition on the Player for its collision with the given Ball.
+        /// Designed to return [0.0, 1.0], but due to Collision boundary cases, this amount might
+        /// be exceeded.
+        /// </summary>
+        /// <param name="ball">Ball that is colliding with the Player</param>
+        /// <returns></returns>
         private float PlayerHitPosition(Ball ball){
             float numerator = ball.Shape.Position.X + ball.Shape.Extent.X - player.Shape.Position.X;
             float denominator = player.Shape.Extent.X + ball.Shape.Extent.X; 
@@ -145,70 +129,65 @@ namespace Breakout.States {
             return numerator / denominator;
         }
 
+        /// <summary>
+        /// Truncate the given hitPosition to the interval [0.0, 1.0]
+        /// </summary>
+        /// <param name="hitPosition">relative Player hitPosition</param>
+        /// <returns></returns>
         private float PlayerHitPositionTruncator(float hitPosition) {
             if (hitPosition < 0.0f) {
                 return 0.0f;
-            } 
-            else if (hitPosition > 1.0f) {
+            } else if (hitPosition > 1.0f) {
                 return 1.0f;
-            }
-            else {
+            } else {
                 return hitPosition;
             }
         }
 
-        /*
         /// <summary>
-        /// Load next level if legal, else go to main menu
+        /// Collision check between a single PowerUpOrbs and the Player.
+        /// Orbhit is always recorded.
         /// </summary>
-        private void NextLevel() {
-            LevelIndex++;
-            if (LevelIndex < levelSequence.Count) {
-                LevelLoader.LoadLevel(Path.Combine( new string[] { ProjectPath.getPath(),
-                    "Breakout", "Assets", "Levels", levelSequence[LevelIndex] }));
-                
-                ballOrganizer.ResetOrganizer();
-                player.Reset();
+        /// <param name="orb"></param>
+        private void OrbPlayerCollision(PowerUpOrb orb) {
+            CollisionData check = CollisionDetection.Aabb(orb.Shape.AsDynamicShape(), player.Shape);
 
-                //StaticTimer.RestartTimer();
-                if (LevelLoader.Meta.Time != 0) {
-                    gameTimer.SetNewLevelTime(LevelLoader.Meta.Time);
-                }
+            if(check.Collision) {
+                orb.PlayerCollision();
             }
-            else {
-                BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                    EventType = GameEventType.GameStateEvent,
-                    Message = "CHANGE_STATE",
-                    StringArg1 = "GAME_WON" });
-            }
-        } */
+        }
+
+        public void ResetState() {
+            LevelManager.ResetToFirst();
+
+            PowerUpOrbOrganizer.ResetOrganizer();
+
+            ballOrganizer.ResetOrganizer();
+
+            player.Reset();
+
+            player.Healthbar.Reset();
+
+            score.Reset();  
+        }
 
         public void UpdateState() {
-            //player move
-            BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
-            
-            //ball move
+            //Movement
+            player.Move();
             ballOrganizer.MoveEntities();
+            PowerUpOrbOrganizer.MoveEntities();
 
-            //PowerUpOrb move
-            PUOOrganizer.MoveEntities();
-
-            PUOOrganizer.Entities.Iterate(orb => {
+            //Collision
+            PowerUpOrbOrganizer.Entities.Iterate(orb => {
                 OrbPlayerCollision(orb);
             });
-
             ballOrganizer.Entities.Iterate(ball => {
                 BallPlayerCollision(ball);
+                ball.BoundaryCollision();
             });
-
             BallBlockCollisionIterate();
 
             LevelManager.UpdateLevelTimer();
-
-            //if(LevelLoader.LevelEnded()) {
-            //    NextLevel();
-            //}
         }
 
         public void RenderState() {
@@ -218,16 +197,12 @@ namespace Breakout.States {
             player.Healthbar.Render();
 
             ballOrganizer.RenderEntities();
-            //LevelLoader.BlockOrganizer.RenderEntities();
-            PUOOrganizer.RenderEntities();
+
+            PowerUpOrbOrganizer.RenderEntities();
 
             score.Render();
 
             LevelManager.RenderLevel();
-            // if time is not 0 render Timer, else do not render
-            //if (LevelManager.LevelLoader.Meta.Time != 0) {
-            //    LevelManager.LevelTimer.Render();
-            //}
         }
 
         public void HandleKeyEvent(KeyboardAction action, KeyboardKey key) {
@@ -235,31 +210,22 @@ namespace Breakout.States {
                 switch (key) {
                     case KeyboardKey.A:
                     case KeyboardKey.Left:
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType = GameEventType.PlayerEvent, Message = "true",
-                            StringArg1 = "SetMoveLeft" });
+                        player.SetMoveLeft(true);
                         break;
                     case KeyboardKey.D:
                     case KeyboardKey.Right:
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType = GameEventType.PlayerEvent, Message = "true",
-                            StringArg1 = "SetMoveRight" });
+                        player.SetMoveRight(true);
                         break;
                 }
-            }
-            else if (action == KeyboardAction.KeyRelease) {
+            } else if (action == KeyboardAction.KeyRelease) {
                 switch (key) {
                     case KeyboardKey.A:
                     case KeyboardKey.Left:
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType = GameEventType.PlayerEvent, Message = "false",
-                            StringArg1 = "SetMoveLeft" });
+                        player.SetMoveLeft(false);
                         break;
                     case KeyboardKey.D:
                     case KeyboardKey.Right:
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType = GameEventType.PlayerEvent, Message = "false",
-                            StringArg1 = "SetMoveRight" });
+                        player.SetMoveRight(false);
                         break;
                     case KeyboardKey.P:
                         BreakoutBus.GetBus().RegisterEvent( new GameEvent {
@@ -276,12 +242,6 @@ namespace Breakout.States {
                         BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                             EventType = GameEventType.ControlEvent,
                             StringArg1 = "LEVEL_BACK"});
-                        break;
-                    case KeyboardKey.Comma:
-                        BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                            EventType = GameEventType.GameStateEvent,
-                            Message = "CHANGE_STATE",
-                            StringArg1 = "GAME_WON" });
                         break;
                 }
             }

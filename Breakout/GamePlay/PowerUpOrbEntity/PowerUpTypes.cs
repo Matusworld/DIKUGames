@@ -1,6 +1,7 @@
-using System;
-
 namespace Breakout.GamePlay.PowerUpOrbEntity {
+    /// <summary>
+    /// PowerUp types that can exist in the Breakout Game.
+    /// </summary>
     public enum PowerUpTypes {
         ExtraLife,
         ExtraBall,
@@ -9,13 +10,5 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
         DoubleSpeed
     }
 
-    public static class PowerUpRandom {
-        private static Array types = Enum.GetValues(typeof(PowerUpTypes));
 
-        private static Random rand = new Random();
-
-        public static PowerUpTypes RandomType() {
-            return (PowerUpTypes) types.GetValue(rand.Next(types.Length));
-        }
-    }
 }

@@ -5,7 +5,8 @@ using DIKUArcade.Events;
 
 namespace Breakout.GamePlay {
     /// <summary>
-    /// Integer division
+    /// LevelTimer keeps track of the internal level time counting downwards to 0.
+    /// All time is in seconds (converted from milliseconds and floored)
     /// </summary>
     public class LevelTimer : StaticTimer {
         private Text display;
@@ -25,13 +26,20 @@ namespace Breakout.GamePlay {
             display.SetColor(System.Drawing.Color.Gold);
         }
 
+        /// <summary>
+        /// Set this LevelTimer to given time.
+        /// </summary>
+        /// <param name="levelTime">The start time of the given level.</param>
         public void SetNewLevelTime(int levelTime) {
             timer = levelTime;
             this.levelTime = levelTime;
             staticStartTime = (int) GetElapsedMilliseconds() / 1000;
         }
         
-
+        /// <summary>
+        /// Update this LevelTimer. It counts down towards 0 seconds.
+        /// At 0 seconds broadcast that the game has been lost.
+        /// </summary>
         public void UpdateTimer() {
             timer = (levelTime + staticStartTime) - (int) GetElapsedMilliseconds() / 1000;
             display.SetText("Time left: " + timer.ToString());
@@ -44,6 +52,10 @@ namespace Breakout.GamePlay {
             }
         }
 
+        /// <summary>
+        /// Check that time of this LevelTimer has reached 0.
+        /// </summary>
+        /// <returns>The boolean result.</returns>
         public bool TimeRunOut() {
             if (timer <= 0) {
                 return true;

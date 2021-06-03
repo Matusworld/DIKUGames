@@ -7,31 +7,37 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 
 namespace Breakout.GamePlay.PlayerEntity {
+    /// <summary>
+    /// Healthbar that can display the number of lives left for the Player.
+    /// Lives are gained via PowerUps and lost by having no balls remaining.
+    /// The Healthbar detects when no lives are left and broadcasts this information.
+    /// </summary>
     public class Healthbar : IGameEventProcessor {
-        public uint startLives;
+        public uint StartLives { get; private set; }
         public uint Lives { get; private set; }
         public uint MaxLives { get; private set; }
-        private float dimension = 0.05f;
 
+        //Extent of each individual heart symbol
+        private float extentDimension = 0.05f;
         private IBaseImage heartFilled = new Image (Path.Combine(ProjectPath.getPath(),  
                 "Breakout", "Assets", "Images", "heart_filled.png"));
-
         private IBaseImage heartEmpty = new Image (Path.Combine(ProjectPath.getPath(),  
                 "Breakout", "Assets", "Images", "heart_empty.png"));
-
+        //List containing hearts to be rendered
         public List<Entity> HealthList { get; private set; } = new List<Entity>();
 
         public Healthbar(uint lives, uint maxLives) {
             BreakoutBus.GetBus().Subscribe(GameEventType.ControlEvent, this);
 
-            startLives = lives;
+            StartLives = lives;
             Lives = lives;
             MaxLives = maxLives;
 
-            Vec2F healthExtent = new Vec2F(dimension, dimension);
-
+            //Initialize HealthList to be length of maxLives
+            Vec2F healthExtent = new Vec2F(extentDimension, extentDimension);
             for (int i = 0; i < maxLives; i++) {
-                Vec2F healthpos = new Vec2F((1 - dimension * maxLives) + dimension * i,0f);
+                Vec2F healthpos = 
+                    new Vec2F((1 - extentDimension * maxLives) + extentDimension * i, 0f);
                 Entity health;
                 if (i < lives) {
                     health = new Entity(
@@ -44,33 +50,40 @@ namespace Breakout.GamePlay.PlayerEntity {
             }
         }
 
+        /// <summary>
+        /// Reset this Healthbar to initial state with (StartLives/MaxLives) lives.
+        /// </summary>
         public void Reset() {
-            Lives = startLives;
+            Lives = StartLives;
 
             for (int i = 0; i < MaxLives; i++) {
-                if (i < startLives) {
+                if (i < StartLives) {
                     HealthList[i].Image = heartFilled;
-                }
-                else {
+                } else {
                     HealthList[i].Image = heartEmpty;
                 }
             }
         }
 
+        /// <summary>
+        /// Render row of hearts that visually represent the Healthbar.
+        /// </summary>
         public void Render() {
             foreach (Entity health in HealthList) {
                 health.RenderEntity();
             }
         }
 
-        // Made public to fix, problem with eventbus delayed actions, made the program crash sometimes.
+        /// <summary>
+        /// Detract one life from this Healthbar. 
+        /// If 0 lives is reached, broadcast that the game is lost.
+        /// </summary>
         public void HealthLost() {
             if (Lives > 1) {
                 HealthList[(int) Lives - 1].Image = heartEmpty;
                 Lives--;
-            } 
-            //next life lost will result in loss
-            else {
+            } else { 
+                //next life lost will result in loss
                 BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                     EventType = GameEventType.GameStateEvent,
                     Message = "CHANGE_STATE",
@@ -78,6 +91,9 @@ namespace Breakout.GamePlay.PlayerEntity {
             }
         }
 
+        /// <summary>
+        /// Increment the amount of lives of this Healthbar by one. Lives cannot exceed MaxLives.
+        /// </summary>
         private void HealthGained() {
             if (!(Lives > MaxLives - 1)) {
                 HealthList[(int) Lives].Image = heartFilled;
@@ -85,16 +101,19 @@ namespace Breakout.GamePlay.PlayerEntity {
             }
         }
         
+        /// <summary>
+        /// Process Events related to lives/health.
+        /// </summary>
+        /// <param name="gameEvent"></param>
         public void ProcessEvent(GameEvent gameEvent) {
-            if (gameEvent.EventType == GameEventType.ControlEvent) {
-                switch (gameEvent.StringArg1) {
-                    case "HealthLost":
-                        HealthLost();
-                        break;
-                    case "HealthGained":
-                        HealthGained();
-                        break;
-                }
+            switch (gameEvent.StringArg1) {
+                case "HEALTH_LOST":
+                    HealthLost();
+                    break;
+
+                case "HEALTH_GAINED":
+                    HealthGained();
+                    break;
             }
         }
     }

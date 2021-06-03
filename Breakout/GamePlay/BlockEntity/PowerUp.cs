@@ -1,38 +1,32 @@
-using System.IO;
-
 using DIKUArcade.Events;
 using DIKUArcade.Graphics;
 using DIKUArcade.Entities;
-using DIKUArcade.Math;
-
-using Breakout.GamePlay.PowerUpOrbEntity;
 
 namespace Breakout.GamePlay.BlockEntity {
+    /// <summary>
+    /// PowerUp Block spawns an PowerUpOrb when deleted.
+    /// </summary>
     public class PowerUp : Block {
-
-        public PowerUp (DynamicShape shape, IBaseImage image, IBaseImage damageImage) 
+        public PowerUp (Shape shape, IBaseImage image, IBaseImage damageImage) 
             : base(shape, image, damageImage) {}
 
         /// <summary>
-        /// Randomly choose power up and and spawn it as an entity
+        /// Send Event that an Orb should be spawned and provide this PowerUp Block's position.
         /// </summary>
-        private void SpawnOrbShape() {
-            Vec2F extent = new Vec2F(0.05f, 0.05f);
-            DynamicShape shape = new DynamicShape(this.Shape.Position, extent);
-
+        private void SendSpawnOrbEvent() {
             BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                EventType = GameEventType.ControlEvent, StringArg1 = "ADD_ORB",
-                ObjectArg1 = shape});
+                EventType = GameEventType.ControlEvent, StringArg1 = "SPAWN_ORB",
+                ObjectArg1 = Shape.Position});
         }
 
-        protected override void BlockHit() {
+        public override void BlockHit() {
             Damage();
             if (HalfHpCheck()) {
                 this.Image = damageImage;
             }
             if (!IsAlive()) {
                 Delete();
-                SpawnOrbShape();
+                SendSpawnOrbEvent();
             }
         }
     }
