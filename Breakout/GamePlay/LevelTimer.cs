@@ -10,11 +10,11 @@ namespace Breakout.GamePlay {
     public class LevelTimer : StaticTimer {
         private Text display;
         //internal level time counter, from levelTime down to 0
-        private int timer;
+        public int timer { get; private set; }
         //Max duration of level
-        private int levelTime;
+        public int levelTime { get; private set; }
         //The static/global time at point of level start
-        private int staticStartTime;
+        public int staticStartTime { get; private set; }
 
         public LevelTimer(int levelTime, Vec2F pos, Vec2F extent) {
             timer = levelTime;

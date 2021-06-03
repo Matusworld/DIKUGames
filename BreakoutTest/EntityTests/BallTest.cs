@@ -29,7 +29,7 @@ namespace BreakoutTest
 
             Window.CreateOpenGLContext();
 
-            ball = new Ball(
+            ball = new Ball (
                 new DynamicShape (new Vec2F(0.45f, 0.5f), new Vec2F(0.05f,0.05f)),
                 new Image (Path.Combine(TestProjectPath.getPath(),  
                 "Assets", "Images", "ball.png")),
