@@ -15,7 +15,7 @@ using DIKUArcade.Physics;
 using Breakout.GamePlay.BallEntity;
 using Breakout.GamePlay.PowerUpOrbEntity;
 
-namespace BreakoutTest {
+namespace BreakoutTest.GamePlayTest.BallEntityTest {
     public class BallTest {
         Ball ball;
         BallOrganizer ballOrganizer;

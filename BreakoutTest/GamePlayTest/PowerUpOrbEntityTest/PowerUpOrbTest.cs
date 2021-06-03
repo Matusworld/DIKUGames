@@ -8,7 +8,8 @@ using DIKUArcade.Math;
 using DIKUArcade.Graphics;
 
 using Breakout.GamePlay.PowerUpOrbEntity;
-namespace BreakoutTest {
+
+namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
     public class PowerUpOrbTest {
         PowerUpOrb Orb;
         float tolerance;

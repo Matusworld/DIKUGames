@@ -8,7 +8,7 @@ using DIKUArcade.Graphics;
 using Breakout.LevelLoading;
 using Breakout.LevelLoading.SectionLoading;
 
-namespace BreakoutTest {
+namespace BreakoutTest.LevelLoadingTest.SectionLoadingTest {
     public class LegendLoaderTest {
         SectionStreamReader reader;
         LegendLoader loader;

@@ -5,7 +5,7 @@ using DIKUArcade.Math;
 
 using Breakout.GamePlay;
 
-namespace BreakoutTest {
+namespace BreakoutTest.GamePlayTest {
     public class LevelTimerTest {
         LevelTimer timer;
 

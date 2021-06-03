@@ -11,7 +11,7 @@ using DIKUArcade.Math;
 using Breakout.GamePlay.PowerUpOrbEntity;
 using Breakout.GamePlay.BlockEntity;
 
-namespace BreakoutTest {
+namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
     public class PowerUpOrbOrganizerTest {
         PowerUpOrbOrganizer PUOrganizer;
 

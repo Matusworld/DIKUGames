@@ -8,8 +8,7 @@ using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
 
-
-namespace BreakoutTest {
+namespace BreakoutTest.GamePlayTest.BlockEntityTest {
     public class HardenedBlockTest {
         Hardened hblock;
 

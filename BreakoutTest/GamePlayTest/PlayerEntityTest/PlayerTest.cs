@@ -9,8 +9,7 @@ using DIKUArcade.Graphics;
 
 using Breakout.GamePlay.PlayerEntity;
 
-namespace BreakoutTest
-{
+namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
     //Move() must have 100% statement coverage
     //Unit tests that cover a statement of Move is marked with: *Move statement covered*
     public class PlayerTest {

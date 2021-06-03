@@ -7,7 +7,7 @@ using DIKUArcade.GUI;
 
 using Breakout.GamePlay.PlayerEntity;
 
-namespace BreakoutTest {
+namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
     public class HealthbarTest {
         GameEventBus eventBus;
         Healthbar healthbar;

@@ -6,7 +6,7 @@ using Breakout.States;
 using DIKUArcade.GUI;
 using DIKUArcade.Events;
 
-namespace BreakoutTest {
+namespace BreakoutTest.StatesTest {
     public class GameRunningTest {
         GameRunning game;
         GameEventBus eventBus;

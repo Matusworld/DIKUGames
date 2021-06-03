@@ -12,15 +12,13 @@ using DIKUArcade.Graphics;
 using Breakout.GamePlay;
 using Breakout.GamePlay.BlockEntity;
 
-namespace BreakoutTest {
+namespace BreakoutTest.GamePlayTest {
     public class ScoreTest {
         Score score;
         GameEventBus eventBus;
 
         Block block;
-
         Hardened hblock;
-
         PowerUp publock;
 
         public ScoreTest() {

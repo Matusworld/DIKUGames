@@ -8,7 +8,7 @@ using DIKUArcade.Graphics;
 
 using Breakout.GamePlay.BlockEntity;
 
-namespace BreakoutTest {
+namespace BreakoutTest.GamePlayTest.BlockEntityTest {
     public class UnbreakableBlockTest {
         Unbreakable uBlock;
 

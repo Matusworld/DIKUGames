@@ -6,7 +6,7 @@ using NUnit.Framework;
 using Breakout.LevelLoading;
 using Breakout.LevelLoading.SectionLoading;
 
-namespace BreakoutTest {
+namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
 
     public class MapLoaderTest {
         SectionStreamReader reader;

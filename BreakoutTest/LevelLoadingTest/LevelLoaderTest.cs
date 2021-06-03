@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 using Breakout.LevelLoading;
 
-namespace BreakoutTest {
+namespace BreakoutTest.LevelLoadingTest {
     public class LevelLoaderTest {
         LevelLoader loader;
 

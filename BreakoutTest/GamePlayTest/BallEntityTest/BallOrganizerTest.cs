@@ -4,7 +4,7 @@ using DIKUArcade.GUI;
 
 using Breakout.GamePlay.BallEntity;
 
-namespace BreakoutTest {
+namespace BreakoutTest.GamePlayTest.BallEntityTest {
     public class BallOrganizerTest {
         BallOrganizer ballOrganizer;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Breakout.GamePlay;
 
-namespace BreakoutTest {
+namespace BreakoutTest.GamePlayTest {
     public class LevelManagerTest {
         LevelManager levelManager;
 

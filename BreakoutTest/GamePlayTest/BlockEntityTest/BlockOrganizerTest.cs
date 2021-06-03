@@ -8,7 +8,7 @@ using DIKUArcade.Entities;
 
 using Breakout.GamePlay.BlockEntity;
 
-namespace BreakoutTest {
+namespace BreakoutTest.GamePlayTest.BlockEntityTest {
     public class BlockOrganizerTest {
         BlockOrganizer blockOrganizer;
 

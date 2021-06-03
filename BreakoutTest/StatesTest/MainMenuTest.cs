@@ -7,7 +7,7 @@ using DIKUArcade.GUI;
 using DIKUArcade.Input;
 
 
-namespace BreakoutTest {
+namespace BreakoutTest.StatesTest {
     public class MainMenuTest {
         MainMenu menu;
 
