@@ -1,10 +1,8 @@
-using System.Collections.Generic;
 using System.IO;
 using System;
 using NUnit.Framework;
 
 using DIKUArcade.GUI;
-using DIKUArcade.Events;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
@@ -17,17 +15,21 @@ namespace BreakoutTest
     //Unit tests that cover a statement of Move is marked with: *Move statement covered*
     public class PlayerTest {
         Player player;
-        GameEventBus eventBus;
         float beforeX;
         float beforeY;
 
         float tolerance;
 
+        float rightBound;
+
+        float leftBound;
+
+        public PlayerTest() {
+            Window.CreateOpenGLContext();
+        }
 
         [SetUp]
         public void Setup() {
-            Window.CreateOpenGLContext();
-
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.02f)),
                 new Image(Path.Combine(TestProjectPath.getPath() ,"Assets", "Images", "player.png")));
@@ -35,9 +37,8 @@ namespace BreakoutTest
             beforeX = player.Shape.Position.X;
             beforeY = player.Shape.Position.Y;
             
-            eventBus = new GameEventBus();
-            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.PlayerEvent });
-            eventBus.Subscribe(GameEventType.PlayerEvent, player);
+            rightBound = 1.0f - player.Shape.Extent.X;
+            leftBound = 0f;
 
             tolerance = 0.0001f;
         }
@@ -59,10 +60,9 @@ namespace BreakoutTest
         //*Move statement covered*
         [Test]
         public void TestInitMove() {
-            
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
-                
+
+            player.Move();
+
             float diffX = Math.Abs(player.Shape.Position.X - beforeX);
             float diffY = Math.Abs(player.Shape.Position.Y - beforeY);
 
@@ -73,17 +73,11 @@ namespace BreakoutTest
         //*Move statement covered*
         [Test]
         public void TestMoveRight() {
+            player.SetMoveRight(true);
 
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent,  Message = "true",
-                StringArg1 = "SetMoveRight" });
+            player.Move();
 
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
-
-            eventBus.ProcessEvents();
-
-            float diffX = Math.Abs(player.Shape.Position.X - (beforeX + player.MOVEMENT_SPEED));
+            float diffX = Math.Abs(player.Shape.Position.X - (beforeX + Player.MOVEMENT_SPEED));
             float diffY = Math.Abs(player.Shape.Position.Y - beforeY);
 
             Assert.LessOrEqual(diffX, tolerance);
@@ -93,17 +87,11 @@ namespace BreakoutTest
         //*Move statement covered*
         [Test]
         public void TestMoveLeft() {
+            player.SetMoveLeft(true);
 
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent,  Message = "true",
-                StringArg1 = "SetMoveLeft" });
+            player.Move();
 
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
-
-            eventBus.ProcessEvents();
-
-            float diffX = Math.Abs(player.Shape.Position.X - (beforeX - player.MOVEMENT_SPEED));
+            float diffX = Math.Abs(player.Shape.Position.X - (beforeX - Player.MOVEMENT_SPEED));
             float diffY = Math.Abs(player.Shape.Position.Y - beforeY);
 
             Assert.LessOrEqual(diffX, tolerance);
@@ -113,128 +101,99 @@ namespace BreakoutTest
         //Assert that the right position bound is respected
         //*Move statement covered*
         [Test]
-        public void TestMoveRightOutOfBounds() {
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent,  Message = "true",
-                StringArg1 = "SetMoveRight" });
+        public void TestMoveRightOutOfBounds() {            
+            player.SetMoveRight(true);
 
             //peform "too many" right moves
-            for(float p = beforeX; p <= 1.0f; p += player.MOVEMENT_SPEED) {
-                eventBus.RegisterEvent( new GameEvent {
-                    EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
-
-                eventBus.ProcessEvents();
+            for(float p = beforeX; p <= 1.0f; p += Player.MOVEMENT_SPEED) {
+                player.Move();
             }
 
-            float diffX = Math.Abs(player.Shape.Position.X - player.RightBound);
+            float diffX = Math.Abs(player.Shape.Position.X - rightBound);
             float diffY = Math.Abs(player.Shape.Position.Y - beforeY);
 
             Assert.LessOrEqual(diffX, tolerance);
             Assert.LessOrEqual(diffY, tolerance);
+            Assert.AreEqual(player.RightBoundaryCheck(), true);
         }
-
+        
         //Assert that the left position bound is respected
         //*Move statement covered*
         [Test]
         public void TestMoveLeftOutOfBounds() {
-
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent,  Message = "true",
-                StringArg1 = "SetMoveLeft" });
+            player.SetMoveLeft(true);
                 
             //peform "too many" left moves
-            for(float p = beforeX; p >= 0.0f; p -= player.MOVEMENT_SPEED) {
-                eventBus.RegisterEvent( new GameEvent {
-                    EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
-                
-                eventBus.ProcessEvents();
+            for(float p = beforeX; p >= 0.0f; p -= Player.MOVEMENT_SPEED) {
+                player.Move();
             }
-            
-            float diffX = Math.Abs(player.Shape.Position.X - player.LeftBound);
+
+            float diffX = Math.Abs(player.Shape.Position.X - leftBound);
             float diffY = Math.Abs(player.Shape.Position.Y - beforeY);
 
             Assert.LessOrEqual(diffX, tolerance);
             Assert.LessOrEqual(diffY, tolerance);
+            Assert.AreEqual(player.LeftBoundaryCheck(), true);
         }
         
         //Assert no stutter on right bound
         [Test]
         public void TestMoveRightNoStutter() {
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent,  Message = "true",
-                StringArg1 = "SetMoveRight" });
+            player.SetMoveRight(true);
 
             //peform "too many" right moves
-            for(float p = beforeX; p <= 1.0f; p += player.MOVEMENT_SPEED) {
-                eventBus.RegisterEvent( new GameEvent {
-                    EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
-
-                eventBus.ProcessEvents();
+            for(float p = beforeX; p <= 1.0f; p += Player.MOVEMENT_SPEED) {
+                player.Move();
             }
 
             //try repeatedly to move out of bounds and assert it keeps same position
             int repeats = 100;
 
             for(int i = 0; i < repeats; i++) {
-                eventBus.RegisterEvent( new GameEvent {
-                    EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
+                player.Move();
 
-                eventBus.ProcessEvents();
-
-                float diffX = Math.Abs(player.Shape.Position.X - player.RightBound);
+                float diffX = Math.Abs(player.Shape.Position.X - rightBound);
                 float diffY = Math.Abs(player.Shape.Position.Y - beforeY);
 
                 Assert.LessOrEqual(diffX, tolerance);
                 Assert.LessOrEqual(diffY, tolerance);
             }
         }
-
+        
         //Assert no stutter on left bound
         [Test]
         public void TestMoveLeftNoStutter() {
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent,  Message = "true",
-                StringArg1 = "SetMoveLeft" });
+            player.SetMoveLeft(true);
 
             //peform "too many" right moves
-            for(float p = beforeX; p > 0.0f; p -= player.MOVEMENT_SPEED) {
-                eventBus.RegisterEvent( new GameEvent {
-                    EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
-
-                eventBus.ProcessEvents();
+            for(float p = beforeX; p > 0.0f; p -= Player.MOVEMENT_SPEED) {
+                player.Move();
             }
 
             //try repeatedly to move out of bounds and assert it keeps same position
             int repeats = 100;
 
             for(int i = 0; i < repeats; i++) {
-                eventBus.RegisterEvent( new GameEvent {
-                    EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
 
-                eventBus.ProcessEvents();
+                player.Move();
 
-                float diffX = Math.Abs(player.Shape.Position.X - player.LeftBound);
+                float diffX = Math.Abs(player.Shape.Position.X - leftBound);
                 float diffY = Math.Abs(player.Shape.Position.Y - beforeY);
 
                 Assert.LessOrEqual(diffX, tolerance);
                 Assert.LessOrEqual(diffY, tolerance);
             }
         }
-
+        
         //Assert simultaneous movement will cancel out 
         [Test]
         public void TestSimulMove() {
+            
+            player.SetMoveLeft(true);
 
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent,  Message = "true",
-                StringArg1 = "SetMoveLeft" });
+            player.SetMoveRight(true);
 
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent,  Message = "true",
-                StringArg1 = "SetMoveRight" });
-
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
+            player.Move();
 
             float diffX = Math.Abs(player.Shape.Position.X - beforeX);
             float diffY = Math.Abs(player.Shape.Position.Y - beforeY);
@@ -247,37 +206,47 @@ namespace BreakoutTest
         [Test]
         public void TestStopMove() {
 
-            //first move once right
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent,  Message = "true",
-                StringArg1 = "SetMoveRight" });
+            player.SetMoveRight(true);
+            
+            player.Move();
 
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
-
-            eventBus.ProcessEvents();
-
-            float diffX = Math.Abs(player.Shape.Position.X - (beforeX + player.MOVEMENT_SPEED));
+            float diffX = Math.Abs(player.Shape.Position.X - (beforeX + Player.MOVEMENT_SPEED));
             float diffY = Math.Abs(player.Shape.Position.Y - beforeY);
 
             Assert.LessOrEqual(diffX, tolerance);
             Assert.LessOrEqual(diffY, tolerance);
 
-            //then stop right direction
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent,  Message = "false",
-                StringArg1 = "SetMoveRight" });
+            player.SetMoveRight(false);
 
-            eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.PlayerEvent, StringArg1 = "Move" });
+            player.Move();
 
-            eventBus.ProcessEvents();
-
-            float newdiffX = Math.Abs(player.Shape.Position.X - (beforeX + player.MOVEMENT_SPEED));
+            float newdiffX = Math.Abs(player.Shape.Position.X - (beforeX + Player.MOVEMENT_SPEED));
             float newdiffY = Math.Abs(player.Shape.Position.Y - beforeY);
 
             Assert.LessOrEqual(newdiffX, tolerance);
             Assert.LessOrEqual(newdiffY, tolerance);
+        }
+
+        [Test]
+        public void PlayerResetTest() {
+            player.SetMoveLeft(true);
+
+            player.Move();
+
+            float diffX = Math.Abs(player.Shape.Position.X - (beforeX - Player.MOVEMENT_SPEED));
+            float diffY = Math.Abs(player.Shape.Position.Y - beforeY);
+
+            Assert.LessOrEqual(diffX, tolerance);
+            Assert.LessOrEqual(diffY, tolerance);
+
+            player.Reset();
+
+
+            float diffXx = Math.Abs(player.Shape.Position.X - 0.45f);
+            float diffYy = Math.Abs(player.Shape.Position.Y - 0.1f);
+
+            Assert.LessOrEqual(diffXx, tolerance);
+            Assert.LessOrEqual(diffYy, tolerance);
         }
     }
 }

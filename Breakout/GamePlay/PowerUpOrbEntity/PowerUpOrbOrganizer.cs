@@ -29,7 +29,7 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
         /// </summary>
         /// <param name="position">Position of the Block that spawn this PowerUpOrb.</param>
         /// <returns>The generated PowerUpOrb.</returns>
-        public PowerUpOrb GenerateRandomOrb(Vec2F position) {
+        private PowerUpOrb GenerateRandomOrb(Vec2F position) {
             DynamicShape shape = new DynamicShape(position, PowerUpExtent);
             IBaseImage image;
             PowerUpOrb orb;

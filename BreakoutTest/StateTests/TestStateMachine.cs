@@ -10,10 +10,13 @@ namespace BreakoutTest {
     public class StateMachineTest {
         StateMachine machine;
         GameEventBus eventBus;
+
+        public StateMachineTest() {
+            Window.CreateOpenGLContext();
+        }
+
         [SetUp]
         public void Setup() {
-            Window.CreateOpenGLContext();
-
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.GameStateEvent });
 

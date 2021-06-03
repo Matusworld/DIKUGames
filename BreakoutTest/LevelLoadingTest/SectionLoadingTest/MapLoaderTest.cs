@@ -28,6 +28,7 @@ namespace BreakoutTest {
             reader = new SectionStreamReader();
         }
 
+        // Testing the Map loader gives the correct results
         [Test]
         public void Testloader() {
             reader.SetPath(path);

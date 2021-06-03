@@ -23,14 +23,19 @@ namespace BreakoutTest {
 
         PowerUp publock;
 
+        public ScoreTest() {
+            Window.CreateOpenGLContext();
+        }
+
         [SetUp]
         public void Setup() {
-            Window.CreateOpenGLContext();
             score = new Score(new Vec2F(0.06f, -0.25f), new Vec2F(0.3f, 0.3f));
 
             block = new Block(new DynamicShape(new Vec2F(0.45f, 0.45f), new Vec2F(0.1f, 0.05f)), 
                                         new Image(Path.Combine( TestProjectPath.getPath(),
-                                            "Assets", "Images", "blue-block.png")));
+                                            "Assets", "Images", "blue-block.png")),
+                                        new Image(Path.Combine(TestProjectPath.getPath(),
+                                            "Assets", "Images", "blue-block-damaged.png")));
 
             hblock = new Hardened(new DynamicShape(
                 new Vec2F(0.45f, 0.45f), new Vec2F(0.1f, 0.05f)), 
@@ -42,7 +47,9 @@ namespace BreakoutTest {
             publock = new PowerUp(new DynamicShape(
                 new Vec2F(0.45f, 0.45f), new Vec2F(0.1f, 0.05f)), 
                 new Image(Path.Combine(TestProjectPath.getPath(),
-                    "Assets", "Images", "blue-block.png")));
+                    "Assets", "Images", "blue-block.png")),
+                    new Image(Path.Combine(TestProjectPath.getPath(),
+                    "Assets", "Images", "blue-block-damaged.png")));
 
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.ControlEvent });
@@ -60,7 +67,7 @@ namespace BreakoutTest {
         public void TestNormalBlockIncreaseScore() {
 
             eventBus.RegisterEvent( new GameEvent { 
-                EventType = GameEventType.ControlEvent, StringArg1 = "ADD_SCORE", From = block});
+                EventType = GameEventType.ControlEvent, StringArg1 = "BLOCK_DELETED", From = block});
 
             eventBus.ProcessEvents();
             
@@ -71,7 +78,7 @@ namespace BreakoutTest {
         [Test]
         public void TestHardenedBlockIncreaseScore() {
             eventBus.RegisterEvent( new GameEvent { 
-                EventType = GameEventType.ControlEvent, StringArg1 = "ADD_SCORE", From = hblock});
+                EventType = GameEventType.ControlEvent, StringArg1 = "BLOCK_DELETED", From = hblock});
 
             eventBus.ProcessEvents();
             
@@ -82,7 +89,7 @@ namespace BreakoutTest {
         [Test]
         public void TestPowerUpBlockIncreaseScore() {
             eventBus.RegisterEvent( new GameEvent { 
-                EventType = GameEventType.ControlEvent, StringArg1 = "ADD_SCORE", From = publock});
+                EventType = GameEventType.ControlEvent, StringArg1 = "BLOCK_DELETED", From = publock});
 
             eventBus.ProcessEvents();
             
@@ -100,7 +107,7 @@ namespace BreakoutTest {
             for (int i = 0; i < 50; i++) {
                 eventBus.RegisterEvent( new GameEvent { 
                     EventType = GameEventType.ControlEvent, 
-                    StringArg1 = "PowerUpScore"});
+                    StringArg1 = "POWERUP_SCORE"});
 
                 Thread.Sleep(10);
                 eventBus.ProcessEvents();
@@ -110,7 +117,21 @@ namespace BreakoutTest {
 
                 formerScore = score.ScoreCount;
             }
+        }
+
+        // Testing reseting the score. 
+        [Test]
+        public void TestResetScore() {
+            eventBus.RegisterEvent( new GameEvent { 
+                EventType = GameEventType.ControlEvent, StringArg1 = "BLOCK_DELETED", From = block});
+
+            eventBus.ProcessEvents();
             
+            Assert.AreEqual(score.ScoreCount, 1);
+
+            score.Reset();
+
+            Assert.AreEqual(score.ScoreCount, 0);
         }
 
         //Test that score cannot go below 0

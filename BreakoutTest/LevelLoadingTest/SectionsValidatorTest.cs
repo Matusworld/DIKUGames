@@ -23,6 +23,7 @@ namespace BreakoutTest {
                 "wrongsectionorder.txt");
         }
 
+        // Testing the section validator on a valid file
         [Test]
         public void TestValidSectionsValidator() {
             sectionsValidator = new SectionsValidator();
@@ -30,6 +31,7 @@ namespace BreakoutTest {
             Assert.IsTrue(sectionsValidator.ValidateSections(validSectionsFile));
         }
 
+        // Testing the section validator on a invalid file
         [Test]
         public void TestInvalidSectionsValidator() {
             sectionsValidator = new SectionsValidator();

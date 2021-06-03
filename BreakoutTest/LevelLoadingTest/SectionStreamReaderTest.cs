@@ -9,10 +9,6 @@ namespace BreakoutTest {
 
     public class SectionStreamReaderTest {
         SectionStreamReader reader;
-        //SectionStreamReader mapReader;
-        //SectionStreamReader metaReader;
-        //SectionStreamReader legendReader;
-
         string path;
 
         List<string> map = new List<string>{"------------", "------------", "-qqqqqqqqqq-", "-qqqqqqqqqq-",
@@ -35,6 +31,7 @@ namespace BreakoutTest {
             reader.SetPath(path);
         }
 
+        // Testing the SectionStreamReader to read the map section
         [Test]
         public void TestMapReadSection() {
             reader.SetSection("Map");
@@ -50,7 +47,7 @@ namespace BreakoutTest {
 
             reader.Reset();
         }
-
+        // Testing the SectionStreamReader to read the meta section
         [Test]
         public void TestMetaReadSection() {
             reader.SetSection("Meta");
@@ -66,7 +63,7 @@ namespace BreakoutTest {
 
             reader.Reset();
         }
-
+        // Testing the SectionStreamReader to read the Legend section
         [Test]
         public void TestLegendReadSection() {
             reader.SetSection("Legend");

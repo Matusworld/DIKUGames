@@ -16,10 +16,12 @@ namespace BreakoutTest {
 
         uint startLives = 2;
 
+        public HealthbarTest() {
+            Window.CreateOpenGLContext();
+        }
+
         [SetUp]
         public void SetUp() {
-            Window.CreateOpenGLContext();
-
             healthbar = new Healthbar(startLives, maxLives);
 
             eventBus = new GameEventBus();
@@ -28,7 +30,7 @@ namespace BreakoutTest {
         }
 
 
-
+        // Testing Preconditions
         [Test]
         public void PreconditionTest() {
             Assert.AreEqual(startLives, healthbar.Lives);
@@ -43,7 +45,7 @@ namespace BreakoutTest {
 
             eventBus.RegisterEvent(new GameEvent {
                 EventType = GameEventType.ControlEvent, 
-                StringArg1 = "HealthGained"
+                StringArg1 = "HEALTH_GAINED"
             });
 
             eventBus.ProcessEvents();
@@ -58,7 +60,7 @@ namespace BreakoutTest {
 
             eventBus.RegisterEvent(new GameEvent {
                 EventType = GameEventType.ControlEvent, 
-                StringArg1 = "HealthLost"
+                StringArg1 = "HEALTH_LOST"
             });
 
             eventBus.ProcessEvents();
@@ -73,29 +75,48 @@ namespace BreakoutTest {
             for (int i = 0; i < 5; i++) {
                 eventBus.RegisterEvent(new GameEvent {
                     EventType = GameEventType.ControlEvent, 
-                    StringArg1 = "HealthGained"
+                    StringArg1 = "HEALTH_GAINED"
                 });
-            } 
+            }
             
             eventBus.ProcessEvents();
 
             Assert.AreEqual(5, healthbar.Lives);
         }
 
-        //Test that life cannot be less than 0
+        //Test that life cannot be less than 1
         [Test]
         public void AllLifeLossTest() {
 
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 6; i++) {
                 eventBus.RegisterEvent(new GameEvent {
                     EventType = GameEventType.ControlEvent, 
-                    StringArg1 = "HealthLost"
+                    StringArg1 = "HEALTH_LOST"
                 });
-            } 
+            }
             
             eventBus.ProcessEvents();
 
-            Assert.AreEqual(0, healthbar.Lives);
+            Assert.AreEqual(1, healthbar.Lives);
+        }
+        
+        // Testing resetting the health back to the players start lives. 
+        [Test]
+        public void ResetHealthTest() {
+            for (int i = 0; i < 5; i++) {
+                eventBus.RegisterEvent(new GameEvent {
+                    EventType = GameEventType.ControlEvent, 
+                    StringArg1 = "HEALTH_GAINED"
+                });
+            }
+            
+            eventBus.ProcessEvents();
+
+            Assert.AreEqual(5, healthbar.Lives);
+
+            healthbar.Reset();
+
+            Assert.AreEqual(startLives, healthbar.Lives);
         }
     }
 }

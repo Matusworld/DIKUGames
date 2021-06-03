@@ -15,25 +15,24 @@ using DIKUArcade.Physics;
 using Breakout.GamePlay.BallEntity;
 using Breakout.GamePlay.PowerUpOrbEntity;
 
-namespace BreakoutTest
-{
+namespace BreakoutTest {
     public class BallTest {
         Ball ball;
         BallOrganizer ballOrganizer;
         GameEventBus eventBus;
         float tolerance;
 
-        [SetUp]
-        
-        public void setup() {
-
+        public BallTest() {
             Window.CreateOpenGLContext();
+        }
 
+        [SetUp]
+        public void setup() {
             ball = new Ball (
                 new DynamicShape (new Vec2F(0.45f, 0.5f), new Vec2F(0.05f,0.05f)),
                 new Image (Path.Combine(TestProjectPath.getPath(),  
                 "Assets", "Images", "ball.png")),
-                (float) Math.PI /4f);
+                (float) Math.PI /4f, false, false);
 
             ballOrganizer = new BallOrganizer();
             ballOrganizer.AddEntity(ball);
@@ -46,6 +45,7 @@ namespace BreakoutTest
             tolerance = 0.0001f;
         }
         
+        // Testing Right boundary
         [Test]
         public void TestRBoundaryCheckers() {
 
@@ -53,6 +53,7 @@ namespace BreakoutTest
             Assert.IsTrue(ball.RightBoundaryCheck());
         }
 
+        // Testing Left boundary
         [Test]
         public void TestLBoundaryCheckers() {
 
@@ -60,6 +61,7 @@ namespace BreakoutTest
             Assert.IsTrue(ball.LeftBoundaryCheck());
         }
 
+        // Testing Upper boundary
         [Test]
         public void TestUBoundaryCheckers() {
 
@@ -67,6 +69,7 @@ namespace BreakoutTest
              Assert.IsTrue(ball.UpperBoundaryCheck());
         }
 
+        // Testing Lower boundary
         [Test]
         public void TestLOBoundaryCheckers() {
 
@@ -87,7 +90,7 @@ namespace BreakoutTest
             float oldDirectionX = ball.Shape.AsDynamicShape().Direction.X;
             float oldDirectionY = ball.Shape.AsDynamicShape().Direction.Y;
 
-            ball.DirectionBoundarySetter();
+            ball.BoundaryCollision();
             Assert.IsTrue(
                 tolerance >= Math.Abs(oldDirectionX + ball.Shape.AsDynamicShape().Direction.X) 
                 && 
@@ -206,7 +209,8 @@ namespace BreakoutTest
 
             Assert.LessOrEqual(diff, tolerance);
         }
-
+        
+        
         // Testing When player picks up powerorb double speed, that the ball gains double speed
         [Test]
         public void TestDoubleSpeed() {
@@ -214,15 +218,12 @@ namespace BreakoutTest
 
             PowerUpOrbOrganizer PUorganizer = new PowerUpOrbOrganizer();
 
-            ball.ReceiveEvent( new GameEvent {
-                EventType = GameEventType.ControlEvent, StringArg1 = "DoubleSpeed",
-                Message = "Activate"                          
-            });
+            eventBus.RegisterEvent ( new GameEvent { EventType = GameEventType.ControlEvent, 
+                StringArg1 = "DOUBLE_SPEED", Message = "ACTIVATE"});
 
             eventBus.RegisterTimedEvent (
                 new GameEvent{ EventType = GameEventType.ControlEvent,
-                    StringArg1 = "DoubleSpeed", Message = "Deactivate", To = ballOrganizer,
-                        ObjectArg1 = ball},
+                    StringArg1 = "DOUBLE_SPEED", Message = "DEACTIVATE"},
                     TimePeriod.NewMilliseconds(PUorganizer.PowerUpDuration));
 
             eventBus.ProcessEvents();
@@ -240,7 +241,7 @@ namespace BreakoutTest
 
             Assert.IsFalse(ball.DoubleSpeedActive);
         }
-
+        
         // Testing When player picks up powerorb half speed, that the ball gets half speed
         [Test]
         public void TestHalfSpeed() {
@@ -248,15 +249,12 @@ namespace BreakoutTest
 
             PowerUpOrbOrganizer PUorganizer = new PowerUpOrbOrganizer();
 
-            ball.ReceiveEvent ( new GameEvent {
-                EventType = GameEventType.ControlEvent, StringArg1 = "HalfSpeed",
-                Message = "Activate"                         
-            });
+            eventBus.RegisterEvent ( new GameEvent { EventType = GameEventType.ControlEvent, 
+                StringArg1 = "HALF_SPEED", Message = "ACTIVATE"});
 
             eventBus.RegisterTimedEvent (
                 new GameEvent{ EventType = GameEventType.ControlEvent,
-                    StringArg1 = "HalfSpeed", Message = "Deactivate", To = ballOrganizer,
-                        ObjectArg1 = ball},
+                    StringArg1 = "HALF_SPEED", Message = "DEACTIVATE"},
                     TimePeriod.NewMilliseconds(PUorganizer.PowerUpDuration));
 
             eventBus.ProcessEvents();

@@ -17,7 +17,7 @@ namespace Breakout.States {
     public class MainMenu : IGameState {
         private static MainMenu instance;
         private Entity backGroundImage;
-        private ButtonManager buttonManager;
+        public ButtonManager buttonManager { get; private set; }
 
         public MainMenu() { 
             buttonManager = new ButtonManager();
@@ -47,7 +47,7 @@ namespace Breakout.States {
 
         public void ResetState() { 
             buttonManager.Reset();
-         }
+        }
 
         public void UpdateState() {}
 

@@ -9,29 +9,32 @@ using DIKUArcade.Entities;
 using DIKUArcade.Math;
 
 using Breakout.GamePlay.PowerUpOrbEntity;
+using Breakout.GamePlay.BlockEntity;
 
 namespace BreakoutTest {
     public class PowerUpOrbOrganizerTest {
         PowerUpOrbOrganizer PUOrganizer;
 
-        PowerUpOrb orb;
+        PowerUp Powerup;
 
         GameEventBus eventBus;
 
+        public PowerUpOrbOrganizerTest() {
+            Window.CreateOpenGLContext();
+        }
+
         [SetUp]
         public void setup() {
-            Window.CreateOpenGLContext();
-
             PUOrganizer = new PowerUpOrbOrganizer();
 
             DynamicShape shape = new DynamicShape(new Vec2F(0.5f, 0.5f), new Vec2F(0.05f, 0.05f));
 
-            Image image = new Image(Path.Combine(TestProjectPath.getPath(),  
-                "Assets", "Images", "LifePickUp.png"));
-
-            PowerUpTypes type = PowerUpTypes.ExtraLife;
-
-            orb = new PowerUpOrb (shape, image, type);
+            Powerup = new PowerUp (
+                new DynamicShape(new Vec2F(0.5f, 0.5f), new Vec2F(0.05f, 0.05f)), 
+                new Image(Path.Combine(
+                    TestProjectPath.getPath(),"Assets", "Images", "blue-block.png")),
+                new Image(Path.Combine(TestProjectPath.getPath(),
+                    "Assets", "Images", "blue-block-damaged.png")));
 
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.ControlEvent});
@@ -48,8 +51,8 @@ namespace BreakoutTest {
         [Test]
         public void TestAddOrb() {
             eventBus.RegisterEvent( new GameEvent {
-                EventType = GameEventType.ControlEvent, StringArg1 = "ADD_ORB",
-                ObjectArg1 = orb
+                EventType = GameEventType.ControlEvent, StringArg1 = "SPAWN_ORB",
+                ObjectArg1 = Powerup.Shape.Position
             });
 
             eventBus.ProcessEvents();

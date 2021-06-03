@@ -28,6 +28,7 @@ namespace BreakoutTest {
             reader = new SectionStreamReader();
         }
 
+        // Testing the MetaLoader on a valid file
         [Test]
         public void ValidMetaTest() {
             reader.SetPath(validFile);
@@ -47,6 +48,7 @@ namespace BreakoutTest {
             loader.ClearLoader();
         }
 
+        // Testing the MetaLoader on a invalid file
         [Test]
         public void InvalidMetaTest() {
             reader.SetPath(invalidFile);

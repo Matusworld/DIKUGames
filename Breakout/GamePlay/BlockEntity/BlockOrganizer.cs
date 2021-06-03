@@ -26,8 +26,7 @@ namespace Breakout.GamePlay.BlockEntity {
             return false;
         }
 
-        public override void ResetOrganizer()
-        {
+        public override void ResetOrganizer() {
             base.ResetOrganizer();
             NumberOfUnbreakables = 0;
         }
