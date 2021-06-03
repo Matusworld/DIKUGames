@@ -35,7 +35,7 @@ namespace BreakoutTest.GamePlayTest.BlockEntityTest {
 
             Assert.AreEqual(uBlock.HP, 1);
 
-            Assert.AreEqual(uBlock.Alive, true);
+            Assert.AreEqual(uBlock.IsDeleted(), false);
         }
     }
 }

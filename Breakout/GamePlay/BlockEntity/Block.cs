@@ -15,7 +15,6 @@ namespace Breakout.GamePlay.BlockEntity {
         //Hit Points determine how many hits this Block can take before being deleted
         public int StartHP { get; protected set; }
         public int HP { get; protected set; } = 1;
-        public bool Alive { get; protected set; } = true;
 
         public Block(Shape shape, IBaseImage image, IBaseImage damageImage) 
             : base(shape, image) {
@@ -35,12 +34,10 @@ namespace Breakout.GamePlay.BlockEntity {
         /// </summary>
         /// <returns>A boolean answer.</returns>
         protected bool IsAlive() {
-            if (HP <= 0) {
-                Alive = false; 
-                return Alive;
+            if (HP <= 0) { 
+                return false;
             } else {
-                Alive = true;
-                return Alive;
+                return true;
             }
         }
 

@@ -43,7 +43,7 @@ namespace BreakoutTest.GamePlayTest.BlockEntityTest {
                 block.BlockHit();
             }
 
-            Assert.IsFalse(block.Alive);
+            Assert.IsTrue(block.IsDeleted());
         } */
     }
 }
