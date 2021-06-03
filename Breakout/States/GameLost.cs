@@ -1,5 +1,4 @@
 using System.IO;
-using System.Collections.Generic;
 
 using DIKUArcade.State;
 using DIKUArcade.Entities;
@@ -10,6 +9,10 @@ using DIKUArcade.Input;
 using Breakout.States.Buttons;
 
 namespace Breakout.States {
+    /// <summary>
+    /// Singleton GameLost state with background Image and custom Text.
+    /// Has Buttons via the ButtonManager.
+    /// </summary>
     public class GameLost : IGameState {
         private static GameLost instance;
         private Entity backGroundImage;

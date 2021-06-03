@@ -9,6 +9,10 @@ using DIKUArcade.Input;
 using Breakout.States.Buttons;
 
 namespace Breakout.States {
+    /// <summary>
+    /// Singleton GamePaused state with background Image and custom Text.
+    /// Has Buttons via the ButtonManager.
+    /// </summary>
     public class GamePaused : IGameState {
         private static GamePaused instance;
         private Entity backGroundImage;

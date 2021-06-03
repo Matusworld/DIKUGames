@@ -2,25 +2,36 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 
 namespace Breakout.States.Buttons {
+    /// <summary>
+    /// Stationary Button in Window that can be either Active or Passive.
+    /// Must be subtyped to add functionality to Button Action.
+    /// Button is passive color by default.
+    /// </summary>
     public abstract class Button {
         protected Text text;
         protected Vec3I activeColor;
         protected Vec3I passiveColor;
-        public bool Active { get; protected set; }
 
         public Button (Vec2F pos, Vec2F extent, Vec3I actCol, Vec3I pasCol) {
-                activeColor = actCol;
-                passiveColor = pasCol;
-            }
+            activeColor = actCol;
+            passiveColor = pasCol;
 
-        public void SetActive() {
-            text.SetColor(activeColor);
-            this.Active = true;
-
+            text = new Text("", pos, extent);
+            SetPassiveColor();
         }
-        public void SetPassive() {
+
+        /// <summary>
+        /// Change to color of this Button to its activeColor.
+        /// </summary>
+        public void SetActiveColor() {
+            text.SetColor(activeColor);
+        }
+
+        /// <summary>
+        /// Change to color of this Button to its passiveColor.
+        /// </summary>
+        public void SetPassiveColor() {
             text.SetColor(passiveColor);
-            this.Active = false;
         }
 
         public void Render() {
@@ -28,7 +39,7 @@ namespace Breakout.States.Buttons {
         }
 
         /// <summary>
-        /// Implement button action, typically with events
+        /// Implement button action, typically with events.
         /// </summary>
         public abstract void Action();
     }

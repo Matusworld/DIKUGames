@@ -10,6 +10,10 @@ using Breakout.States.Buttons;
 
 
 namespace Breakout.States {
+    /// <summary>
+    /// Singleton MainMenu state with background Image and custom Text.
+    /// Has Buttons via the ButtonManager.
+    /// </summary>
     public class MainMenu : IGameState {
         private static MainMenu instance;
         private Entity backGroundImage;

@@ -49,7 +49,7 @@ namespace Breakout.States.Buttons {
         }
 
         public void ButtonMover(KeyboardKey key) {
-            ActiveButton.Value.SetPassive();
+            ActiveButton.Value.SetPassiveColor();
 
             if (key == KeyboardKey.Up && ActiveButton == Buttons.First) {
                 ActiveButton = Buttons.Last;
@@ -64,7 +64,7 @@ namespace Breakout.States.Buttons {
                 ActiveButton = ActiveButton.Next;
             }
 
-            ActiveButton.Value.SetActive();
+            ActiveButton.Value.SetActiveColor();
         }
 
         public void RenderButtons() {
@@ -74,16 +74,15 @@ namespace Breakout.States.Buttons {
         }
 
         public void Reset() {
-            ActiveButton.Value.SetPassive();
             SetFirstButtonActive();
         }
 
         public void SetFirstButtonActive() {
             if (ActiveButton != null) {
-                ActiveButton.Value.SetPassive();
+                ActiveButton.Value.SetPassiveColor();
             }
             ActiveButton = Buttons.First;
-            ActiveButton.Value.SetActive();
+            ActiveButton.Value.SetActiveColor();
         }
 
         public void ActiveButtonAction() {

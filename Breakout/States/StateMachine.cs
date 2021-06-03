@@ -3,6 +3,11 @@ using DIKUArcade.State;
 using DIKUArcade.Timers;
 
 namespace Breakout.States {
+    /// <summary>
+    /// StateMachine hold active GameState of the game and control the transition between 
+    /// GameStates. These transitions are triggered by GameEvents. 
+    /// All GameStates are singletons.
+    /// </summary>
     public class StateMachine : IGameEventProcessor {
         public IGameState ActiveState { get; private set; }
 
@@ -12,8 +17,12 @@ namespace Breakout.States {
             ActiveState = MainMenu.GetInstance();
         }
 
+        /// <summary>
+        /// Switch the Active GameState to a singleton of the given GameStateType.
+        /// </summary>
+        /// <param name="stateType"></param>
         private void SwitchState(GameStateType stateType) {
-            switch(stateType) {
+            switch (stateType) {
                 case GameStateType.GameRunning:
                     ActiveState = GameRunning.GetInstance();
                     break;
@@ -34,7 +43,10 @@ namespace Breakout.States {
             }
         }
 
-        //Process Event method
+        /// <summary>
+        /// Process Events related the transition between GameStates.
+        /// </summary>
+        /// <param name="gameEvent"></param>
         public void ProcessEvent(GameEvent gameEvent) {
             switch (gameEvent.Message) {
                 case "CHANGE_STATE":
@@ -70,6 +82,7 @@ namespace Breakout.States {
                             SwitchState(GameStateType.MainMenu);
                             ActiveState.ResetState();
                             break;
+                            
                         case "GAME_LOST":
                             SwitchState(GameStateType.GameLost);
                             ActiveState.ResetState();

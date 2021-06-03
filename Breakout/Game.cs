@@ -7,28 +7,34 @@ using DIKUArcade.Events;
 using Breakout.States;
 
 namespace Breakout {
+    /// <summary>
+    /// Game is the highest level class of the game.
+    /// Holds the StateMachine and initialize the BreakoutBus.
+    /// </summary>
     public class Game : DIKUGame, IGameEventProcessor {
         private StateMachine stateMachine;
 
         public Game(WindowArgs winArgs) : base(winArgs) {
             window.SetKeyEventHandler(KeyHandler);
-            //window.SetClearColor(System.Drawing.Color.DarkGray);
 
             BreakoutBus.GetBus().InitializeEventBus(new List<GameEventType> {
-                GameEventType.WindowEvent, GameEventType.PlayerEvent, GameEventType.ControlEvent,
-                GameEventType.GameStateEvent, GameEventType.MovementEvent } );
+                GameEventType.WindowEvent, GameEventType.ControlEvent,
+                GameEventType.GameStateEvent } );
             BreakoutBus.GetBus().Subscribe(GameEventType.WindowEvent, this);  
 
             stateMachine = new StateMachine();
         }
 
-        //KeyHandler sends singal on to ActiveState of StateMachine
+        /// <summary>
+        /// KeyHandler sends input from Keyboard on to the ActiveState of StateMachine
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="key"></param>
         private void KeyHandler(KeyboardAction action, KeyboardKey key) { 
             if (action == KeyboardAction.KeyRelease && key == KeyboardKey.Escape) {
                 BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                     EventType = GameEventType.WindowEvent, Message = "CLOSE_WINDOW" });
-            }
-            else {
+            } else {
                 stateMachine.ActiveState.HandleKeyEvent(action, key);
             }
         }

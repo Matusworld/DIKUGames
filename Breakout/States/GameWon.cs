@@ -9,6 +9,10 @@ using DIKUArcade.Input;
 using Breakout.States.Buttons;
 
 namespace Breakout.States {
+    /// <summary>
+    /// Singleton GameWon state with background Image and custom Text.
+    /// Has Buttons via the ButtonManager.
+    /// </summary>
     public class GameWon : IGameState {
         private static GameWon instance;
         private Entity backGroundImage;

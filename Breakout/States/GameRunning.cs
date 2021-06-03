@@ -16,8 +16,14 @@ using Breakout.GamePlay.BlockEntity;
 using Breakout.GamePlay.PowerUpOrbEntity;
 
 namespace Breakout.States {
+    /// <summary>
+    /// GameRunning is the GameState where the actual game mechanis are running.
+    /// Holds all gamerelated objects though not necessarily directly.
+    /// Responsible for Move- and Time Updates plus CollisionChecks between Entities.
+    /// </summary>
     public class GameRunning : IGameState {
         private static GameRunning instance;
+
         private Entity backGroundImage;
         private Player player;
         private BallOrganizer ballOrganizer;
@@ -33,7 +39,8 @@ namespace Breakout.States {
             IBaseImage image = new Image(Path.Combine( ProjectPath.getPath(),
                 "Breakout", "Assets", "Images", "SpaceBackground.png"));
             backGroundImage = new Entity(shape, image);
-              
+
+            //Initialize LevelManager
             LinkedList<string> levelSequence = new LinkedList<string> (new List<string> { "level1.txt", "level2.txt", "level3.txt",
                 "central-mass.txt", "columns.txt", "wall.txt" });
             LevelManager = new LevelManager(levelSequence);
@@ -55,6 +62,10 @@ namespace Breakout.States {
             return GameRunning.instance ?? (GameRunning.instance = new GameRunning());
         }
 
+        /// <summary>
+        /// Run CollisionCheck on all Blocks for one ball at a time.
+        /// An internal variable records a ball has hit one Block.
+        /// </summary>
         private void BallBlockCollisionIterate() {
             ballOrganizer.Entities.Iterate(ball => {
                 bool hit = false;
@@ -64,6 +75,16 @@ namespace Breakout.States {
             });
         }
 
+        /// <summary>
+        /// Collision check between single ball and block.
+        /// Blockhit is always recorded.
+        /// Ballhit is only recorded if another hit has not already been recorded 
+        /// this iteration. This is done to prevent the ball from "double-reflecting" when 
+        /// "double-hitting" Blocks and thus not changing its Direction.
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="ball"></param>
+        /// <param name="priorHit">Whether the ball hit another Block this iteration.</param>
         private void BallBlockCollision(Block block, Ball ball, ref bool priorHit) {
             CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(), block.Shape);
             if (check.Collision) {
@@ -79,6 +100,11 @@ namespace Breakout.States {
             }
         }
 
+        /// <summary>
+        /// Collision check between a single Ball and the Player.
+        /// The relative hitposition on the player is computed and passed on the Ball.
+        /// </summary>
+        /// <param name="ball">Ball is checked for collision with the Player</param>
         private void BallPlayerCollision(Ball ball) {
             CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(),
                 player.Shape.AsDynamicShape());
@@ -89,6 +115,13 @@ namespace Breakout.States {
             }
         }
 
+        /// <summary>
+        /// Compute the relative hitPosition on the Player for its collision with the given Ball.
+        /// Designed to return [0.0, 1.0], but due to Collision boundary cases, this amount might
+        /// be exceeded.
+        /// </summary>
+        /// <param name="ball">Ball that is colliding with the Player</param>
+        /// <returns></returns>
         private float PlayerHitPosition(Ball ball){
             float numerator = ball.Shape.Position.X + ball.Shape.Extent.X - player.Shape.Position.X;
             float denominator = player.Shape.Extent.X + ball.Shape.Extent.X; 
@@ -96,17 +129,26 @@ namespace Breakout.States {
             return numerator / denominator;
         }
 
+        /// <summary>
+        /// Truncate the given hitPosition to the interval [0.0, 1.0]
+        /// </summary>
+        /// <param name="hitPosition">relative Player hitPosition</param>
+        /// <returns></returns>
         private float PlayerHitPositionTruncator(float hitPosition) {
             if (hitPosition < 0.0f) {
                 return 0.0f;
-            } 
-            else if (hitPosition > 1.0f) {
+            } else if (hitPosition > 1.0f) {
                 return 1.0f;
-            }
-            else {
+            } else {
                 return hitPosition;
             }
         }
+
+        /// <summary>
+        /// Collision check between a single PowerUpOrbs and the Player.
+        /// Orbhit is always recorded.
+        /// </summary>
+        /// <param name="orb"></param>
         private void OrbPlayerCollision(PowerUpOrb orb) {
             CollisionData check = CollisionDetection.Aabb(orb.Shape.AsDynamicShape(), player.Shape);
 
@@ -130,23 +172,19 @@ namespace Breakout.States {
         }
 
         public void UpdateState() {
+            //Movement
             player.Move();
-
-            //balls move
             ballOrganizer.MoveEntities();
-
-            //PowerUpOrb move
             PowerUpOrbOrganizer.MoveEntities();
 
+            //Collision
             PowerUpOrbOrganizer.Entities.Iterate(orb => {
                 OrbPlayerCollision(orb);
             });
-
             ballOrganizer.Entities.Iterate(ball => {
                 BallPlayerCollision(ball);
                 ball.BoundaryCollision();
             });
-
             BallBlockCollisionIterate();
 
             LevelManager.UpdateLevelTimer();
