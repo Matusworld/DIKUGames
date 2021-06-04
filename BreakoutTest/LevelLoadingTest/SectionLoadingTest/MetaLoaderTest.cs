@@ -2,10 +2,11 @@ using System.IO;
 
 using NUnit.Framework;
 
+using Breakout;
 using Breakout.LevelLoading;
 using Breakout.LevelLoading.SectionLoading;
 
-namespace BreakoutTest {
+namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
     public class MetaLoaderTest {
         SectionStreamReader reader;
         MetaLoader loader;
@@ -20,14 +21,16 @@ namespace BreakoutTest {
 
         [SetUp]
         public void Setup() {
-            validFile = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", "level1.txt");
+            validFile = Path.Combine(ProjectPath.getPath(),
+                "Breakout", "Assets", "Levels", "level1.txt");
 
-            invalidFile = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", 
+            invalidFile = Path.Combine(ProjectPath.getPath(), "Breakout", "Assets", "Levels", 
                 "wrongsectioncontent.txt");
 
             reader = new SectionStreamReader();
         }
 
+        // Testing the MetaLoader on a valid file
         [Test]
         public void ValidMetaTest() {
             reader.SetPath(validFile);
@@ -47,6 +50,7 @@ namespace BreakoutTest {
             loader.ClearLoader();
         }
 
+        // Testing the MetaLoader on a invalid file
         [Test]
         public void InvalidMetaTest() {
             reader.SetPath(invalidFile);

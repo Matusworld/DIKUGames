@@ -15,7 +15,6 @@ namespace Breakout.GamePlay.PlayerEntity {
         private float moveLeft = 0.0f;
         private float moveRight = 0.0f;
         public const float MOVEMENT_SPEED = 0.02f;
-
         public Healthbar Healthbar { get; private set; }
         private uint startLives = 3;
         private uint maxLives = 5;

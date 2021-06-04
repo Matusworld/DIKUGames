@@ -3,10 +3,11 @@ using System.IO;
 
 using NUnit.Framework;
 
+using Breakout;
 using Breakout.LevelLoading;
 using Breakout.LevelLoading.SectionLoading;
 
-namespace BreakoutTest {
+namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
 
     public class MapLoaderTest {
         SectionStreamReader reader;
@@ -23,11 +24,13 @@ namespace BreakoutTest {
 
         [SetUp]
         public void Setup() {
-            path = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", "level1.txt");
+            path = Path.Combine(ProjectPath.getPath(), 
+                "Breakout", "Assets", "Levels", "level1.txt");
 
             reader = new SectionStreamReader();
         }
 
+        // Testing the Map loader gives the correct results
         [Test]
         public void Testloader() {
             reader.SetPath(path);

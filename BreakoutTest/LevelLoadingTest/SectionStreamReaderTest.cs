@@ -3,16 +3,13 @@ using System.IO;
 
 using NUnit.Framework;
 
+using Breakout;
 using Breakout.LevelLoading;
 
-namespace BreakoutTest {
+namespace BreakoutTest.LevelLoadingTest {
 
     public class SectionStreamReaderTest {
         SectionStreamReader reader;
-        //SectionStreamReader mapReader;
-        //SectionStreamReader metaReader;
-        //SectionStreamReader legendReader;
-
         string path;
 
         List<string> map = new List<string>{"------------", "------------", "-qqqqqqqqqq-", "-qqqqqqqqqq-",
@@ -29,12 +26,14 @@ namespace BreakoutTest {
         
         [SetUp]
         public void Setup() {
-            path = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", "level1.txt");
+            path = Path.Combine(ProjectPath.getPath(), 
+                "Breakout", "Assets", "Levels", "level1.txt");
 
             reader = new SectionStreamReader();
             reader.SetPath(path);
         }
 
+        // Testing the SectionStreamReader to read the map section
         [Test]
         public void TestMapReadSection() {
             reader.SetSection("Map");
@@ -50,7 +49,7 @@ namespace BreakoutTest {
 
             reader.Reset();
         }
-
+        // Testing the SectionStreamReader to read the meta section
         [Test]
         public void TestMetaReadSection() {
             reader.SetSection("Meta");
@@ -66,7 +65,7 @@ namespace BreakoutTest {
 
             reader.Reset();
         }
-
+        // Testing the SectionStreamReader to read the Legend section
         [Test]
         public void TestLegendReadSection() {
             reader.SetSection("Legend");
