@@ -1,7 +1,10 @@
 using NUnit.Framework;
+using System.Collections.Generic;
 
 using DIKUArcade.GUI;
+using DIKUArcade.Events;
 
+using Breakout;
 using Breakout.GamePlay.BallEntity;
 
 namespace BreakoutTest.GamePlayTest.BallEntityTest {
@@ -10,6 +13,14 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
 
         public BallOrganizerTest() {
             Window.CreateOpenGLContext();
+
+            //NUnit executes test classes in alphebitical order
+            //the Singleton BreakoutBus will now be initializing in whole test context.
+            //This way, methods that use the BreakoutBus can be called, but the BreakoutBus 
+            //will not have its events processed in the testing phase due to crashing issues 
+            BreakoutBus.GetBus().InitializeEventBus(new List<GameEventType> {
+                GameEventType.WindowEvent, GameEventType.ControlEvent,
+                GameEventType.GameStateEvent } );
         }
 
         [SetUp]

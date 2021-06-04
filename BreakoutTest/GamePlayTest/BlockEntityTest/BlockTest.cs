@@ -25,7 +25,6 @@ namespace BreakoutTest.GamePlayTest.BlockEntityTest {
                     "Assets", "Images", "blue-block-damaged.png")));
         }
 
-        /*
         // Testing the block taking damage
         [Test]
         public void TestBlockDamage() {
@@ -44,6 +43,6 @@ namespace BreakoutTest.GamePlayTest.BlockEntityTest {
             }
 
             Assert.IsTrue(block.IsDeleted());
-        } */
+        } 
     }
 }
