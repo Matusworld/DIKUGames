@@ -33,7 +33,7 @@ namespace Breakout.LevelLoading {
         /// <summary>
         /// Set path for reading
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="path"> The file-path to the file that should be read</param>
         public void SetPath(string path) {
             this.path = path;
         }

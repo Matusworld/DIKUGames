@@ -73,7 +73,8 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
         /// <summary>
         /// Process Events related to PowerUpOrbs
         /// </summary>
-        /// <param name="gameEvent"></param>
+        /// <param name="gameEvent">gameEvent is a string that acts as a message
+        /// conyeing what gameEvent happend.</param>
         public override void ProcessEvent(GameEvent gameEvent) {
             switch (gameEvent.StringArg1) {
                 case "SPAWN_ORB":

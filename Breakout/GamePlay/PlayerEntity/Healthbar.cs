@@ -104,7 +104,8 @@ namespace Breakout.GamePlay.PlayerEntity {
         /// <summary>
         /// Process Events related to lives/health.
         /// </summary>
-        /// <param name="gameEvent"></param>
+        /// <param name="gameEvent">gameEvent is a string that describes what event happened
+        ///  and that is being sent.</param>
         public void ProcessEvent(GameEvent gameEvent) {
             switch (gameEvent.StringArg1) {
                 case "HEALTH_LOST":

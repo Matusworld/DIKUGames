@@ -28,8 +28,8 @@ namespace Breakout {
         /// <summary>
         /// KeyHandler sends input from Keyboard on to the ActiveState of StateMachine
         /// </summary>
-        /// <param name="action"></param>
-        /// <param name="key"></param>
+        /// <param name="action">Describes how the key is interacted with by the user</param>
+        /// <param name="key">The signature of the key that has been pressed</param>
         private void KeyHandler(KeyboardAction action, KeyboardKey key) { 
             if (action == KeyboardAction.KeyRelease && key == KeyboardKey.Escape) {
                 BreakoutBus.GetBus().RegisterEvent(new GameEvent {

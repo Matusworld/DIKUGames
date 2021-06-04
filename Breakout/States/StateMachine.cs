@@ -20,7 +20,7 @@ namespace Breakout.States {
         /// <summary>
         /// Switch the Active GameState to a singleton of the given GameStateType.
         /// </summary>
-        /// <param name="stateType"></param>
+        /// <param name="stateType">stateType refers to what state the game is in.</param>
         private void SwitchState(GameStateType stateType) {
             switch (stateType) {
                 case GameStateType.GameRunning:
@@ -46,7 +46,8 @@ namespace Breakout.States {
         /// <summary>
         /// Process Events related the transition between GameStates.
         /// </summary>
-        /// <param name="gameEvent"></param>
+        /// <param name="gameEvent">gameEvent is a string that describes what event happened
+        ///  and that is being sent.</param>
         public void ProcessEvent(GameEvent gameEvent) {
             switch (gameEvent.Message) {
                 case "CHANGE_STATE":

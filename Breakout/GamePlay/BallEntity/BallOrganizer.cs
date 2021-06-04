@@ -76,7 +76,8 @@ namespace Breakout.GamePlay.BallEntity {
         /// <summary>
         /// Process Events related to the Balls.
         /// </summary>
-        /// <param name="gameEvent"></param>
+        /// <param name="gameEvent">gameEvent is a string that describes what event happened
+        ///  and that is being sent.</param>
         public override void ProcessEvent(GameEvent gameEvent) {
             switch (gameEvent.StringArg1) {
                 case "HALF_SPEED":
