@@ -92,7 +92,7 @@ namespace Breakout.States {
                 block.BlockHit();
                 
                 //only send to ball if not priorly hit this iteration
-                if (!priorHit) {
+                if (!priorHit || priorHit) {
                     priorHit = true;
 
                     ball.DirectionBlockSetter(check.CollisionDir);
