@@ -63,41 +63,20 @@ namespace Breakout.States {
         }
 
         /// <summary>
-        /// Run CollisionCheck on all Blocks for one ball at a time.
-        /// An internal variable records a ball has hit one Block.
+        /// Run CollisionCheck on all Blocks for all balls
         /// </summary>
         public void BallBlockCollisionIterate() {
             ballOrganizer.Entities.Iterate(ball => {
-                bool hit = false;
                 LevelManager.LevelLoader.BlockOrganizer.Entities.Iterate(block => {
-                    BallBlockCollision(block, ball, ref hit);
+                    CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(), block.Shape);
+                    if (check.Collision) {
+                        //to block
+                        block.BlockHit();
+                
+                        ball.DirectionBlockSetter(check.CollisionDir);
+                    }
                 });
             });
-        }
-
-        /// <summary>
-        /// Collision check between single ball and block.
-        /// Blockhit is always recorded.
-        /// Ballhit is only recorded if another hit has not already been recorded 
-        /// this iteration. This is done to prevent the ball from "double-reflecting" when 
-        /// "double-hitting" Blocks and thus not changing its Direction.
-        /// </summary>
-        /// <param name="block">The block that has been hit</param>
-        /// <param name="ball">The ball that hit the block</param>
-        /// <param name="priorHit">Whether the ball hit another Block this iteration.</param>
-        private void BallBlockCollision(Block block, Ball ball, ref bool priorHit) {
-            CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(), block.Shape);
-            if (check.Collision) {
-                //to block
-                block.BlockHit();
-                
-                //only send to ball if not priorly hit this iteration
-                if (!priorHit || priorHit) {
-                    priorHit = true;
-
-                    ball.DirectionBlockSetter(check.CollisionDir);
-                }
-            }
         }
 
         /// <summary>
@@ -198,11 +177,11 @@ namespace Breakout.States {
 
             ballOrganizer.RenderEntities();
 
-            PowerUpOrbOrganizer.RenderEntities();
-
             score.Render();
 
             LevelManager.RenderLevel();
+
+            PowerUpOrbOrganizer.RenderEntities();
         }
 
         public void HandleKeyEvent(KeyboardAction action, KeyboardKey key) {

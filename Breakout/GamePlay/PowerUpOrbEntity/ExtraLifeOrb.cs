@@ -14,7 +14,7 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
         /// </summary>
         public override void ApplyEffect() {
             BreakoutBus.GetBus().RegisterEvent( new GameEvent {
-                EventType = GameEventType.ControlEvent, StringArg1 = "HealthGained"});
+                EventType = GameEventType.ControlEvent, StringArg1 = "HEALTH_GAINED"});
         }
     }
 }
