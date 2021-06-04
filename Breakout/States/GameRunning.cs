@@ -82,8 +82,8 @@ namespace Breakout.States {
         /// this iteration. This is done to prevent the ball from "double-reflecting" when 
         /// "double-hitting" Blocks and thus not changing its Direction.
         /// </summary>
-        /// <param name="block"></param>
-        /// <param name="ball"></param>
+        /// <param name="block">The block that has been hit</param>
+        /// <param name="ball">The ball that hit the block</param>
         /// <param name="priorHit">Whether the ball hit another Block this iteration.</param>
         private void BallBlockCollision(Block block, Ball ball, ref bool priorHit) {
             CollisionData check = CollisionDetection.Aabb(ball.Shape.AsDynamicShape(), block.Shape);
@@ -148,7 +148,7 @@ namespace Breakout.States {
         /// Collision check between a single PowerUpOrbs and the Player.
         /// Orbhit is always recorded.
         /// </summary>
-        /// <param name="orb"></param>
+        /// <param name="orb"> The orb that hit the player</param>
         private void OrbPlayerCollision(PowerUpOrb orb) {
             CollisionData check = CollisionDetection.Aabb(orb.Shape.AsDynamicShape(), player.Shape);
 

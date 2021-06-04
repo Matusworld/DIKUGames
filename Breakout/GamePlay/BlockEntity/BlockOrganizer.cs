@@ -35,7 +35,8 @@ namespace Breakout.GamePlay.BlockEntity {
         /// <summary>
         /// Process Events related to Blocks.
         /// </summary>
-        /// <param name="gameEvent"></param>
+        /// <param name="gameEvent">gameEvent is a string that describes what event happened
+        ///  and that is being sent.</param>
         public override void ProcessEvent(GameEvent gameEvent) {
             switch (gameEvent.StringArg1) {
                 case "BLOCK_DELETED":

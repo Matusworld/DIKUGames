@@ -52,7 +52,7 @@ namespace Breakout.LevelLoading {
         /// </summary>
         /// <param name="i">row coordinate.</param>
         /// <param name="j">column coordinate.</param>
-        /// <param name="blockExtent"></param>
+        /// <param name="blockExtent">The extent of the block, which comes from the shape.</param>
         /// <returns>Vec2F BlockPosistion</returns>
         private Vec2F ComputeBlockPosition(int i, int j, Vec2F blockExtent) {
             float posX = blockExtent.X * j;
@@ -64,8 +64,8 @@ namespace Breakout.LevelLoading {
         /// Generate Block based on input. The cell character determines block type and Image.
         /// </summary>
         /// <param name="cell">Maps to both Block type and Image.</param>
-        /// <param name="position"></param>
-        /// <param name="extent"></param>
+        /// <param name="position">The position of the block, which comes from the shape</param>
+        /// <param name="extent">The extent of the block, which comes from the shape</param>
         /// <returns>The generated Block.</returns>
         private Block GenerateBlock(char cell, Vec2F position, Vec2F extent) {
                 IBaseImage image = Legend.LegendDict[cell].Item1;
