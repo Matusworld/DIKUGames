@@ -1,11 +1,13 @@
 using NUnit.Framework;
 using System.IO;
 
+using DIKUArcade.Events;
 using DIKUArcade.GUI;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
 using DIKUArcade.Entities;
 
+using Breakout;
 using Breakout.GamePlay.BlockEntity;
 
 namespace BreakoutTest.GamePlayTest.BlockEntityTest {
@@ -27,6 +29,9 @@ namespace BreakoutTest.GamePlayTest.BlockEntityTest {
             Assert.AreEqual(blockOrganizer.Entities.CountEntities(), 0);
 
             Assert.AreEqual(blockOrganizer.NumberOfUnbreakables, 0);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, blockOrganizer);
         }
 
         // Testing Adding blocks to the organizer, then reseting the organizer. 
@@ -69,6 +74,8 @@ namespace BreakoutTest.GamePlayTest.BlockEntityTest {
 
             Assert.AreEqual(blockOrganizer.NumberOfUnbreakables, 0);
 
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, blockOrganizer);
         }
     }
 }

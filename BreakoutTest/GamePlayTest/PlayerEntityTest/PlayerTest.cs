@@ -4,9 +4,11 @@ using NUnit.Framework;
 
 using DIKUArcade.GUI;
 using DIKUArcade.Entities;
+using DIKUArcade.Events;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
 
+using Breakout;
 using Breakout.GamePlay.PlayerEntity;
 
 namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
@@ -53,6 +55,9 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
 
             Assert.LessOrEqual(0.0f, player.Shape.Position.Y);
             Assert.LessOrEqual(player.Shape.Position.Y, 0.5f-player.Shape.Extent.Y);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, player);
         }
 
         //Assert that player does not initially move
@@ -67,6 +72,9 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
 
             Assert.LessOrEqual(diffX, tolerance);
             Assert.LessOrEqual(diffY, tolerance);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, player);
         }        
         
         //*Move statement covered*
@@ -81,6 +89,9 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
 
             Assert.LessOrEqual(diffX, tolerance);
             Assert.LessOrEqual(diffY, tolerance);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, player);
         }
         
         //*Move statement covered*
@@ -95,6 +106,9 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
 
             Assert.LessOrEqual(diffX, tolerance);
             Assert.LessOrEqual(diffY, tolerance);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, player);
         }
         
         //Assert that the right position bound is respected
@@ -114,6 +128,9 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
             Assert.LessOrEqual(diffX, tolerance);
             Assert.LessOrEqual(diffY, tolerance);
             Assert.AreEqual(player.RightBoundaryCheck(), true);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, player);
         }
         
         //Assert that the left position bound is respected
@@ -133,6 +150,9 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
             Assert.LessOrEqual(diffX, tolerance);
             Assert.LessOrEqual(diffY, tolerance);
             Assert.AreEqual(player.LeftBoundaryCheck(), true);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, player);
         }
         
         //Assert no stutter on right bound
@@ -157,6 +177,9 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
                 Assert.LessOrEqual(diffX, tolerance);
                 Assert.LessOrEqual(diffY, tolerance);
             }
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, player);
         }
         
         //Assert no stutter on left bound
@@ -182,6 +205,9 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
                 Assert.LessOrEqual(diffX, tolerance);
                 Assert.LessOrEqual(diffY, tolerance);
             }
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, player);
         }
         
         //Assert simultaneous movement will cancel out 
@@ -199,6 +225,9 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
 
             Assert.LessOrEqual(diffX, tolerance);
             Assert.LessOrEqual(diffY, tolerance);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, player);
         }
         
         //Assert that position will not be changed by updates after movement has stopped.
@@ -224,6 +253,9 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
 
             Assert.LessOrEqual(newdiffX, tolerance);
             Assert.LessOrEqual(newdiffY, tolerance);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, player);
         }
 
         [Test]
@@ -246,6 +278,9 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
 
             Assert.LessOrEqual(diffXx, tolerance);
             Assert.LessOrEqual(diffYy, tolerance);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, player);
         }
     }
 }

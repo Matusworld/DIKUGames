@@ -45,6 +45,9 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
 
             ball.Shape.Position.X = 1.01f;
             Assert.IsTrue(ball.RightBoundaryCheck());
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
 
         // Testing Left boundary
@@ -53,6 +56,9 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
 
             ball.Shape.Position.X = -0.01f;
             Assert.IsTrue(ball.LeftBoundaryCheck());
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
 
         // Testing Upper boundary
@@ -60,7 +66,10 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
         public void TestUBoundaryCheckers() {
 
             ball.Shape.Position.Y = 1.01f;
-             Assert.IsTrue(ball.UpperBoundaryCheck());
+            Assert.IsTrue(ball.UpperBoundaryCheck());
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
 
         // Testing Lower boundary
@@ -68,7 +77,10 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
         public void TestLOBoundaryCheckers() {
 
             ball.Shape.Position.Y = -0.01f;
-             Assert.IsTrue(ball.LowerBoundaryCheck());
+            Assert.IsTrue(ball.LowerBoundaryCheck());
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
 
         //Test that correct dimension direction is reversed when hitting a boundary
@@ -89,6 +101,9 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
                 tolerance >= Math.Abs(oldDirectionX + ball.Shape.AsDynamicShape().Direction.X) 
                 && 
                 tolerance >= Math.Abs(oldDirectionY + ball.Shape.AsDynamicShape().Direction.Y));
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
 
         [Test]
@@ -97,6 +112,9 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
             ball.DirectionPlayerSetter(playerHitPos);
 
             Assert.IsTrue(tolerance >= Math.Abs(ball.GetTheta() - (0.75f*(float)Math.PI)));
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
         [Test]
         public void testDirectionPlayerSetterMiddleBounce() {
@@ -104,6 +122,9 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
             ball.DirectionPlayerSetter(playerHitPos);
 
             Assert.IsTrue(tolerance >= Math.Abs(ball.GetTheta() - (0.5f*(float)Math.PI)));
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
         [Test]
         public void testDirectionPlayerSetterRightBounce() {
@@ -111,6 +132,9 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
             ball.DirectionPlayerSetter(playerHitPos);
 
             Assert.IsTrue(tolerance >= Math.Abs(ball.GetTheta() - (0.25*(float)Math.PI)));
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
 
         [Test]
@@ -120,7 +144,10 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
             //math to compute rebounce dir
             float expTheta = 0.75f * (float) Math.PI - (playerHitPos*(float)Math.PI / 2f);
 
-            Assert.IsTrue(tolerance >= Math.Abs(ball.GetTheta() - expTheta));           
+            Assert.IsTrue(tolerance >= Math.Abs(ball.GetTheta() - expTheta));   
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);        
         }
 
         [Test]
@@ -141,6 +168,9 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
             Assert.IsTrue(tolerance >= Math.Abs(expPosX - ball.Shape.Position.X) 
                 && 
                 tolerance >= Math.Abs(expPosY - ball.Shape.Position.Y));
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
 
         // Testing when the ball hits a block from the direction up
@@ -157,6 +187,8 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
 
             Assert.LessOrEqual(diff, tolerance);
 
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
 
         // Testing when the ball hits a block from the direction down
@@ -172,6 +204,9 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
             float diff = (ball.GetTheta() - theta);
 
             Assert.LessOrEqual(diff, tolerance);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
 
         // Testing when the ball hits a block from the direction left
@@ -187,6 +222,9 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
             float diff = (ball.GetTheta() - theta);
 
             Assert.LessOrEqual(diff, tolerance);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
 
         // Testing when the ball hits a block from the direction right
@@ -202,6 +240,9 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
             float diff = (ball.GetTheta() - theta);
 
             Assert.LessOrEqual(diff, tolerance);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
         
         
@@ -234,6 +275,10 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
             BreakoutBus.GetBus().ProcessEventsSequentially();
 
             Assert.IsFalse(ball.DoubleSpeedActive);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, PUorganizer);
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
         
         // Testing When player picks up powerorb half speed, that the ball gets half speed
@@ -265,6 +310,10 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
             BreakoutBus.GetBus().ProcessEventsSequentially();
 
             Assert.IsFalse(ball.HalfSpeedActive);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, PUorganizer);
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
     }
 }

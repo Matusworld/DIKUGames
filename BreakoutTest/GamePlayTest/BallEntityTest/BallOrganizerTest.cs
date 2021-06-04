@@ -25,13 +25,15 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
         [SetUp]
         public void setup() {
             ballOrganizer = new BallOrganizer();
-
         }
 
         // Testing that the BallOrganizer start with 0 balls in the entitycontainer
         [Test]
         public void TestInitialBallOrganizer() {
             Assert.AreEqual(ballOrganizer.Entities.CountEntities(), 0);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
         
         // Testing that the BallOrganizer can generate a ball with random dir.
@@ -50,6 +52,9 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
             }
 
             Assert.IsTrue(check);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
 
 
@@ -59,6 +64,9 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
             ballOrganizer.AddEntity(ballOrganizer.GenerateBallRandomDir());
 
             Assert.AreEqual(ballOrganizer.Entities.CountEntities(), 1);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
 
         // Testing reseting the Organizer
@@ -75,6 +83,9 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
             ballOrganizer.ResetOrganizer();
 
             Assert.AreEqual(ballOrganizer.Entities.CountEntities(), 1);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
         }
 
     }

@@ -1,6 +1,9 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 
+using DIKUArcade.Events;
+
+using Breakout;
 using Breakout.GamePlay;
 
 namespace BreakoutTest.GamePlayTest {
@@ -21,6 +24,9 @@ namespace BreakoutTest.GamePlayTest {
         [Test]
         public void TestInitialLevelManager() {
             Assert.AreEqual(levelManager.LevelLoader.Meta.Name, "LEVEL 1");
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, levelManager);
         }
 
         // Testing going to the next level
@@ -29,6 +35,9 @@ namespace BreakoutTest.GamePlayTest {
             levelManager.NextLevel();
 
             Assert.AreEqual(levelManager.LevelLoader.Meta.Name, "LEVEL 2");
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, levelManager);
         }
 
         // Testing going to the previousLevel
@@ -45,6 +54,9 @@ namespace BreakoutTest.GamePlayTest {
             levelManager.PreviousLevel();
 
             Assert.AreEqual(levelManager.LevelLoader.Meta.Name, "LEVEL 2");
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, levelManager);
         }
 
         // Testing resetting the level manager
@@ -61,6 +73,9 @@ namespace BreakoutTest.GamePlayTest {
             levelManager.ResetToFirst();
 
             Assert.AreEqual(levelManager.LevelLoader.Meta.Name, "LEVEL 1");
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, levelManager);
         }
     }
 }

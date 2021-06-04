@@ -65,6 +65,9 @@ namespace BreakoutTest.GamePlayTest {
             BreakoutBus.GetBus().ProcessEvents();
             
             Assert.AreEqual(score.ScoreCount, 1);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, score);
         }
 
         //Test that a hardended block increases the score correctly
@@ -76,6 +79,9 @@ namespace BreakoutTest.GamePlayTest {
             BreakoutBus.GetBus().ProcessEventsSequentially();
             
             Assert.AreEqual(score.ScoreCount, 2);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, score);
         }
 
         //Test that a normal block increases the score correctly
@@ -87,6 +93,9 @@ namespace BreakoutTest.GamePlayTest {
             BreakoutBus.GetBus().ProcessEventsSequentially();
             
             Assert.AreEqual(score.ScoreCount, 1);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, score);
         }
 
         //Test that PowerUp bonus score between 1 and 30 is awarded
@@ -110,6 +119,9 @@ namespace BreakoutTest.GamePlayTest {
 
                 formerScore = score.ScoreCount;
             }
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, score);
         }
 
         // Testing reseting the score. 
@@ -125,6 +137,9 @@ namespace BreakoutTest.GamePlayTest {
             score.Reset();
 
             Assert.AreEqual(score.ScoreCount, 0);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, score);
         }
 
         //Test that score cannot go below 0
@@ -132,6 +147,9 @@ namespace BreakoutTest.GamePlayTest {
         public void TestScoreuint() {
             // uint only positive numbers
             Assert.That(score.ScoreCount, Is.InstanceOf<uint>());
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, score);
         }
     }
 }

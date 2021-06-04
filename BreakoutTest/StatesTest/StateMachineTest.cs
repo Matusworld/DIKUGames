@@ -23,6 +23,9 @@ namespace BreakoutTest.StatesTest {
         [Test]
         public void TestInitialState() {
             Assert.That(machine.ActiveState, Is.InstanceOf<MainMenu>());
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.GameStateEvent, machine);
         }
 
         // Testing when pressing new game its change state from mainmenu to state gamerunning
@@ -36,6 +39,10 @@ namespace BreakoutTest.StatesTest {
             BreakoutBus.GetBus().ProcessEventsSequentially();
 
             Assert.That(machine.ActiveState, Is.InstanceOf<GameRunning>());
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.GameStateEvent, machine);
+            ((GameRunning) machine.ActiveState).UnsubscribeAll();
         }
 
         // Testing changeing to state game paused 
@@ -49,9 +56,12 @@ namespace BreakoutTest.StatesTest {
             BreakoutBus.GetBus().ProcessEventsSequentially();
 
             Assert.That(machine.ActiveState, Is.InstanceOf<GamePaused>());
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.GameStateEvent, machine);
         }
 
-        // Testing changeing to state game running after pausing the game.
+        // Testing changing to state game running after pausing the game.
         [Test]
         public void TestGameContinue() {
             BreakoutBus.GetBus().RegisterEvent( new GameEvent { 
@@ -62,6 +72,10 @@ namespace BreakoutTest.StatesTest {
             BreakoutBus.GetBus().ProcessEventsSequentially();
 
             Assert.That(machine.ActiveState, Is.InstanceOf<GameRunning>());
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.GameStateEvent, machine);
+            ((GameRunning) machine.ActiveState).UnsubscribeAll();
         }
 
         // Testing changeing to state Main menu from game pause, since 
@@ -86,7 +100,11 @@ namespace BreakoutTest.StatesTest {
             BreakoutBus.GetBus().ProcessEventsSequentially();
 
             Assert.That(machine.ActiveState, Is.InstanceOf<MainMenu>());
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.GameStateEvent, machine);
         }
+
         // Testing changeing to state Game lost
         [Test]
         public void TestGameLost() {
@@ -98,6 +116,9 @@ namespace BreakoutTest.StatesTest {
             BreakoutBus.GetBus().ProcessEventsSequentially();
 
             Assert.That(machine.ActiveState, Is.InstanceOf<GameLost>());
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.GameStateEvent, machine);
         }
 
         // Testing changeing to state Game Won
@@ -110,6 +131,9 @@ namespace BreakoutTest.StatesTest {
             BreakoutBus.GetBus().ProcessEventsSequentially();
 
             Assert.That(machine.ActiveState, Is.InstanceOf<GameWon>());
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.GameStateEvent, machine);
         }
 
     }

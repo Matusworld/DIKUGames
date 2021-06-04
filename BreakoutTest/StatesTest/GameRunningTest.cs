@@ -11,11 +11,14 @@ namespace BreakoutTest.StatesTest {
             Window.CreateOpenGLContext();
         }
 
+        //Husk at unsubscribe alle ting, brug UnsubscribeAll()
+        /*
         [SetUp]
         public void SetUp() {
             game = GameRunning.GetInstance();
         }
 
         //Test collision checks
+        */
     }
 }

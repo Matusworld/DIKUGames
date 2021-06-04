@@ -157,6 +157,22 @@ namespace Breakout.States {
             }
         }
 
+        /// <summary>
+        /// Unsubscribe all IGameEventProcessors directly or indirectly associated with this 
+        /// instance of GameRunning.
+        /// Used to prevent corrupt memory when testing.
+        /// </summary>
+        public void UnsubscribeAll() {
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, ballOrganizer);
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, LevelManager);
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, 
+                LevelManager.LevelLoader.BlockOrganizer);
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, PowerUpOrbOrganizer);
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, player.Healthbar);
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, player);
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, score);
+        }
+
         public void ResetState() {
             LevelManager.ResetToFirst();
 

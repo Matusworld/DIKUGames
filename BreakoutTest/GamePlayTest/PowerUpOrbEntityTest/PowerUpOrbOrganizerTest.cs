@@ -40,6 +40,9 @@ namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
         [Test]
         public void TestInitialPowerUpOrbOrganizer() {
             Assert.AreEqual(PUOrganizer.Entities.CountEntities(), 0);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, PUOrganizer);
         }
 
         // Testing adding a orb to the PowerUpOrbOrganizer's entitycontainer
@@ -53,6 +56,9 @@ namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
             BreakoutBus.GetBus().ProcessEventsSequentially();
 
             Assert.AreEqual(PUOrganizer.Entities.CountEntities(), 1);
+
+            //unsubscribe to prevent corrupt memory
+            BreakoutBus.GetBus().Unsubscribe(GameEventType.ControlEvent, PUOrganizer);
         }
     }
 }
