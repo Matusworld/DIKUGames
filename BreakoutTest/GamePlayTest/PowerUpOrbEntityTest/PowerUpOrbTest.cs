@@ -48,11 +48,15 @@ namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
             Assert.IsTrue(Orb.Image != null);
         }
 
-        // Testing that when the orb is at the bottom of the map
+        // Testing that when the orb is at the bottom of the map & gets deleted
         [Test]
         public void TestLOBoundaryCheckers() {
             Orb.Shape.Position.Y = -0.05f;
             Assert.IsTrue(Orb.LowerBoundaryCheck());
+
+            Orb.Move();
+
+            Assert.IsTrue(Orb.IsDeleted());
         }
     }
 }

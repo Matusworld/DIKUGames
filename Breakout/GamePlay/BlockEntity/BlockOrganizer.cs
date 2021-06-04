@@ -19,7 +19,7 @@ namespace Breakout.GamePlay.BlockEntity {
         /// Returns true if the current level has ended, i.e.
         /// when only Unbreakable Blocks remain in this BlockOrganizer.
         /// </summary>
-        private bool CheckLevelEnded() {
+        public bool CheckLevelEnded() {
             if (Entities.CountEntities() == NumberOfUnbreakables) {
                 return true;
             }

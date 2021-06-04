@@ -25,8 +25,8 @@ namespace Breakout.States {
         private static GameRunning instance;
 
         private Entity backGroundImage;
-        private Player player;
-        private BallOrganizer ballOrganizer;
+        public Player player { get; private set; }
+        public BallOrganizer ballOrganizer { get; private set; }
         private PowerUpOrbOrganizer PowerUpOrbOrganizer;
         public LevelManager LevelManager { get; private set; }
         private Score score;
@@ -66,7 +66,7 @@ namespace Breakout.States {
         /// Run CollisionCheck on all Blocks for one ball at a time.
         /// An internal variable records a ball has hit one Block.
         /// </summary>
-        private void BallBlockCollisionIterate() {
+        public void BallBlockCollisionIterate() {
             ballOrganizer.Entities.Iterate(ball => {
                 bool hit = false;
                 LevelManager.LevelLoader.BlockOrganizer.Entities.Iterate(block => {
@@ -122,7 +122,7 @@ namespace Breakout.States {
         /// </summary>
         /// <param name="ball">Ball that is colliding with the Player</param>
         /// <returns></returns>
-        private float PlayerHitPosition(Ball ball){
+        public float PlayerHitPosition(Ball ball){
             float numerator = ball.Shape.Position.X + ball.Shape.Extent.X - player.Shape.Position.X;
             float denominator = player.Shape.Extent.X + ball.Shape.Extent.X; 
 
@@ -134,7 +134,7 @@ namespace Breakout.States {
         /// </summary>
         /// <param name="hitPosition">relative Player hitPosition</param>
         /// <returns></returns>
-        private float PlayerHitPositionTruncator(float hitPosition) {
+        public float PlayerHitPositionTruncator(float hitPosition) {
             if (hitPosition < 0.0f) {
                 return 0.0f;
             } else if (hitPosition > 1.0f) {

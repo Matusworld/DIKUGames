@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System.Threading;
 
 using DIKUArcade.GUI;
 using DIKUArcade.Math;
@@ -45,12 +46,12 @@ namespace BreakoutTest.GamePlayTest {
         [Test]
         public void TestUpdateTimer() {
             int beforeleveltime = timer.levelTime;
-            int beforestaticStartTime = timer.staticStartTime;
+            
+            Thread.Sleep(1000);
 
             timer.UpdateTimer();
 
-            int newtime = (beforeleveltime + beforestaticStartTime)
-                - (int) LevelTimer.GetElapsedMilliseconds() / 1000;
+            int newtime = beforeleveltime - 1;
 
             Assert.AreEqual(timer.timer, newtime);
         }

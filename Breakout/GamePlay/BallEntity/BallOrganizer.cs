@@ -37,7 +37,7 @@ namespace Breakout.GamePlay.BallEntity {
         /// Detect whether or not any Balls remain in this BallOrganizer.
         /// </summary>
         /// <returns>The checked boolean result.</returns>
-        private bool CheckNoBalls() {
+        public bool CheckNoBalls() {
             return Entities.CountEntities() == 0;
         }
 

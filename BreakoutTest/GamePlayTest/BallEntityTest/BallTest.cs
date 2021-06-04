@@ -217,17 +217,7 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
         public void TestDoubleSpeed() {
             float startspeed = ball.speed;
 
-            PowerUpOrbOrganizer PUorganizer = new PowerUpOrbOrganizer();
-
-            eventBus.RegisterEvent ( new GameEvent { EventType = GameEventType.ControlEvent, 
-                StringArg1 = "DOUBLE_SPEED", Message = "ACTIVATE"});
-
-            eventBus.RegisterTimedEvent (
-                new GameEvent{ EventType = GameEventType.ControlEvent,
-                    StringArg1 = "DOUBLE_SPEED", Message = "DEACTIVATE"},
-                    TimePeriod.NewMilliseconds(PUorganizer.PowerUpDuration));
-
-            eventBus.ProcessEvents();
+            ball.DoubleSpeedActivate();
 
             float diff = Math.Abs(ball.speed - startspeed * 2f);
 
@@ -235,11 +225,11 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
 
             Assert.IsTrue(ball.DoubleSpeedActive);
 
-            //Extra sleep time added to be sure timed event is completed
-            Thread.Sleep(PUorganizer.PowerUpDuration + 500);
+            ball.DoubleSpeedDeactivate();
 
-            eventBus.ProcessEvents();
-
+            float diffs = Math.Abs(ball.speed - startspeed);
+            
+            Assert.LessOrEqual(diffs, tolerance);
             Assert.IsFalse(ball.DoubleSpeedActive);
         }
         
@@ -248,29 +238,18 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
         public void TestHalfSpeed() {
             float startspeed = ball.speed;
 
-            PowerUpOrbOrganizer PUorganizer = new PowerUpOrbOrganizer();
-
-            eventBus.RegisterEvent ( new GameEvent { EventType = GameEventType.ControlEvent, 
-                StringArg1 = "HALF_SPEED", Message = "ACTIVATE"});
-
-            eventBus.RegisterTimedEvent (
-                new GameEvent{ EventType = GameEventType.ControlEvent,
-                    StringArg1 = "HALF_SPEED", Message = "DEACTIVATE"},
-                    TimePeriod.NewMilliseconds(PUorganizer.PowerUpDuration));
-
-            eventBus.ProcessEvents();
+            ball.HalfSpeedActivate();
 
             float diff = Math.Abs(ball.speed - startspeed * 0.5f);
 
             Assert.LessOrEqual(diff, tolerance);
-
             Assert.IsTrue(ball.HalfSpeedActive);
 
-            //Extra sleep time added to be sure timed event is completed
-            Thread.Sleep(PUorganizer.PowerUpDuration + 500);
+            ball.HalfSpeedDeactivate();
 
-            eventBus.ProcessEvents();
+            float diffs = Math.Abs(ball.speed - startspeed);
 
+            Assert.LessOrEqual(diffs, tolerance);
             Assert.IsFalse(ball.HalfSpeedActive);
         }
     }

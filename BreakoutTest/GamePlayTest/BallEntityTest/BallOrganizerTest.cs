@@ -78,5 +78,15 @@ namespace BreakoutTest.GamePlayTest.BallEntityTest {
             Assert.AreEqual(ballOrganizer.Entities.CountEntities(), 1);
         }
 
+        // Testing CheckNoBalls method
+        [Test]
+        public void TestCheckNoBalls() {
+            Assert.IsTrue(ballOrganizer.CheckNoBalls());
+
+            ballOrganizer.AddEntity(ballOrganizer.GenerateBallRandomDir());
+
+            Assert.IsFalse(ballOrganizer.CheckNoBalls());
+        }
+
     }
 }

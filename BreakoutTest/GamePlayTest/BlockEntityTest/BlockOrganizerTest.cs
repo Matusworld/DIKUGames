@@ -69,7 +69,23 @@ namespace BreakoutTest.GamePlayTest.BlockEntityTest {
             Assert.AreEqual(blockOrganizer.Entities.CountEntities(), 0);
 
             Assert.AreEqual(blockOrganizer.NumberOfUnbreakables, 0);
+        }
 
+        // Testing the method CheckLevelEnded
+        [Test]
+        public void TestCheckLevelEnded() {
+            Assert.IsTrue(blockOrganizer.CheckLevelEnded());
+
+            Block block = new Block(new DynamicShape(
+                new Vec2F(0.45f, 0.45f), new Vec2F(0.1f, 0.05f)), 
+                new Image(Path.Combine(
+                    ProjectPath.getPath(), "Breakout", "Assets", "Images", "blue-block.png")),
+                new Image(Path.Combine(ProjectPath.getPath(),
+                    "Breakout", "Assets", "Images", "blue-block-damaged.png")));
+            
+            blockOrganizer.AddEntity(block);
+
+            Assert.IsFalse(blockOrganizer.CheckLevelEnded());
         }
     }
 }
