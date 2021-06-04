@@ -7,6 +7,7 @@ using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
 
+using Breakout;
 using Breakout.GamePlay.PowerUpOrbEntity;
 
 namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
@@ -23,8 +24,8 @@ namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
             PowerUpTypes draw = PowerUpRandom.RandomType();
             
             IBaseImage image;
-            image = new Image(Path.Combine(TestProjectPath.getPath(), 
-                        "Assets", "Images", "LifePickUp.png"));
+            image = new Image(Path.Combine(ProjectPath.getPath(), 
+                        "Breakout", "Assets", "Images", "LifePickUp.png"));
             Vec2F extent = new Vec2F(0.05f, 0.05f);
             DynamicShape shape = new DynamicShape(new Vec2F(0.05f, 0.05f), extent);
             Orb = new ExtraBallOrb(shape, image);

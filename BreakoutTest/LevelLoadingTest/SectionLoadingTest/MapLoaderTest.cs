@@ -3,6 +3,7 @@ using System.IO;
 
 using NUnit.Framework;
 
+using Breakout;
 using Breakout.LevelLoading;
 using Breakout.LevelLoading.SectionLoading;
 
@@ -23,7 +24,8 @@ namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
 
         [SetUp]
         public void Setup() {
-            path = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", "level1.txt");
+            path = Path.Combine(ProjectPath.getPath(), 
+                "Breakout", "Assets", "Levels", "level1.txt");
 
             reader = new SectionStreamReader();
         }

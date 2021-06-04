@@ -3,6 +3,7 @@ using System.IO;
 
 using NUnit.Framework;
 
+using Breakout;
 using Breakout.LevelLoading;
 
 namespace BreakoutTest.LevelLoadingTest {
@@ -25,7 +26,8 @@ namespace BreakoutTest.LevelLoadingTest {
         
         [SetUp]
         public void Setup() {
-            path = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", "level1.txt");
+            path = Path.Combine(ProjectPath.getPath(), 
+                "Breakout", "Assets", "Levels", "level1.txt");
 
             reader = new SectionStreamReader();
             reader.SetPath(path);

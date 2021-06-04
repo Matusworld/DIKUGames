@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.IO;
 
+using Breakout;
 using Breakout.GamePlay.BlockEntity;
 
 using DIKUArcade.GUI;
@@ -20,9 +21,9 @@ namespace BreakoutTest.GamePlayTest.BlockEntityTest {
         public void Setup() {
             block = new Block(new DynamicShape(new Vec2F(0.45f, 0.45f), new Vec2F(0.1f, 0.05f)), 
                 new Image(Path.Combine(
-                    TestProjectPath.getPath(),"Assets", "Images", "blue-block.png")),
-                new Image(Path.Combine(TestProjectPath.getPath(),
-                    "Assets", "Images", "blue-block-damaged.png")));
+                    ProjectPath.getPath(), "Breakout", "Assets", "Images", "blue-block.png")),
+                new Image(Path.Combine(ProjectPath.getPath(),
+                    "Breakout", "Assets", "Images", "blue-block-damaged.png")));
         }
 
         // Testing the block taking damage

@@ -8,6 +8,7 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 
+using Breakout;
 using Breakout.GamePlay.PowerUpOrbEntity;
 using Breakout.GamePlay.BlockEntity;
 
@@ -32,9 +33,9 @@ namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
             Powerup = new PowerUp (
                 new DynamicShape(new Vec2F(0.5f, 0.5f), new Vec2F(0.05f, 0.05f)), 
                 new Image(Path.Combine(
-                    TestProjectPath.getPath(),"Assets", "Images", "blue-block.png")),
-                new Image(Path.Combine(TestProjectPath.getPath(),
-                    "Assets", "Images", "blue-block-damaged.png")));
+                    ProjectPath.getPath(), "Breakout", "Assets", "Images", "blue-block.png")),
+                new Image(Path.Combine(ProjectPath.getPath(),
+                    "Breakout", "Assets", "Images", "blue-block-damaged.png")));
 
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.ControlEvent});

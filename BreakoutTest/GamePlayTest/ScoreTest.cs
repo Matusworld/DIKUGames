@@ -9,6 +9,7 @@ using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
 
+using Breakout;
 using Breakout.GamePlay;
 using Breakout.GamePlay.BlockEntity;
 
@@ -30,24 +31,25 @@ namespace BreakoutTest.GamePlayTest {
             score = new Score(new Vec2F(0.06f, -0.25f), new Vec2F(0.3f, 0.3f));
 
             block = new Block(new DynamicShape(new Vec2F(0.45f, 0.45f), new Vec2F(0.1f, 0.05f)), 
-                                        new Image(Path.Combine( TestProjectPath.getPath(),
-                                            "Assets", "Images", "blue-block.png")),
-                                        new Image(Path.Combine(TestProjectPath.getPath(),
-                                            "Assets", "Images", "blue-block-damaged.png")));
+                                        new Image(Path.Combine( ProjectPath.getPath(),
+                                            "Breakout", "Assets", "Images", "blue-block.png")),
+                                        new Image(Path.Combine(ProjectPath.getPath(),
+                                            "Breakout", "Assets", "Images", 
+                                            "blue-block-damaged.png")));
 
             hblock = new Hardened(new DynamicShape(
                 new Vec2F(0.45f, 0.45f), new Vec2F(0.1f, 0.05f)), 
                 new Image(Path.Combine(
-                    TestProjectPath.getPath(),"Assets", "Images", "blue-block.png")),
-                new Image(Path.Combine(TestProjectPath.getPath(),
-                    "Assets", "Images", "blue-block-damaged.png")));
+                    ProjectPath.getPath(), "Breakout", "Assets", "Images", "blue-block.png")),
+                new Image(Path.Combine(ProjectPath.getPath(),
+                    "Breakout", "Assets", "Images", "blue-block-damaged.png")));
 
             publock = new PowerUp(new DynamicShape(
                 new Vec2F(0.45f, 0.45f), new Vec2F(0.1f, 0.05f)), 
-                new Image(Path.Combine(TestProjectPath.getPath(),
-                    "Assets", "Images", "blue-block.png")),
-                    new Image(Path.Combine(TestProjectPath.getPath(),
-                    "Assets", "Images", "blue-block-damaged.png")));
+                new Image(Path.Combine(ProjectPath.getPath(),
+                    "Breakout", "Assets", "Images", "blue-block.png")),
+                    new Image(Path.Combine(ProjectPath.getPath(),
+                    "Breakout", "Assets", "Images", "blue-block-damaged.png")));
 
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.ControlEvent });

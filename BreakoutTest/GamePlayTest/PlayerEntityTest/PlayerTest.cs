@@ -7,6 +7,7 @@ using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Graphics;
 
+using Breakout;
 using Breakout.GamePlay.PlayerEntity;
 
 namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
@@ -31,7 +32,8 @@ namespace BreakoutTest.GamePlayTest.PlayerEntityTest {
         public void Setup() {
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.02f)),
-                new Image(Path.Combine(TestProjectPath.getPath() ,"Assets", "Images", "player.png")));
+                new Image(Path.Combine(ProjectPath.getPath(), 
+                    "Breakout", "Assets", "Images", "player.png")));
 
             beforeX = player.Shape.Position.X;
             beforeY = player.Shape.Position.Y;

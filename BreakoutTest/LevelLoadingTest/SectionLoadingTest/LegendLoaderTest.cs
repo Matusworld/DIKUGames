@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 using DIKUArcade.Graphics;
 
+using Breakout;
 using Breakout.LevelLoading;
 using Breakout.LevelLoading.SectionLoading;
 
@@ -25,49 +26,51 @@ namespace BreakoutTest.LevelLoadingTest.SectionLoadingTest {
             char symb1 = '#';
 
             Image img1 = new Image(Path.Combine( 
-                TestProjectPath.getPath(),"Assets", "Images", "teal-block.png"));
+                ProjectPath.getPath(), "Breakout", "Assets", "Images", "teal-block.png"));
 
             Image dmgimg1 = new Image(Path.Combine( 
-                TestProjectPath.getPath(),"Assets", "Images", "teal-block-damaged.png"));
+                ProjectPath.getPath(), "Breakout", "Assets", "Images", "teal-block-damaged.png"));
 
             legenddict.Add(symb1, (img1, dmgimg1));
 
             char symb2 = '1';
 
             Image img2 = new Image(Path.Combine( 
-                TestProjectPath.getPath(),"Assets", "Images", "blue-block.png"));
+                ProjectPath.getPath(), "Breakout", "Assets", "Images", "blue-block.png"));
 
             Image dmgimg2 = new Image(Path.Combine( 
-                TestProjectPath.getPath(),"Assets", "Images", "blue-block-damaged.png"));
+                ProjectPath.getPath(), "Breakout", "Assets", "Images", "blue-block-damaged.png"));
 
             legenddict.Add(symb2, (img2, dmgimg2));
 
             char symb3 = '2';
 
             Image img3 = new Image(Path.Combine( 
-                TestProjectPath.getPath(),"Assets", "Images", "green-block.png"));
+                ProjectPath.getPath(), "Breakout", "Assets", "Images", "green-block.png"));
 
             Image dmgimg3 = new Image(Path.Combine( 
-                TestProjectPath.getPath(),"Assets", "Images", "green-block-damaged.png"));
+                ProjectPath.getPath(), "Breakout", "Assets", "Images", "green-block-damaged.png"));
 
             legenddict.Add(symb3, (img3, dmgimg3));
 
             char symb4 = 'q';
 
             Image img4 = new Image(Path.Combine( 
-                TestProjectPath.getPath(),"Assets", "Images", "darkgreen-block.png"));
+                ProjectPath.getPath(), "Breakout", "Assets", "Images", "darkgreen-block.png"));
 
             Image dmgimg4 = new Image(Path.Combine( 
-                TestProjectPath.getPath(),"Assets", "Images", "darkgreen-block-damaged.png"));
+                ProjectPath.getPath(), "Breakout", "Assets", "Images", 
+                    "darkgreen-block-damaged.png"));
 
             legenddict.Add(symb4, (img4, dmgimg4));
         }
 
         [SetUp]
         public void Setup() {
-            validFile = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", "level1.txt");
+            validFile = Path.Combine(ProjectPath.getPath(), 
+                "Breakout", "Assets", "Levels", "level1.txt");
 
-            invalidFile = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", 
+            invalidFile = Path.Combine(ProjectPath.getPath(), "Breakout", "Assets", "Levels", 
                 "wrongsectioncontent.txt");
 
             reader = new SectionStreamReader();

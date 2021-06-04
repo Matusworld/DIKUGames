@@ -2,6 +2,7 @@ using System.IO;
 
 using NUnit.Framework;
 
+using Breakout;
 using Breakout.LevelLoading;
 
 namespace BreakoutTest.LevelLoadingTest {
@@ -16,11 +17,11 @@ namespace BreakoutTest.LevelLoadingTest {
         [SetUp]
         public void Setup() {
 
-            validSectionsFile = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", 
+            validSectionsFile = Path.Combine(ProjectPath.getPath(), "Breakout", "Assets", "Levels", 
                 "level1.txt");
 
-            invalidSectionsFile = Path.Combine(TestProjectPath.getPath(), "Assets", "Levels", 
-                "wrongsectionorder.txt");
+            invalidSectionsFile = Path.Combine(ProjectPath.getPath(), 
+                "Breakout", "Assets", "Levels", "wrongsectionorder.txt");
         }
 
         // Testing the section validator on a valid file
