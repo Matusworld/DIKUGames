@@ -33,11 +33,9 @@ namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
         // Testing the Map loader gives the correct results
         [Test]
         public void Testloader() {
-            reader.SetPath(path);
-
             loader = new MapLoader(reader);
 
-            loader.LoadSection();
+            loader.LoadSection(path);
 
             Assert.AreEqual(loader.RowList, rowlist);
 

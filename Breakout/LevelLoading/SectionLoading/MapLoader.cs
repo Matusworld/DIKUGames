@@ -25,7 +25,8 @@ namespace Breakout.LevelLoading.SectionLoading {
         /// Compute Width and Height of map.
         /// Assume reader is reset prior to loading.
         /// </summary>
-        public override void LoadSection() {
+        public override void LoadSection(string path) {
+            reader.SetPath(path);
             reader.SetSection(section);
 
             string line;

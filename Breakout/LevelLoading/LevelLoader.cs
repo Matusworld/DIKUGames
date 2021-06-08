@@ -98,13 +98,13 @@ namespace Breakout.LevelLoading {
             // Only load if sections are validated
             if (Validator.ValidateSections(path)) {
                 //Set path of SectionStreamReader
-                reader.SetPath(path);
+                //reader.SetPath(path);
                 //Clear fields
                 ClearLoader();
                 //Load sections
-                map.LoadSection();
-                Meta.LoadSection();
-                Legend.LoadSection();
+                map.LoadSection(path);
+                Meta.LoadSection(path);
+                Legend.LoadSection(path);
 
                 //Compute and add blocks
                 Vec2F blockExtent = ComputeBlockExtent();

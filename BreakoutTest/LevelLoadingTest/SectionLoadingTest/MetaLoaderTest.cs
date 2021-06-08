@@ -33,11 +33,9 @@ namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
         // Testing the MetaLoader on a valid file
         [Test]
         public void ValidMetaTest() {
-            reader.SetPath(validFile);
-
             loader = new MetaLoader(reader);
 
-            loader.LoadSection();
+            loader.LoadSection(validFile);
 
             Assert.AreEqual(loader.Name, name);
 
@@ -53,14 +51,12 @@ namespace BreakoutTest.GamePlayTest.PowerUpOrbEntityTest {
         // Testing the MetaLoader on a invalid file
         [Test]
         public void InvalidMetaTest() {
-            reader.SetPath(invalidFile);
-
             loader = new MetaLoader(reader);
             
             bool check = false;
 
             try {
-                loader.LoadSection();
+                loader.LoadSection(invalidFile);
                 loader.ClearLoader();
             } catch (InvalidDataException) {
                 check = true;

@@ -79,10 +79,8 @@ namespace BreakoutTest.LevelLoadingTest.SectionLoadingTest {
         // Testing the LegendLoader on a valid file
         [Test]
         public void ValidLegendTest() {
-            reader.SetPath(validFile);
-
             loader = new LegendLoader(reader);
-            loader.LoadSection();
+            loader.LoadSection(validFile);
 
             Assert.AreEqual(loader.LegendDict.Count, legenddict.Count);
             Assert.AreEqual(loader.LegendDict.Keys, legenddict.Keys);
@@ -92,14 +90,12 @@ namespace BreakoutTest.LevelLoadingTest.SectionLoadingTest {
         // Testing the LegendLoader on a invalid file
         [Test]
         public void InvalidLegendTest() {
-            reader.SetPath(invalidFile);
-
             loader = new LegendLoader(reader);
 
             bool check = false;
 
             try {
-                loader.LoadSection();
+                loader.LoadSection(invalidFile);
                 loader.ClearLoader();
             } catch (InvalidDataException) {
                 check = true;
@@ -110,10 +106,8 @@ namespace BreakoutTest.LevelLoadingTest.SectionLoadingTest {
         // Testing clearing the legend loader data (resetting)
         [Test]
         public void ClearLoaderTest() {
-            reader.SetPath(validFile);
-
             loader = new LegendLoader(reader);
-            loader.LoadSection();
+            loader.LoadSection(validFile);
 
             Assert.AreEqual(4,loader.LegendDict.Count);
 
