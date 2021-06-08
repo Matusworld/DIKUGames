@@ -97,8 +97,6 @@ namespace Breakout.LevelLoading {
         public void LoadLevel(string path) {
             // Only load if sections are validated
             if (Validator.ValidateSections(path)) {
-                //Set path of SectionStreamReader
-                //reader.SetPath(path);
                 //Clear fields
                 ClearLoader();
                 //Load sections
