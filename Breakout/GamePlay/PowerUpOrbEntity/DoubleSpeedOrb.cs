@@ -31,7 +31,7 @@ namespace Breakout.GamePlay.PowerUpOrbEntity {
 
             BreakoutBus.GetBus().RegisterTimedEvent(
                 new GameEvent{ EventType = GameEventType.ControlEvent,
-                    StringArg1 = "DOUBLE_SPEED", Message = "DEACTIVE"},
+                    StringArg1 = "DOUBLE_SPEED", Message = "DEACTIVATE"},
                 TimePeriod.NewMilliseconds(powerUpDuration));
         }
     }
