@@ -115,7 +115,7 @@ namespace Breakout.LevelLoading {
                             
                             Block block = GenerateBlock(cell, blockPosition, blockExtent);
                             
-                            BlockOrganizer.Entities.AddEntity(block);
+                            BlockOrganizer.AddEntity(block);
                         }
                     }
                 }
