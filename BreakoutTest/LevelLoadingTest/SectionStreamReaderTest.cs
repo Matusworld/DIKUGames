@@ -81,5 +81,53 @@ namespace BreakoutTest.LevelLoadingTest {
 
             reader.Reset();
         }
+
+        
+        [Test]
+        public void TestEmptyFile() {
+            string emptyFilePath = Path.Combine(ProjectPath.getPath(), 
+                "Breakout", "Assets", "Levels", "wrongemptyfile.txt");
+
+            reader.SetPath(emptyFilePath);
+
+            reader.ReadSectionLine();
+
+            Assert.IsNull(reader.line);
+        }
+
+        [Test]
+        public void TestWrongsection() {
+            string wrongFilePath = Path.Combine(ProjectPath.getPath(), 
+                "Breakout", "Assets", "Levels", "wrongfile.txt");
+
+            reader.SetPath(wrongFilePath);
+
+            reader.SetSection("Map");
+
+            string line;
+
+            int i = 0;
+
+            while((line = reader.ReadSectionLine()) != null) {
+                i++;
+            }
+
+            Assert.IsNull(reader.line);
+        }
+
+        [Test]
+        public void TestInvalidsections() {
+            string wrongFilePath1 = Path.Combine(ProjectPath.getPath(), 
+                "Breakout", "Assets", "Levels", "wrongfile1.txt");
+
+            reader.SetPath(wrongFilePath1);
+
+            reader.SetSection("Map");
+
+            reader.ReadSectionLine();
+
+            Assert.IsNull(reader.line);
+        }
+        
     }
 }

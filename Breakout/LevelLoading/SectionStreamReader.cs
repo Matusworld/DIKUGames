@@ -9,7 +9,7 @@ namespace Breakout.LevelLoading {
     public class SectionStreamReader {
         private string path;
         private string section;
-        private string line;
+        public string line { get; private set; }
         private bool sectionReached = false;
 
 
@@ -64,7 +64,7 @@ namespace Breakout.LevelLoading {
                     }
                 } 
             }
-            //will be null if escaped while loop 
+            //will be null if escaped while loop
             return line;
         }
     }
