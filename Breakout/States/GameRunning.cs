@@ -212,12 +212,12 @@ namespace Breakout.States {
                             Message = "CHANGE_STATE",
                             StringArg1 = "GAME_PAUSED" });
                             break;
-                    case KeyboardKey.Plus:
+                    case KeyboardKey.Period:
                         BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                             EventType = GameEventType.ControlEvent,
                             StringArg1 = "LEVEL_ENDED"});
                         break;
-                    case KeyboardKey.Minus:
+                    case KeyboardKey.Comma:
                         BreakoutBus.GetBus().RegisterEvent( new GameEvent {
                             EventType = GameEventType.ControlEvent,
                             StringArg1 = "LEVEL_BACK"});
