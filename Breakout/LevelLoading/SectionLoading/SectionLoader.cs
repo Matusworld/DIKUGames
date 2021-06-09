@@ -12,7 +12,7 @@ namespace Breakout.LevelLoading.SectionLoading {
         }
 
         /// <summary>
-        /// Processing of a line.
+        /// Processing of one line.
         /// </summary>
         /// <param name="line"> the line coming from section of ASCII file.</param>
         protected abstract void ProcessSectionLine(string line);
